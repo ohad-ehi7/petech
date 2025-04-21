@@ -22,24 +22,58 @@
 <body>
     <div class="flex h-screen bg-[#f7f7fe]">
         <div class="hidden w-64 flex-col bg-[#1f509a] text-white md:flex">
+            <!-- Avatar Section -->
             <div class="flex h-20 items-center px-4">
-                <Avatar class="h-10 w-10 border-2 border-white">
-                    <AvatarImage src="/placeholder.svg?height=40&width=40" alt="Avatar" />
-                    <AvatarFallback>CC</AvatarFallback>
-                </Avatar>
+                <div class="h-10 w-10 rounded-full border-2 border-white overflow-hidden">
+                    <img src="/placeholder.svg?height=40&width=40" alt="Avatar" class="h-full w-full object-cover" />
+                </div>
             </div>
+
+            <!-- Navigation -->
             <div class="flex-1 overflow-auto py-2">
                 <nav class="flex flex-col gap-1 px-2">
-                    <h1>hello</h1>
-                    <NavItem icon={<HomeIcon class="h-5 w-5" />
-                    <NavItem icon={<CubeIcon class="h-5 w-5" />
-                    <NavItem icon={<ShoppingBagIcon class="h-5 w-5" />
-                    <NavItem icon={<ShoppingCartIcon class="h-5 w-5" />
-                    <NavItem icon={<UsersIcon class="h-5 w-5" />
-                    <NavItem icon={<ChartBarIcon class="h-5 w-5" />
-                    <NavItem icon={<DocumentTextIcon class="h-5 w-5" />
+                    <!-- Nav Items -->
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
+                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Home icon -->
+                        <span>Home</span>
+                    </a>
+
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md bg-white/10">
+                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Cube icon -->
+                        <span>Inventory</span>
+                    </a>
+
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
+                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Shopping Bag icon -->
+                        <span>Sales</span>
+                    </a>
+
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
+                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Shopping Cart icon -->
+                        <span>Purchases</span>
+                    </a>
+
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
+                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Users icon -->
+                        <span>Suppliers</span>
+                    </a>
+
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
+                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Chart icon -->
+                        <span>Reports</span>
+                    </a>
+
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
+                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Document icon -->
+                        <span>Inventory Logs</span>
+                    </a>
+
                     <div class="mt-4"></div>
-                    <NavItem icon={<Cog6ToothIcon class="h-5 w-5" />
+
+                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
+                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Cog icon -->
+                        <span>Configure Features list</span>
+                    </a>
                 </nav>
             </div>
         </div>
