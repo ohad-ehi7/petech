@@ -8,6 +8,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -19,68 +20,206 @@
     @endif
     <title>{{$title ?? 'Home'}}</title>
 </head>
-<body>
-    <div class="flex h-screen bg-[#f7f7fe]">
-        <div class="hidden w-64 flex-col bg-[#1f509a] text-white md:flex">
-            <!-- Avatar Section -->
-            <div class="flex h-20 items-center px-4">
-                <div class="h-10 w-10 rounded-full border-2 border-white overflow-hidden">
-                    <img src="/placeholder.svg?height=40&width=40" alt="Avatar" class="h-full w-full object-cover" />
-                </div>
-            </div>
+<body class="flex">
 
-            <!-- Navigation -->
-            <div class="flex-1 overflow-auto py-2">
-                <nav class="flex flex-col gap-1 px-2">
-                    <!-- Nav Items -->
-                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
-                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Home icon -->
-                        <span>Home</span>
-                    </a>
 
-                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md bg-white/10">
-                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Cube icon -->
-                        <span>Inventory</span>
-                    </a>
 
-                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
-                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Shopping Bag icon -->
-                        <span>Sales</span>
-                    </a>
+<aside id="sidebar-multi-level-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
 
-                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
-                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Shopping Cart icon -->
-                        <span>Purchases</span>
-                    </a>
+<div class="w-full">
+  <img src="images/sidebar.png" alt="ulo" class="w-full h-auto block object-cover">
+</div>
+   <div class="h-full px-3 py-4 overflow-y-auto bg-[#1F509A]">
+    
+      <ul class="space-y-2 font-medium">
+      <li>
+        <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                <span class="flex items-center gap-3">
+                <i class="fa-solid fa-house text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                Home
+                </span>
+            </a>
+       </li>
+       <li>
+            <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+                  <span class="flex-1 text-left rtl:text-right whitespace-nowrap ">
+                  <i class="fa-solid fa-truck-ramp-box text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white mr-2"></i>
+                  Inventory</span>
+                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                  </svg>
+            </button>
+            <ul id="dropdown-example" class="hidden py-2 space-y-2">
+                  <li>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Product List</a>
+                  </li>
+                  <li>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Category</a>
+                  </li>
+                  
+            </ul>
+         </li>
+         <li>
+            <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+                  <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
+                     <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
+                  </svg>
+                  <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Sales</span>
+                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                  </svg>
+            </button>
+            <ul id="dropdown-example" class="hidden py-2 space-y-2">
+                  <li>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Products</a>
+                  </li>
+                  <li>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Billing</a>
+                  </li>
+                  <li>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
+                  </li>
+            </ul>
+         </li>
+         <li>
+            <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+            <span class="flex-1 text-left rtl:text-right whitespace-nowrap">
+            <i class="fa-solid fa-bag-shopping text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white mr-4"></i>
+            Purchase</span>
+                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                  </svg>
+            </button>
+            <ul id="dropdown-example" class="hidden py-2 space-y-2">
+                  <li>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Products</a>
+                  </li>
+                  <li>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Billing</a>
+                  </li>
+                  <li>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
+                  </li>
+            </ul>
+         </li>
+         <li>
+            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <span class="flex-1 whitespace-nowrap">
+               <i class="fa-solid fa-truck-field text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white mr-4"></i> 
+               Supplier</span>
+               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
+            </a>
+         </li>
+         <li>
+            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <span class="flex-1 whitespace-nowrap">
+               <i class="fa-solid fa-chart-line text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white mr-4"></i> 
+               Reports</span>
+               <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
+            </a>
+         </li>
+         <li>
+            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <span class="flex-1 whitespace-nowrap">
+               <i class="fa-solid fa-folder-open text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white mr-4"></i>
+               Inventory Logs</span>
+            </a>
+         </li>
+         <li>
+        <a href="#" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
+            <span class="flex-1 whitespace-nowrap flex items-center">
+            <i class="fa-solid fa-list-check text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
+            Configure Featured List
+            </span>
+        </a>
+        </li>
+         
+         
+      </ul>
+   </div>
+</aside>
 
-                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
-                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Users icon -->
-                        <span>Suppliers</span>
-                    </a>
-
-                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
-                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Chart icon -->
-                        <span>Reports</span>
-                    </a>
-
-                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
-                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Document icon -->
-                        <span>Inventory Logs</span>
-                    </a>
-
-                    <div class="mt-4"></div>
-
-                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10">
-                        <span class="h-5 w-5 bg-white rounded-sm"></span> <!-- Replace with Cog icon -->
-                        <span>Configure Features list</span>
-                    </a>
-                </nav>
-            </div>
+<div class="ml-64 w-full border border-gray-300  shadow-lg p-4 ">
+  <div class="flex justify-between items-center">
+    
+    <!-- Search Form -->
+    <form class="max-w-md w-full">
+      <label for="default-search" class="text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+          </svg>
         </div>
+        <input type="search" id="default-search"
+          class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Search Products..." required />
+      </div>
+    </form>
+
+    <!-- Icon Buttons -->
+    <div class="flex items-center space-x-4">
+      
+      <!-- User Dropdown Button -->
+       <ul class="flex items-center space-x-4">
+      <li class="list-none relative">
+        <button type="button"
+          class="flex items-center p-2 text-base text-black transition duration-150 rounded-lg hover:bg-black dark:text-black dark:hover:bg-gray-700 group"
+          aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+          <span class="flex-1 text-left whitespace-nowrap">
+            <i class="fa-solid fa-user text-black dark:text-black group-hover:text-black dark:group-hover:text-black mr-2"></i>
+            User
+          </span>
+          <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+          </svg>
+        </button>
+        <ul id="dropdown-example" class="hidden absolute right-0 mt-2 py-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded shadow-md space-y-2">
+          <li>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Products</a>
+          </li>
+          <li>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Billing</a>
+          </li>
+          <li>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Invoice</a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Notification Button -->
+      <li>
+        <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <i class="fa-solid fa-bell text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
+        </button>
+      </li>
+
+      <!-- Settings Button -->
+      <li>
+        <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <i class="fa-solid fa-cogs text-black dark:text-black group-hover:text-gray-900 dark:group-hover:text-white"></i>
+        </button>
+      </li>
+
+           <!-- User Profile Button -->
+           <li>
+        <button type="button" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img src="path_to_your_profile_image.jpg" alt="User  Profile" class="w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600 transition duration-150 ease-in-out transform hover:scale-105">
+        </button>
+      </li>
+      </ul>
     </div>
-    <div class="flex flex-1 flex-col overflow-hidden">
-        {{$slot}}
+  </div>
+</div>
     </div>
+
+  </div>
+</div>
+
+
+
+</div>
+    
 
 </body>
 </html>
