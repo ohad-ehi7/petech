@@ -139,7 +139,7 @@
    </div>
 </aside>
 
-<div class="ml-64 w-full border border-gray-300  shadow-lg p-4 ">
+<div class="ml-64 w-full border border-gray-300 shadow-lg p-4">
   <div class="flex justify-between items-center">
     
     <!-- Search Form -->
@@ -211,6 +211,7 @@
     </div>
   </div>
 </div>
+
     </div>
 
   </div>
