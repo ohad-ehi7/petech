@@ -133,7 +133,7 @@
                <span class="text-red-500 font-semibold">0</span>
             </div>
             <div class="flex justify-between items-center">
-               <span class="text-gray-600 text-sm">All Item </span>
+               <span class="text-gray-600 text-sm">All Item Groups</span>
                <span class="text-black font-semibold">0</span>
             </div>
             <div class="flex justify-between items-center">
@@ -229,9 +229,9 @@
     
     <div class="col-span-5 row-span-2 row-start-7 p-10 -mt-32">
   <div class="bg-white rounded-xl shadow-md overflow-hidden">
-    <div class="flex justify-between items-center bg-indigo-200 px-4 py-2 rounded-t-xl">
-      <h2 class="text-sm font-semibold text-gray-800">Sales Order Summary (in PHP)</h2>
-      <div class="text-sm text-gray-600">This Month</div>
+    <div class="flex justify-between items-center bg-indigo-200 rounded-t-xl">
+      <h2 class="text-sm font-semibold text-gray-800 p-4">Sales Order Summary (in PHP)</h2>
+      <div class="text-sm text-gray-600 mr-2">This Month</div>
     </div>
     <div class="p-4 flex flex-col md:flex-row">
       <!-- Chart area -->
