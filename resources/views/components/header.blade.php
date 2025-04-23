@@ -46,6 +46,7 @@
                 </span>
             </a>
        </li>
+
        <li>
             <button type="button" class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
                   <span class="flex-1 text-left rtl:text-right whitespace-nowrap ">
@@ -57,14 +58,16 @@
             </button>
             <ul id="dropdown-example" class="hidden py-2 space-y-2">
                   <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Product List</a>
+                     <a href="product-list" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Product List</a>
                   </li>
                   <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Category</a>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Category</a>
                   </li>
                   
             </ul>
          </li>
+
+
          <li>
             <button type="button" class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
                   <span class="flex-1 text-left rtl:text-right whitespace-nowrap">
@@ -193,6 +196,12 @@
         </ul>
       </li>
 
+      <li>
+        <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <i class="fa-solid fa-plus text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
+        </button>
+      </li>
+
       <!-- Notification Button -->
       <li>
         <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -254,6 +263,15 @@
                 mainContent.classList.remove('ml-0');
                 mainContent.classList.add('ml-64');
             }
+        });
+
+          document.addEventListener('DOMContentLoaded', () => {
+          const toggleBtn = document.querySelector('[data-collapse-toggle="dropdown-example"]');
+          const dropdown = document.getElementById('dropdown-example');
+
+          toggleBtn.addEventListener('click', () => {
+            dropdown.classList.toggle('hidden');
+          });
         });
     </script>
 
