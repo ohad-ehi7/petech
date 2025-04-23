@@ -133,7 +133,7 @@
                <span class="text-red-500 font-semibold">0</span>
             </div>
             <div class="flex justify-between items-center">
-               <span class="text-gray-600 text-sm">All Item Groups</span>
+               <span class="text-gray-600 text-sm">All Item </span>
                <span class="text-black font-semibold">0</span>
             </div>
             <div class="flex justify-between items-center">
