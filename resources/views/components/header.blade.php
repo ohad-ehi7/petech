@@ -36,7 +36,7 @@
   <img src="images/sidebar.png" alt="ulo" class="w-full h-auto block object-cover">
 </div>
    <div class="h-full px-3 py-4 overflow-y-auto bg-[#1F509A]">
-    
+
       <ul class="space-y-2 font-medium">
       <li>
         <a href="#" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
@@ -63,7 +63,7 @@
                   <li>
                      <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Category</a>
                   </li>
-                  
+
             </ul>
          </li>
 
@@ -71,7 +71,7 @@
          <li>
             <button type="button" class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
                   <span class="flex-1 text-left rtl:text-right whitespace-nowrap">
-                  <i class="fa-solid fa-cart-shopping text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>  
+                  <i class="fa-solid fa-cart-shopping text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                   Sales</span>
                   <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
@@ -113,7 +113,7 @@
          <li>
             <a href="#" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
                <span class="flex-1 whitespace-nowrap">
-               <i class="fa-solid fa-truck-field text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i> 
+               <i class="fa-solid fa-truck-field text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                Supplier</span>
                <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
             </a>
@@ -121,7 +121,7 @@
          <li>
             <a href="#" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
                <span class="flex-1 whitespace-nowrap">
-               <i class="fa-solid fa-chart-line text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i> 
+               <i class="fa-solid fa-chart-line text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                Reports</span>
                <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
             </a>
@@ -141,8 +141,8 @@
             </span>
         </a>
         </li>
-         
-         
+
+
       </ul>
    </div>
 </aside>
@@ -150,7 +150,7 @@
 <main class="ml-64 w-full">
 <div class="w-full border border-gray-300 shadow-lg p-4 sticky top-0 z-50">
   <div class="flex justify-between items-center">
-    
+
     <!-- Search Form -->
     <form class="max-w-md w-full">
       <label for="default-search" class="text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
@@ -168,7 +168,7 @@
 
     <!-- Icon Buttons -->
     <div class="flex items-center space-x-4">
-      
+
       <!-- User Dropdown Button -->
        <ul class="flex items-center space-x-4">
       <li class="list-none relative">
@@ -226,24 +226,15 @@
     </div>
   </div>
 </div>
-
+<div>
+    {{$slot}}
 </div>
-
-</div>
-</div>
-
-
-
-
-  
-
 
 </main>
 
 
 
-</div>
-  
+
 <script>
         // JavaScript to toggle the sidebar
         const sidebarToggle = document.getElementById('sidebarToggle');
