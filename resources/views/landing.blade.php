@@ -172,7 +172,8 @@
                             </div>
                         </div>
 
-                        <form class="space-y-4">
+                        <form method="post" action="" class="space-y-4">
+                            @csrf
                             <div>
                                 <label for="name" class="block text-[#ff630f] font-medium mb-1">
                                     Name*
