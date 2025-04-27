@@ -174,18 +174,10 @@
 
                         <form method="post" action="" class="space-y-4">
                             @csrf
-                            <div>
-                                <label for="name" class="block text-[#ff630f] font-medium mb-1">
-                                    Name*
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    placeholder="eg. Juan Dela Cruz"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                />
-                            </div>
 
+                            @if($errors->has('password') || $errors->has('email'))
+                                <div class="text-red-500 text-sm font-exo">{{ $errors->first('email') }}</div>
+                            @endif
                             <div>
                                 <label for="email" class="block text-[#ff630f] font-medium mb-1">
                                     Email*
