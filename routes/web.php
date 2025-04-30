@@ -24,7 +24,7 @@ Route::get('product-list', function () {
     return view('product-list');
 });
 
-Route::post('/', [AuthController::class, 'login']);
+Route::post('/', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth')->group(function () {
 

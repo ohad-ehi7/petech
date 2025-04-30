@@ -172,7 +172,7 @@
                             </div>
                         </div>
 
-                        <form method="post" action="" class="space-y-4">
+                        <form method="POST" action="/" class="space-y-4">
                             @csrf
 
                             @if($errors->has('password') || $errors->has('email'))
@@ -180,22 +180,19 @@
                             @endif
                             <div>
                                 <label for="email" class="block text-[#ff630f] font-medium mb-1">
-                                    Email*
+                                    Email
                                 </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    placeholder="eg. jdelacruz@gmail.com"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                <input name="email" type="email" id="email" placeholder="eg. jdelacruz@gmail.com" class="w-full px-3 py-2 border border-gray-300 rounded-md"
                                 />
                             </div>
 
                             <div>
                                 <label for="password" class="block text-[#ff630f] font-medium mb-1">
-                                    Password*
+                                    Password
                                 </label>
                                 <input
                                     type="password"
+                                    name="password"
                                     id="password"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md"
                                 />
