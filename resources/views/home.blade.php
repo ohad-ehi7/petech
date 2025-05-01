@@ -11,6 +11,7 @@
             <div class="flex flex-col">
                 <h2 class="text-lg font-semibold text-black">Hello, CHARISSE PRIEGO</h2>
                 <p class="text-black">Changchang Store IMS/SMS</p>
+
             </div>
         </div>
     </div>
@@ -66,7 +67,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+
 
         <div class="col-span-2">
             <div class="rounded-lg shadow-md overflow-hidden">
@@ -84,6 +85,7 @@
                         <span class="font-semibold text-gray-800">25</span>
                     </div>
                 </div>
+
             </div>
         </div>
 
