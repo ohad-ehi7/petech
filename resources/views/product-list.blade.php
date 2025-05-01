@@ -1,24 +1,23 @@
 <x-header>
     <div class="flex">
-        <main class="flex-1 pl-4 pr-4 space-y-6 overflow-x-hidden">
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg p-4">
-                <div class="w-full p-4">
-                    <div class="flex items-center justify-between">
-
+        <main class="flex-1 px-2 sm:px-4 space-y-6 overflow-x-hidden">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg p-2 sm:p-4">
+                <div class="w-full p-2 sm:p-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <!-- Left: Category Dropdown -->
-                        <ul class="flex items-center space-x-4">
+                        <ul class="flex items-center space-x-4 w-full sm:w-auto">
                             <li class="list-none relative">
                                 <button type="button"
-                                        class="flex items-center p-2 text-base text-black transition duration-150 rounded-lg hover:bg-black dark:text-black dark:hover:bg-gray-700 group"
+                                        class="flex items-center p-2 text-base text-black transition duration-150 rounded-lg hover:bg-black dark:text-black dark:hover:bg-gray-700 group w-full sm:w-auto"
                                         aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-          <span class="flex-1 text-left whitespace-nowrap">
-            Category
-          </span>
+                                    <span class="flex-1 text-left whitespace-nowrap">
+                                        Category
+                                    </span>
                                     <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                                     </svg>
                                 </button>
-                                <ul id="dropdown-example" class="hidden absolute right-0 mt-2 py-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded shadow-md space-y-2">
+                                <ul id="dropdown-example" class="hidden absolute right-0 mt-2 py-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded shadow-md space-y-2 z-10">
                                     <li>
                                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Products</a>
                                     </li>
@@ -32,8 +31,8 @@
                             </li>
                         </ul>
 
-                        <!-- Right: New Button -->
-                        <div class="flex items-center space-x-2">
+                        <!-- Right: Action Buttons -->
+                        <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
                             <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <i class="fa-solid fa-plus text-black dark:text-black group-hover:text-black dark:group-hover:text-black mr-2"></i>New
                             </button>
@@ -46,12 +45,10 @@
                                 <i class="fa-solid fa-th text-black dark:text-black group-hover:text-black dark:group-hover:text-black mr-2"></i>
                             </button>
 
-
                             <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <i class="fa-solid fa-ellipsis-vertical text-black dark:text-black group-hover:text-black dark:group-hover:text-black mr-2"></i>
                             </button>
                         </div>
-
                     </div>
                 </div>
 
@@ -60,49 +57,48 @@
                     <table class="w-full text-sm text-left text-gray-800 bg-white rounded-lg shadow">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-300">
                         <tr>
-                            <th scope="col" class="px-4 py-3 rounded-tl-lg">
+                            <th scope="col" class="px-2 sm:px-4 py-3 rounded-tl-lg">
                                 <input class="invisible" type="checkbox">
                             </th>
-
-                            <th scope="col" class="px-4 py-3">Name</th>
-                            <th scope="col" class="px-4 py-3">SKU (ID)</th>
-                            <th scope="col" class="px-4 py-3">Stock on Hand</th>
-                            <th scope="col" class="px-4 py-3">Reorder Level</th>
-                            <th scope="col" class="px-4 py-3 rounded-tr-lg">Status</th>
+                            <th scope="col" class="px-2 sm:px-4 py-3">Name</th>
+                            <th scope="col" class="px-2 sm:px-4 py-3">SKU (ID)</th>
+                            <th scope="col" class="px-2 sm:px-4 py-3">Stock on Hand</th>
+                            <th scope="col" class="px-2 sm:px-4 py-3">Reorder Level</th>
+                            <th scope="col" class="px-2 sm:px-4 py-3 rounded-tr-lg">Status</th>
                         </tr>
                         </thead>
                         <tbody>
                         <!-- Row 1 -->
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="px-4 py-3">
+                            <td class="px-2 sm:px-4 py-3">
                                 <input type="checkbox">
                             </td>
-                            <td class="px-4 py-3">
+                            <td class="px-2 sm:px-4 py-3">
                                 <div class="flex items-center space-x-3">
-                                    <img src="https://i.imgur.com/1W5c1TV.png" alt="Bearbrand Milk" class="w-10 h-10 rounded-md">
+                                    <img src="https://i.imgur.com/1W5c1TV.png" alt="Bearbrand Milk" class="w-8 h-8 sm:w-10 sm:h-10 rounded-md">
                                     <span class="text-blue-600 hover:underline cursor-pointer">Bearbrand Milk</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3">P001</td>
-                            <td class="px-4 py-3">45.00</td>
-                            <td class="px-4 py-3">12.00</td>
-                            <td class="px-4 py-3 text-green-500 font-medium">ACTIVE</td>
+                            <td class="px-2 sm:px-4 py-3">P001</td>
+                            <td class="px-2 sm:px-4 py-3">45.00</td>
+                            <td class="px-2 sm:px-4 py-3">12.00</td>
+                            <td class="px-2 sm:px-4 py-3 text-green-500 font-medium">ACTIVE</td>
                         </tr>
                         <!-- Row 2 -->
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3">
+                            <td class="px-2 sm:px-4 py-3">
                                 <input type="checkbox">
                             </td>
-                            <td class="px-4 py-3">
+                            <td class="px-2 sm:px-4 py-3">
                                 <div class="flex items-center space-x-3">
-                                    <img src="https://i.imgur.com/TkQGzu2.png" alt="Nescafe Coffee" class="w-10 h-10 rounded-md">
+                                    <img src="https://i.imgur.com/TkQGzu2.png" alt="Nescafe Coffee" class="w-8 h-8 sm:w-10 sm:h-10 rounded-md">
                                     <span class="text-blue-600 hover:underline cursor-pointer">Nescafe Coffee</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3">P002</td>
-                            <td class="px-4 py-3">45.00</td>
-                            <td class="px-4 py-3">12.00</td>
-                            <td class="px-4 py-3 text-green-500 font-medium">ACTIVE</td>
+                            <td class="px-2 sm:px-4 py-3">P002</td>
+                            <td class="px-2 sm:px-4 py-3">45.00</td>
+                            <td class="px-2 sm:px-4 py-3">12.00</td>
+                            <td class="px-2 sm:px-4 py-3 text-green-500 font-medium">ACTIVE</td>
                         </tr>
                         </tbody>
                     </table>
