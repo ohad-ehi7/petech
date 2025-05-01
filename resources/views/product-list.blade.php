@@ -61,8 +61,9 @@
                         <thead class="text-xs text-gray-700 uppercase bg-gray-300">
                         <tr>
                             <th scope="col" class="px-4 py-3 rounded-tl-lg">
-                                <input type="checkbox">
+                                <input class="invisible" type="checkbox">
                             </th>
+
                             <th scope="col" class="px-4 py-3">Name</th>
                             <th scope="col" class="px-4 py-3">SKU (ID)</th>
                             <th scope="col" class="px-4 py-3">Stock on Hand</th>
@@ -76,9 +77,11 @@
                             <td class="px-4 py-3">
                                 <input type="checkbox">
                             </td>
-                            <td class="flex items-center px-4 py-3 space-x-3">
-                                <img src="https://i.imgur.com/1W5c1TV.png" alt="Bearbrand Milk" class="w-10 h-10 rounded-md">
-                                <span class="text-blue-600 hover:underline cursor-pointer">Bearbrand Milk</span>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center space-x-3">
+                                    <img src="https://i.imgur.com/1W5c1TV.png" alt="Bearbrand Milk" class="w-10 h-10 rounded-md">
+                                    <span class="text-blue-600 hover:underline cursor-pointer">Bearbrand Milk</span>
+                                </div>
                             </td>
                             <td class="px-4 py-3">P001</td>
                             <td class="px-4 py-3">45.00</td>
@@ -90,9 +93,11 @@
                             <td class="px-4 py-3">
                                 <input type="checkbox">
                             </td>
-                            <td class="flex items-center px-4 py-3 space-x-3">
-                                <img src="https://i.imgur.com/TkQGzu2.png" alt="Nescafe Coffee" class="w-10 h-10 rounded-md">
-                                <span class="text-blue-600 hover:underline cursor-pointer">Nescafe Coffee</span>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center space-x-3">
+                                    <img src="https://i.imgur.com/TkQGzu2.png" alt="Nescafe Coffee" class="w-10 h-10 rounded-md">
+                                    <span class="text-blue-600 hover:underline cursor-pointer">Nescafe Coffee</span>
+                                </div>
                             </td>
                             <td class="px-4 py-3">P002</td>
                             <td class="px-4 py-3">45.00</td>
