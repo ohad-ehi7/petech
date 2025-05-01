@@ -172,37 +172,27 @@
                             </div>
                         </div>
 
-                        <form class="space-y-4">
-                            <div>
-                                <label for="name" class="block text-[#ff630f] font-medium mb-1">
-                                    Name*
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    placeholder="eg. Juan Dela Cruz"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                />
-                            </div>
+                        <form method="POST" action="/" class="space-y-4">
+                            @csrf
 
+                            @if($errors->has('password') || $errors->has('email'))
+                                <div class="text-red-500 text-sm font-exo">{{ $errors->first('email') }}</div>
+                            @endif
                             <div>
                                 <label for="email" class="block text-[#ff630f] font-medium mb-1">
-                                    Email*
+                                    Email
                                 </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    placeholder="eg. jdelacruz@gmail.com"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                <input name="email" type="email" id="email" placeholder="eg. jdelacruz@gmail.com" class="w-full px-3 py-2 border border-gray-300 rounded-md"
                                 />
                             </div>
 
                             <div>
                                 <label for="password" class="block text-[#ff630f] font-medium mb-1">
-                                    Password*
+                                    Password
                                 </label>
                                 <input
                                     type="password"
+                                    name="password"
                                     id="password"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md"
                                 />

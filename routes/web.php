@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,6 +24,11 @@ Route::get('product-list', function () {
     return view('product-list');
 });
 
-Route::get('new-item', function () {
-    return view('new-item');
+
+Route::post('/', [AuthController::class, 'login'])->name('login');
+
+Route::middleware('auth')->group(function () {
+
+
 });
+
