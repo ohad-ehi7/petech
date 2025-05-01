@@ -52,7 +52,7 @@
          </div>
 
             <!-- Content -->
-            <div class="bg-white grid grid-cols-4 text-center divide-x divide-gray-200 p-4">
+            <div class="bg-white grid grid-cols-4 text-center divide-x divide-gray-200 p-6">
                <!-- Today Sales -->
                <div>
                   <div class="text-2xl font-bold text-blue-500">₱5,200</div>
@@ -103,7 +103,7 @@
             <div class="bg-purple-400">
                <h2 class="text-black text-sm font-semibold p-4">Inventory Summary</h2>
             </div>
-            <div class="bg-white px-4 py-3 text-sm space-y-4">
+            <div class="bg-white p-6 text-sm space-y-4">
                <div class="flex justify-between">
                <span class="text-gray-500">QUANTITY IN HAND</span>
                <span class="font-semibold text-gray-800">100</span>
@@ -127,7 +127,7 @@
          </div>
          <div class="bg-white p-4 flex justify-between items-center">
             <!-- Left Side -->
-            <div class="space-y-3">
+            <div class="space-y-3 p-4">
             <div class="flex justify-between items-center">
                <span class="text-red-500 text-sm">Low Stock Items</span>
                <span class="text-red-500 font-semibold">0</span>
@@ -183,7 +183,7 @@
     </div>
 
     <!-- Body -->
-    <div class="flex flex-col items-center justify-center px-4 py-6 space-y-4">
+    <div class="flex flex-col items-center justify-center p-4 space-y-4">
       <div class="text-sm text-gray-600">Quantity Ordered</div>
       <div class="text-2xl text-blue-500 font-semibold">0</div>
 
@@ -227,7 +227,7 @@
 
 
     
-    <div class="col-span-5 row-span-2 row-start-7 p-10 -mt-32">
+    <div class="col-span-5 row-span-2 row-start-7 p-10 -mt-36">
   <div class="bg-white rounded-xl shadow-md overflow-hidden">
     <div class="flex justify-between items-center bg-indigo-200 rounded-t-xl">
       <h2 class="text-sm font-semibold text-gray-800 p-4">Sales Order Summary (in PHP)</h2>

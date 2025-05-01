@@ -22,3 +22,7 @@ Route::get('/header', function () {
 Route::get('product-list', function () {
     return view('product-list');
 });
+
+Route::get('new-item', function () {
+    return view('new-item');
+});
