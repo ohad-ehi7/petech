@@ -12,7 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
+            $table->id('TransactionID');
+            $table->foreignId('ProductID')->constrained('products', 'ProductID')->onDelete('cascade');
+            $table->string('TransactionType');
+            $table->timestamp('TransactionDate')->useCurrent();
+            $table->integer('QuantityChange');
+            $table->decimal('UnitPrice', 10, 2);
+            $table->decimal('TotalAmount', 10, 2);
+            $table->foreignId('ReferenceID')->nullable()->constrained('sales', 'SaleID'); // Assuming primary reference is to sales
             $table->timestamps();
         });
     }
