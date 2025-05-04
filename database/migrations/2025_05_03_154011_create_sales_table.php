@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id('SaleID');
             $table->timestamp('SaleDate')->useCurrent();
-            $table->foreignId('CustomerIDFK')->nullable()->constrained('customers', 'CustomerID')->onDelete('set null');
+            $table->foreignId('CustomerID')->nullable()->constrained('customers', 'CustomerID')->onDelete('set null');
             $table->decimal('TotalAmount', 10, 2);
             $table->decimal('DiscountAmount', 10, 2)->default(0);
             $table->string('PaymentMethod', 50)->nullable();
-            $table->unsignedBigInteger('ClerkIDFK')->nullable(); // Optional FK for users table
+            $table->unsignedBigInteger('ClerkID')->nullable(); // Optional FK for users table
             $table->timestamps();
         });
     }
