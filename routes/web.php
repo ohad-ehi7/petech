@@ -28,6 +28,21 @@ Route::get('new-item', function () {
     return view('new-item');
 });
 
+Route::get('product-overview', function () {
+    return view('product-overview');
+});
+
+Route::get('product-transaction', function () {
+    return view('product-transaction');
+});
+
+Route::get('point-of-sale', function () {
+    return view('point-of-sale');
+});
+
+Route::get('card-type', function () {
+    return view('card-type');
+});
 
 Route::post('/', [AuthController::class, 'login'])->name('login');
 

@@ -46,9 +46,9 @@
       <i class="fa-solid fa-list text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i> 
     </button>
 
-    <a href="card-type" type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
+    <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
       <i class="fa-solid fa-th text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i> 
-    </a>
+    </button>
      
 
   <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -59,53 +59,50 @@
   </div>
 </div>
 
-<!-- Inventory Table -->
-    <div class="mt-6 overflow-x-auto">
-    <table class="w-full text-sm text-left text-gray-800 bg-white rounded-lg shadow">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-300">
-        <tr>
-            <th scope="col" class="px-4 py-3 rounded-tl-lg">
-            <input type="checkbox">
-            </th>
-            <th scope="col" class="px-4 py-3">Name</th>
-            <th scope="col" class="px-4 py-3">SKU (ID)</th>
-            <th scope="col" class="px-4 py-3">Stock on Hand</th>
-            <th scope="col" class="px-4 py-3">Reorder Level</th>
-            <th scope="col" class="px-4 py-3 rounded-tr-lg">Status</th>
-        </tr>
-        </thead>
-    <tbody>
-      <!-- Row 1 -->
-      <tr class="border-b hover:bg-gray-50">
-        <td class="px-4 py-3">
-          <input type="checkbox">
-        </td>
-        <td class="flex items-center px-4 py-3 space-x-3">
-          <img src="https://i.imgur.com/1W5c1TV.png" alt="Bearbrand Milk" class="w-10 h-10 rounded-md">
-          <span class="text-blue-600 hover:underline cursor-pointer">Bearbrand Milk</span>
-        </td>
-        <td class="px-4 py-3">P001</td>
-        <td class="px-4 py-3">45.00</td>
-        <td class="px-4 py-3">12.00</td>
-        <td class="px-4 py-3 text-green-500 font-medium">ACTIVE</td>
-      </tr>
-      <!-- Row 2 -->
-      <tr class="hover:bg-gray-50">
-        <td class="px-4 py-3">
-          <input type="checkbox">
-        </td>
-        <td class="flex items-center px-4 py-3 space-x-3">
-          <img src="https://i.imgur.com/TkQGzu2.png" alt="Nescafe Coffee" class="w-10 h-10 rounded-md">
-          <span class="text-blue-600 hover:underline cursor-pointer">Nescafe Coffee</span>
-        </td>
-        <td class="px-4 py-3">P002</td>
-        <td class="px-4 py-3">45.00</td>
-        <td class="px-4 py-3">12.00</td>
-        <td class="px-4 py-3 text-green-500 font-medium">ACTIVE</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+    <div class="block bg-gray-100">
+    <div class="bg-white rounded-lg shadow-md p-6 max-w-sm">
+            <div class="flex items-center justify-center mb-4">
+                <img src="https://via.placeholder.com/150" alt="Bearbrand Milk" class="w-32 h-auto" />
+            </div>
+            <h2 class="text-xl font-bold text-center">Bearbrand Milk</h2>
+            <p class="text-sm text-center text-gray-600">SKU: P001</p>
+            <p class="text-center text-red-600 mt-2">Stock on Hand: <span class="font-bold">12.00 boxes</span></p>
+            <div class="mt-4">
+                <p class="text-center">Selling Price: <span class="font-bold">Php 50.00</span></p>
+                <p class="text-center">Cost Price: <span class="font-bold">Php 45.00</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6 max-w-sm">
+            <div class="flex items-center justify-center mb-4">
+                <img src="https://via.placeholder.com/150" alt="Bearbrand Milk" class="w-32 h-auto" />
+            </div>
+            <h2 class="text-xl font-bold text-center">Bearbrand Milk</h2>
+            <p class="text-sm text-center text-gray-600">SKU: P001</p>
+            <p class="text-center text-red-600 mt-2">Stock on Hand: <span class="font-bold">12.00 boxes</span></p>
+            <div class="mt-4">
+                <p class="text-center">Selling Price: <span class="font-bold">Php 50.00</span></p>
+                <p class="text-center">Cost Price: <span class="font-bold">Php 45.00</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6 max-w-sm">
+            <div class="flex items-center justify-center mb-4">
+                <img src="https://via.placeholder.com/150" alt="Bearbrand Milk" class="w-32 h-auto" />
+            </div>
+            <h2 class="text-xl font-bold text-center">Bearbrand Milk</h2>
+            <p class="text-sm text-center text-gray-600">SKU: P001</p>
+            <p class="text-center text-red-600 mt-2">Stock on Hand: <span class="font-bold">12.00 boxes</span></p>
+            <div class="mt-4">
+                <p class="text-center">Selling Price: <span class="font-bold">Php 50.00</span></p>
+                <p class="text-center">Cost Price: <span class="font-bold">Php 45.00</span></p>
+            </div>
+        </div>
+    </div>
+
+ 
 
     
     
