@@ -60,7 +60,7 @@
 </div>
 
 <!-- Inventory Table -->
-    <div class="mt-6 overflow-x-auto">
+    <div class="mt-6 overflow-x-auto border rounded-lg">
     <table class="w-full text-sm text-left text-gray-800 bg-white rounded-lg shadow">
         <thead class="text-xs text-gray-700 uppercase bg-gray-300">
         <tr>
