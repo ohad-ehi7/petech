@@ -2,13 +2,13 @@
 <div class="flex p-10 -mt-8">
 
 
- 
+
  <main class="flex-1 pr-4 space-y-6 overflow-x-hidden">
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg p-4">
 
     <div class="w-full p-4">
   <div class="flex items-center justify-between">
-    
+
     <!-- Left: Category Dropdown -->
     <ul class="flex items-center space-x-4">
       <li class="list-none relative">
@@ -36,25 +36,25 @@
       </li>
     </ul>
 
-    <!-- Right: New Button --> 
+    <!-- Right: New Button -->
     <div class="flex items-center space-x-2">
     <a href="new-item " class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
-      <i class="fa-solid fa-plus text-black dark:text-black group-hover:text-black dark:group-hover:text-black mr-2"></i>New 
+      <i class="fa-solid fa-plus text-black dark:text-black group-hover:text-black dark:group-hover:text-black mr-2"></i>New
     </a>
 
     <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
-      <i class="fa-solid fa-list text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i> 
+      <i class="fa-solid fa-list text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
     </button>
 
     <a href="card-type" type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
-      <i class="fa-solid fa-th text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i> 
+      <i class="fa-solid fa-th text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
     </a>
-     
+
 
   <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
-      <i class="fa-solid fa-ellipsis-vertical text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i> 
+      <i class="fa-solid fa-ellipsis-vertical text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
     </button>
-  </div>  
+  </div>
 
   </div>
 </div>
@@ -65,7 +65,7 @@
         <thead class="text-xs text-gray-700 uppercase bg-gray-300">
         <tr>
             <th scope="col" class="px-4 py-3 rounded-tl-lg">
-            <input type="checkbox">
+            <input type="checkbox" class="invisible">
             </th>
             <th scope="col" class="px-4 py-3">Name</th>
             <th scope="col" class="px-4 py-3">SKU (ID)</th>
@@ -107,11 +107,11 @@
   </table>
 </div>
 
-    
-    
+
+
 
 
  </div>
-</main> 
+</main>
 </div>
 </x-header>
