@@ -16,10 +16,6 @@ Route::get('home', function () {
     return view('home');
 });
 
-Route::get('/header', function () {
-    return view('components.header');
-});
-
 Route::get('product-list', function () {
     return view('product-list');
 });
@@ -48,6 +44,7 @@ Route::post('/', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth')->group(function () {
 
+    //TO BE ADDED: Middlware, might be annoying sa developer kay sigeg login2 every time na mag access HAHAH
 
 });
 
