@@ -39,20 +39,20 @@
 
       <ul class="space-y-2 font-medium">
       <li>
-        <a href="home" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
+        <x-nav-link href="home" :active="request()->is('home')">
                 <span class="flex items-center gap-3">
                 <i class="fa-solid fa-house text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                 Home
                 </span>
-            </a>
-       </li>
+        </x-nav-link>
+      </li>
 
        <li>
             <button type="button" class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
                   <span class="flex-1 text-left rtl:text-right whitespace-nowrap ">
                   <i class="fa-solid fa-truck-ramp-box text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                   Inventory</span>
-                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                  <svg class="w-3 h-3 transition-transform duration-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                   </svg>
             </button>
@@ -62,7 +62,7 @@
 
             <li class="list-none">
               <div class="flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0] group">
-                
+
                 <!-- Link portion (icon + text) -->
                 <a href="product-list" class="flex-1 flex items-center">
                   <i class="fa-brands fa-product-hunt text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
@@ -70,9 +70,9 @@
                 </a>
 
     <!-- Toggle icon (just toggles dropdown) -->
-            <button 
-              type="button" 
-              id="dropdownToggle" 
+            <button
+              type="button"
+              id="dropdownToggle"
               class="ml-auto"
               aria-controls="dropdown-submenu"
               aria-expanded="false"
@@ -86,7 +86,7 @@
                     <li>
                       <a href="product-overview" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Product Overview</a>
                     </li>
-                   
+
                   </ul>
                 </li>
 
@@ -103,17 +103,16 @@
 
 
          <li>
-            <button type="button" 
-              class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" 
-              aria-controls="sales-dropdown" 
-              data-collapse-toggle="sales-dropdown" 
-              id="salesDropdownToggle">
-              
+            <button id="sales" type="button"
+              class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]"
+              aria-controls="sales-dropdown"
+              data-collapse-toggle="sales-dropdown">
+
               <span class="flex-1 text-left rtl:text-right whitespace-nowrap">
                 <i class="fa-solid fa-cart-shopping text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                 Sales
               </span>
-              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <svg class="w-3 h-3 transition-transform duration-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
               </svg>
             </button>
@@ -125,7 +124,7 @@
               <li>
                 <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Transaction</a>
               </li>
-             
+
             </ul>
           </li>
 
@@ -299,16 +298,21 @@
         });
 
           document.addEventListener('DOMContentLoaded', () => {
-          const toggleBtn = document.querySelector('[data-collapse-toggle="dropdown-example"]');
-          const dropdown = document.getElementById('dropdown-example');
-
-          toggleBtn.addEventListener('click', () => {
-            dropdown.classList.toggle('hidden');
+          const toggleBtns = document.querySelectorAll('[data-collapse-toggle="dropdown-example"], [data-collapse-toggle="sales-dropdown"]');
+          
+          toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+              const dropdownId = btn.getAttribute('aria-controls');
+              const dropdown = document.getElementById(dropdownId);
+              const arrow = btn.querySelector('svg');
+              dropdown.classList.toggle('hidden');
+              arrow.classList.toggle('rotate-180');
+            });
           });
         });
 
-     
-        
+
+
 
             document.getElementById('dropdownToggle').addEventListener('click', function (e) {
             e.preventDefault(); // prevent page jump
