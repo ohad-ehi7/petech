@@ -9,7 +9,7 @@
         <div class="relative z-10 flex items-center">
             <img src="images/profile-icon.png" alt="Picture nako" class="w-12 h-12 rounded-full border-2 border-gray-300 dark:border-gray-600 mr-4">
             <div class="flex flex-col">
-                <h2 class="text-lg font-semibold text-black">Hello, CHARISSE PRIEGO</h2>
+                <h2 class="text-lg font-semibold text-black">Hello, {{Auth::user()->name}}</h2>
                 <p class="text-black">Changchang Store IMS/SMS</p>
             </div>
         </div>
