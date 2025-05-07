@@ -112,13 +112,13 @@
               </svg>
             </button>
 
-            <ul id="sales-dropdown" class="{{ request()->is('point-of-sale*') || request()->is('transaction*') ? '' : 'hidden' }} py-2 space-y-2">
+            <ul id="sales-dropdown" class="{{ request()->is('point-of-sale*') || request()->is('sales-transaction*') ? '' : 'hidden' }} py-2 space-y-2">
               <li>
 
                   <x-nav-link href="point-of-sale" :active="request()->is('point-of-sale')" :menu_item="true" >POS</x-nav-link>
               </li>
               <li>
-                  <x-nav-link href="transaction" :active="request()->is('transaction')" :menu_item="true" >Transaction</x-nav-link>
+                  <x-nav-link href="sales-transaction" :active="request()->is('sales-transaction')" :menu_item="true" >Transaction</x-nav-link>
               </li>
 
             </ul>
