@@ -35,7 +35,7 @@
 <div class="w-full">
   <img src="images/sidebar.png" alt="ulo" class="w-full h-auto block object-cover">
 </div>
-   <div class="h-full px-3 py-4 overflow-y-auto bg-[#1F509A]">
+   <div class="h-full px-3 py-4 overflow-y-auto bg-[#1F509A] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
       <ul class="space-y-2 font-medium">
       <li>
@@ -48,7 +48,7 @@
       </li>
 
        <li>
-            <button type="button" class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+            <button type="button" class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" aria-controls="dropdown-inventory" data-collapse-toggle="dropdown-inventory">
                   <span class="flex-1 text-left rtl:text-right whitespace-nowrap ">
                   <i class="fa-solid fa-truck-ramp-box text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                   Inventory</span>
@@ -57,39 +57,34 @@
                   </svg>
             </button>
 
-            <ul id="dropdown-example" class="hidden py-2 space-y-2">
+            <ul id="dropdown-inventory" class="{{ request()->is('new-item*') || request()->is('category*') || request()->is('product-list*') || request()->is('product-overview*') ? '' : 'hidden' }} py-2 space-y-2">
+                  <li class="list-none">
+                    <div class="flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0] group">
+                      <!-- Link portion (icon + text) -->
+                      <a href="product-list" class="flex-1 flex items-center">
+                        <i class="fa-brands fa-product-hunt text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
+                        <span class="text-left rtl:text-right whitespace-nowrap">Product List</span>
+                      </a>
 
+                      <!-- Toggle icon (just toggles dropdown) -->
+                      <button
+                        type="button"
+                        id="dropdownToggle"
+                        class="ml-auto"
+                        aria-controls="dropdown-submenu"
+                        aria-expanded="false"
+                      >
+                        <i class="fa-solid fa-plus"></i>
+                      </button>
+                    </div>
 
-            <li class="list-none">
-              <div class="flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0] group">
-
-                <!-- Link portion (icon + text) -->
-                <a href="product-list" class="flex-1 flex items-center">
-                  <i class="fa-brands fa-product-hunt text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
-                  <span class="text-left rtl:text-right whitespace-nowrap">Product List</span>
-                </a>
-
-    <!-- Toggle icon (just toggles dropdown) -->
-            <button
-              type="button"
-              id="dropdownToggle"
-              class="ml-auto"
-              aria-controls="dropdown-submenu"
-              aria-expanded="false"
-            >
-            <i class="fa-solid fa-plus"></i>
-            </button>
-          </div>
-
-  <!-- Dropdown submenu -->
-                  <ul id="dropdown-submenu" class="hidden py-2 space-y-2 list-none pl-0">
-                    <li>
-                      <a href="product-overview" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Product Overview</a>
-                    </li>
-
-                  </ul>
-                </li>
-
+                    <!-- Dropdown submenu -->
+                    <ul id="dropdown-submenu" class="{{ request()->is('product-overview*') ? '' : 'hidden' }} py-2 space-y-2 list-none pl-0">
+                      <li>
+                        <a href="product-overview" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Product Overview</a>
+                      </li>
+                    </ul>
+                  </li>
 
                   <li>
                      <a href="new-item" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Add Item</a>
@@ -117,12 +112,12 @@
               </svg>
             </button>
 
-            <ul id="sales-dropdown" class="hidden py-2 space-y-2">
+            <ul id="sales-dropdown" class="{{ request()->is('point-of-sale*') || request()->is('transaction*') ? '' : 'hidden' }} py-2 space-y-2">
               <li>
                 <a href="point-of-sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">POS</a>
               </li>
               <li>
-                <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Transaction</a>
+                <a href="transaction" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Transaction</a>
               </li>
 
             </ul>
@@ -298,15 +293,20 @@
         });
 
           document.addEventListener('DOMContentLoaded', () => {
-          const toggleBtns = document.querySelectorAll('[data-collapse-toggle="dropdown-example"], [data-collapse-toggle="sales-dropdown"]');
-          
+          const toggleBtns = document.querySelectorAll('[data-collapse-toggle]');
+
           toggleBtns.forEach(btn => {
             btn.addEventListener('click', () => {
               const dropdownId = btn.getAttribute('aria-controls');
               const dropdown = document.getElementById(dropdownId);
               const arrow = btn.querySelector('svg');
-              dropdown.classList.toggle('hidden');
-              arrow.classList.toggle('rotate-180');
+              
+              if (dropdown) {
+                dropdown.classList.toggle('hidden');
+                if (arrow) {
+                    arrow.classList.toggle('rotate-180');
+                }
+              }
             });
           });
         });

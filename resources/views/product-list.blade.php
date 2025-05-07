@@ -14,7 +14,7 @@
       <li class="list-none relative">
         <button type="button"
           class="flex items-center p-2 text-base text-black transition duration-150 rounded-lg hover:bg-black dark:text-black dark:hover:bg-gray-700 group"
-          aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+          aria-controls="dropdown-category" data-collapse-toggle="dropdown-category">
           <span class="flex-1 text-left whitespace-nowrap">
             Category
           </span>
