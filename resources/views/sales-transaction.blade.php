@@ -49,7 +49,12 @@
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr>
-            <td class="px-6 py-4 whitespace-nowrap">25 Apr 2025</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+              <label class="inline-flex items-center space-x-2">
+                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
+                <span>25 Apr 2025</span>
+              </label>
+            </td>
             <td class="px-6 py-4 text-blue-600 hover:underline cursor-pointer">SR-00001</td>
             <td class="px-6 py-4">001</td>
             <td class="px-6 py-4">PHP 172.60</td>
@@ -58,7 +63,12 @@
             <td class="px-6 py-4">CHARISSE PRIEGO</td>
           </tr>
           <tr>
-            <td class="px-6 py-4 whitespace-nowrap">27 Apr 2025</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+              <label class="inline-flex items-center space-x-2">
+                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
+                <span>27 Apr 2025</span>
+              </label>
+            </td>
             <td class="px-6 py-4 text-blue-600 hover:underline cursor-pointer">SR-00002</td>
             <td class="px-6 py-4">002</td>
             <td class="px-6 py-4">PHP 192.60</td>

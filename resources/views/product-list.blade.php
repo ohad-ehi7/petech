@@ -53,14 +53,24 @@
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr>
-            <td class="px-6 py-4 whitespace-nowrap">Bear Brand</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <label class="inline-flex items-center space-x-2">
+                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
+                <span>Bear Brand</span>
+              </label>
+            </td>
             <td class="px-6 py-4 text-blue-600 hover:underline cursor-pointer">PD01</td>
             <td class="px-6 py-4">45.00</td>
             <td class="px-6 py-4">12</td>
             <td class="px-6 py-4 text-green-600 font-semibold">ACTIVE</td>
           </tr>
           <tr>
-          <td class="px-6 py-4 whitespace-nowrap">Nescafe Stick</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+              <label class="inline-flex items-center space-x-2">
+                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
+                <span>Nescafe Stick</span>
+              </label>
+            </td>
             <td class="px-6 py-4 text-blue-600 hover:underline cursor-pointer">PD01</td>
             <td class="px-6 py-4">45.00</td>
             <td class="px-6 py-4">12</td>
