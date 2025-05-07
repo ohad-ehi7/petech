@@ -89,13 +89,8 @@
 
                   </ul>
                 </li>
-
-
                   <li>
-                     <a href="new-item" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Add Item</a>
-                  </li>
-                  <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Category</a>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Categories</a>
                   </li>
 
             </ul>
@@ -131,7 +126,7 @@
 
 
          <li>
-            <button type="button" class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+            <button type="button" class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" aria-controls="dropdown-purchase" data-collapse-toggle="dropdown-purchase">
             <span class="flex-1 text-left rtl:text-right whitespace-nowrap">
             <i class="fa-solid fa-bag-shopping text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
             Purchase</span>
@@ -139,18 +134,20 @@
                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                   </svg>
             </button>
-            <ul id="dropdown-example" class="hidden py-2 space-y-2">
+            <ul id="dropdown-purchase" class="hidden py-2 space-y-2">
                   <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Products</a>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Products</a>
                   </li>
                   <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Billing</a>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Billing</a>
                   </li>
                   <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
+                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Invoice</a>
                   </li>
             </ul>
          </li>
+
+
          <li>
             <a href="#" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
                <span class="flex-1 whitespace-nowrap">
@@ -320,6 +317,7 @@
             submenu.classList.toggle('hidden');
           });
 
+
           document.addEventListener('DOMContentLoaded', () => {
           const toggleBtn = document.getElementById('salesDropdownToggle');
           const dropdown = document.getElementById('sales-dropdown');
@@ -328,6 +326,15 @@
             dropdown.classList.toggle('hidden');
           });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const toggleButton = document.querySelector('[data-collapse-toggle="dropdown-purchase"]');
+        const dropdownMenu = document.getElementById("dropdown-purchase");
+
+        toggleButton.addEventListener("click", function () {
+          dropdownMenu.classList.toggle("hidden");
+      });
+    });
 
 
     </script>
