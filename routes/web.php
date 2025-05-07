@@ -44,7 +44,16 @@ Route::get('sales-transaction', function () {
     return view('sales-transaction');
 });
 
-Route::post('/', [AuthController::class, 'login'])->name('login');
+// Settings Routes
+Route::get('/settings', function () {
+    return view('settings');
+})->name('settings');
+
+Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+
+// Authentication Routes
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
 
