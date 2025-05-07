@@ -40,6 +40,10 @@ Route::get('card-type', function () {
     return view('card-type');
 });
 
+Route::get('sales-transaction', function () {
+    return view('sales-transaction');
+});
+
 Route::post('/', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth')->group(function () {

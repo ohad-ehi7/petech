@@ -114,7 +114,7 @@
                 <a href="point-of-sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">POS</a>
               </li>
               <li>
-                <a href="transaction" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Transaction</a>
+                <a href="sales-transaction" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Transaction</a>
               </li>
 
             </ul>
