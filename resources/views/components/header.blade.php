@@ -87,10 +87,10 @@
                   </li>
 
                   <li>
-                     <a href="new-item" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Add Item</a>
+                     <x-nav-link href="new-item" :active="request()->is('new-item')" :menu_item="true" >Add Item</x-nav-link>
                   </li>
                   <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white ">Category</a>
+                      <x-nav-link href="category" :active="request()->is('category')" :menu_item="true" >Category</x-nav-link>
                   </li>
 
             </ul>
@@ -114,10 +114,11 @@
 
             <ul id="sales-dropdown" class="{{ request()->is('point-of-sale*') || request()->is('transaction*') ? '' : 'hidden' }} py-2 space-y-2">
               <li>
-                <a href="point-of-sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">POS</a>
+
+                  <x-nav-link href="point-of-sale" :active="request()->is('point-of-sale')" :menu_item="true" >POS</x-nav-link>
               </li>
               <li>
-                <a href="transaction" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Transaction</a>
+                  <x-nav-link href="transaction" :active="request()->is('transaction')" :menu_item="true" >Transaction</x-nav-link>
               </li>
 
             </ul>
@@ -233,9 +234,11 @@
       </li>
 
       <li>
-        <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
-          <i class="fa-solid fa-plus text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
-        </button>
+          <a href="new-item">
+              <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <i class="fa-solid fa-plus text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
+              </button>
+          </a>
       </li>
 
       <!-- Notification Button -->
@@ -300,7 +303,7 @@
               const dropdownId = btn.getAttribute('aria-controls');
               const dropdown = document.getElementById(dropdownId);
               const arrow = btn.querySelector('svg');
-              
+
               if (dropdown) {
                 dropdown.classList.toggle('hidden');
                 if (arrow) {

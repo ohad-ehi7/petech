@@ -6,7 +6,7 @@
                 <!-- Top Section: Type, Name, SKU, Unit, Image Upload -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="flex flex-col">
-                      
+
                         <h1 class=" text-2xl font-bold">Add new item</h1>
                         <!-- Name -->
                         <div>
@@ -176,9 +176,9 @@
                 <!-- Save and Cancel Buttons -->
                 <div class="flex justify-end space-x-4 mt-6">
                     <button type="button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">Cancel</button>
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Save</button> 
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Save</button>
+                </div>
             </form>
         </div>
     </div>
-</div>
 </x-header>
