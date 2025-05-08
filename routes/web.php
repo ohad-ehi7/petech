@@ -58,6 +58,14 @@ Route::get('/settings', function () {
     return view('settings');
 })->name('settings');
 
+Route::get('/new-category', function () {
+    return view('new-category');
+})->name('new-category');
+
+Route::get('/new-supplier', function () {
+    return view('new-supplier');
+})->name('new-supplier');
+
 Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 
 // Authentication Routes

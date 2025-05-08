@@ -90,7 +90,7 @@
                      <x-nav-link href="new-item" :active="request()->is('new-item')" :menu_item="true" >Add Item</x-nav-link>
                   </li>
                   <li>
-                      <x-nav-link href="category" :active="request()->is('category')" :menu_item="true" >Category</x-nav-link>
+                      <x-nav-link href="new-category" :active="request()->is('new-category')" :menu_item="true" >Category</x-nav-link>
                   </li>
 
             </ul>
@@ -148,12 +148,11 @@
             </ul>
          </li>
          <li>
-            <a href="#" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
+             <x-nav-link href="new-supplier" :active="request()->is('new-supplier')" :menu_item="false" >
                <span class="flex-1 whitespace-nowrap">
                <i class="fa-solid fa-truck-field text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                Supplier</span>
-               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
-            </a>
+            </x-nav-link>
          </li>
          <li>
             <a href="#" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
@@ -209,17 +208,6 @@
       <!-- User Dropdown Button -->
        <ul class="flex items-center space-x-4">
       <li class="list-none relative">
-        <button type="button"
-          class="flex items-center p-2 text-base text-black transition duration-150 rounded-lg hover:bg-black dark:text-black dark:hover:bg-gray-700 group"
-          aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-          <span class="flex-1 text-left whitespace-nowrap">
-            <i class="fa-solid fa-user text-black dark:text-black group-hover:text-black dark:group-hover:text-black mr-2"></i>
-            User
-          </span>
-          <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
-          </svg>
-        </button>
         <ul id="dropdown-example" class="hidden absolute right-0 mt-2 py-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded shadow-md space-y-2">
           <li>
             <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Products</a>
@@ -233,8 +221,10 @@
         </ul>
       </li>
 
+      <!-- Add Item Button -->
+
       <li>
-          <a href="new-item">
+        <a href="new-item">
               <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
                   <i class="fa-solid fa-plus text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
               </button>
