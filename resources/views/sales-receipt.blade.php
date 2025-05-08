@@ -52,31 +52,122 @@
 
     <!-- Sales Receipt Preview -->
     <div class="bg-white p-8 rounded shadow-md max-w-3xl mx-auto space-y-6">
-      <div class="text-center">
-        <h2 class="text-xl font-bold">Changchang Store IMS/SMS</h2>
-        <p class="text-sm text-gray-600">Philippines</p>
-        <p class="text-sm text-gray-600">POD@gmail.com</p>
+      <!-- Header with background image -->
+      <div class="relative overflow-hidden rounded-lg mb-2" style="background: url('/images/small-background.png') center/cover no-repeat; min-height: 90px;">
+        <div class="flex flex-col items-center justify-center py-6 bg-white/80 ">
+          <h2 class="text-xl font-bold">Changchang Store IMS/SMS</h2>
+          <p class="text-sm text-gray-600">Philippines</p>
+          <p class="text-sm text-gray-600">POD@gmail.com</p>
+        </div>
       </div>
 
-      <hr />
+      <div class="border-b border-gray-200"></div>
 
+      <!-- Receipt Title and Info -->
       <div>
-        <h3 class="text-lg font-semibold mb-2">SALES RECEIPT</h3>
-        <div class="grid grid-cols-2 text-sm gap-4">
+        <h3 class="text-lg font-bold mb-1">SALES RECEIPT</h3>
+        <p class="text-sm text-gray-700 mb-2">Sales Receipt# SR-{{ isset($sale) ? str_pad($sale->SaleID, 5, '0', STR_PAD_LEFT) : '00001' }}</p>
+        <div class="flex flex-wrap justify-between text-sm mb-2">
           <div>
-            <p><strong>Sales Receipt#:</strong> SR-00001</p>
-            <p><strong>Bill To:</strong> <a href="#" class="text-blue-600 hover:underline">Ken Sevellino</a></p>
+            <span class="font-semibold">Bill To</span><br>
+            <a href="#" class="text-blue-600 hover:underline">
+              {{ isset($sale) && $sale->customer ? $sale->customer->name : 'Ken Sevellino' }}
+            </a>
           </div>
-          <div class="text-right">
-            <p><strong>Receipt Date:</strong> 25 Apr 2025</p>
-            <p><strong>Reference:</strong> 001</p>
+          <div>
+            <span class="font-semibold">Receipt Date</span><br>
+            {{ isset($sale) ? ($sale->SaleDate ? \Carbon\Carbon::parse($sale->SaleDate)->format('d M Y') : '') : '25 Apr 2025' }}
+          </div>
+          <div>
+            <span class="font-semibold">Reference</span><br>
+            {{ isset($sale) ? str_pad($sale->SaleID, 3, '0', STR_PAD_LEFT) : '001' }}
           </div>
         </div>
       </div>
 
-      <div class="bg-gray-100 p-4 rounded text-sm">
-        <p><strong>Status:</strong> <span class="text-green-600 font-semibold">Paid</span></p>
-        <p><strong>Amount:</strong> Php 172.60</p>
+      <!-- Item Table -->
+      <div class="overflow-x-auto rounded-lg border border-gray-200">
+        <table class="min-w-full text-sm text-left">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-3 py-2 font-medium text-gray-600">#</th>
+              <th class="px-3 py-2 font-medium text-gray-600">Item Description</th>
+              <th class="px-3 py-2 font-medium text-gray-600">Qty</th>
+              <th class="px-3 py-2 font-medium text-gray-600">Rate</th>
+              <th class="px-3 py-2 font-medium text-gray-600">Amount</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-100">
+            @if(isset($sale) && $sale->salesItems)
+              @foreach($sale->salesItems as $i => $item)
+                <tr>
+                  <td class="px-3 py-2">{{ $i+1 }}</td>
+                  <td class="px-3 py-2">
+                    {{ $item->product->name ?? 'Item' }}
+                    <div class="text-xs text-gray-500">{{ $item->product->description ?? '' }}</div>
+                  </td>
+                  <td class="px-3 py-2">{{ number_format($item->Quantity, 2) }}</td>
+                  <td class="px-3 py-2">{{ number_format($item->PriceAtSale, 2) }}</td>
+                  <td class="px-3 py-2">{{ number_format($item->Quantity * $item->PriceAtSale, 2) }}</td>
+                </tr>
+              @endforeach
+            @else
+              <tr>
+                <td class="px-3 py-2">1</td>
+                <td class="px-3 py-2">Bearbrand Milk<div class="text-xs text-gray-500">45g Fortified Milk</div></td>
+                <td class="px-3 py-2">1.00</td>
+                <td class="px-3 py-2">50.00</td>
+                <td class="px-3 py-2">50.00</td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2">2</td>
+                <td class="px-3 py-2">Nescafe Coffee<div class="text-xs text-gray-500">45g tetra pack,original coffee</div></td>
+                <td class="px-3 py-2">2.00</td>
+                <td class="px-3 py-2">55.00</td>
+                <td class="px-3 py-2">110.00</td>
+              </tr>
+            @endif
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Payment Details and Totals -->
+      <div class="flex flex-wrap gap-6 mt-4">
+        <div class="flex-1 min-w-[200px] bg-gray-50 border rounded p-4">
+          <div class="font-semibold mb-2">Payment Details</div>
+          <div class="flex justify-between text-sm mb-1">
+            <span>Payment Mode</span>
+            <span class="font-semibold">{{ isset($sale) ? ($sale->PaymentMethod ?? 'Cash') : 'Cash' }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span>Reference</span>
+            <span>{{ isset($sale) ? str_pad($sale->SaleID, 3, '0', STR_PAD_LEFT) : '001' }}</span>
+          </div>
+        </div>
+        <div class="flex-1 min-w-[200px]">
+          <table class="w-full text-sm">
+            <tr>
+              <td class="py-1">Sub Total</td>
+              <td class="py-1 text-right">{{ isset($sale) ? number_format($sale->TotalAmount - ($sale->TotalAmount * 0.12), 2) : '160.00' }}</td>
+            </tr>
+            <tr>
+              <td class="py-1">vat(12%)</td>
+              <td class="py-1 text-right">{{ isset($sale) ? number_format($sale->TotalAmount * 0.12, 2) : '12.60' }}</td>
+            </tr>
+            <tr class="border-t">
+              <td class="py-2 font-bold">Total</td>
+              <td class="py-2 text-right font-bold">{{ isset($sale) ? number_format($sale->TotalAmount, 2) : '172.60' }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Terms and Conditions -->
+      <div class="mt-6">
+        <div class="font-semibold text-sm mb-1">Terms and Conditions</div>
+        <p class="text-xs text-gray-600">
+          Prices may change without notice and depend on item availability. Full payment is required upon purchase unless credit is approved. Credit must be paid within 7 days; late payments may lead to suspension of credit. Items can be returned or exchanged within 2 days only if defective or expired, with a receipt. Personal data is used only for store records. Terms may change anytime with notice to buyers.
+        </p>
       </div>
     </div>
   </main>

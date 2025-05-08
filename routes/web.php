@@ -49,9 +49,15 @@ Route::middleware('auth')->group(function () {
         return view('sales-transaction');
     })->name('sales.transaction');
 
+    Route::get('/sales-receipt', function () {
+        return view('sales-receipt');
+    })->name('receipt');
+
 // Settings Routes
     Route::get('/settings', function () {
         return view('settings');
     })->name('settings');
+
+
 });
 
