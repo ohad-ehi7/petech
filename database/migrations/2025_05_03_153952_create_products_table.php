@@ -14,16 +14,18 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id('ProductID');
             $table->string('ProductName');
+            $table->string('Unit');
+            $table->boolean('IsReturnable')->default(false);
             $table->foreignId('CategoryID')->constrained('categories', 'CategoryID')->onDelete('cascade');
             $table->foreignId('SupplierID')->nullable()->constrained('suppliers', 'SupplierID')->onDelete('set null');
+            $table->string('Brand')->nullable();
             $table->string('SKU')->unique()->nullable();
             $table->text('Description')->nullable();
-            $table->string('Dimension')->nullable();
             $table->decimal('Weight', 10, 2)->nullable();
+            $table->string('WeightUnit')->nullable();
             $table->decimal('SellingPrice', 10, 2);
-            $table->decimal('SalesTaxRate', 5, 2)->nullable();
             $table->decimal('CostPrice', 10, 2);
-            $table->decimal('PurchaseTaxRate', 5, 2)->nullable();
+            $table->integer('OpeningStock')->nullable();
             $table->integer('ReorderLevel')->nullable();
             $table->timestamps();
         });
