@@ -25,12 +25,18 @@ Route::middleware('auth')->group(function () {
 // Product Routes
     Route::get('/product-list', [ProductController::class, 'index'])->name('products.index');
     Route::get('/new-item', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/new-item', [ProductController::class, 'store'])->name('products.create');
     Route::get('/product-overview/', [ProductController::class, 'show'])->name('products.show');
-    Route::get('/product-transaction/{product}', [ProductController::class, 'inventoryStatus'])->name('products.transaction');
+    Route::get('/product-transaction/', [ProductController::class, 'inventoryStatus'])->name('products.transaction');
 
 
-// Supplier Route
-    Route::get('/suppplier/create', [SupplierController::class, 'create'])->name('suppliers.create');
+// Supplier Routes
+    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+    Route::get('/suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');
+    Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
+    Route::get('/suppliers/{supplier}/edit', [SupplierController::class, 'edit'])->name('suppliers.edit');
+    Route::put('/suppliers/{supplier}', [SupplierController::class, 'update'])->name('suppliers.update');
+    Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
 
 // Category Routes
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
