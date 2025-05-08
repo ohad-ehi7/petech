@@ -1,22 +1,22 @@
     <x-header>
-        <div class="min-h-screen bg-[#f7f7fa] dark:bg-[#18181c] p-4 sm:p-8">
+        <div class="min-h-screen bg-white-90 p-4 sm:p-8">
             <!-- Breadcrumb and Page Header -->
             <div class="max-w-4xl mx-auto mb-8">
                 <nav class="mb-2">
                     <ol class="flex items-center space-x-2 text-sm">
                         <li>
-                            <a href="home" class="text-[#706f6c] hover:text-[#1b1b18] dark:text-[#A1A09A] dark:hover:text-[#EDEDEC] transition-colors duration-200">
+                            <a href="home" class="text-[#706f6c] hover:text-[#1b1b18] transition-colors duration-200">
                                 Dashboard
                             </a>
                         </li>
                         <li class="flex items-center space-x-2">
                             <span class="text-[#706f6c] dark:text-[#A1A09A]">/</span>
-                            <span class="text-[#1b1b18] dark:text-[#EDEDEC]">Settings</span>
+                            <span class="text-[#1b1b18] ">Settings</span>
                         </li>
                     </ol>
                 </nav>
-                <h1 class="text-2xl font-semibold text-[#1b1b18] dark:text-[#EDEDEC]">Account Settings</h1>
-                <p class="mt-1 text-sm text-[#706f6c] dark:text-[#A1A09A]">Manage your account settings and preferences</p>
+                <h1 class="text-2xl font-semibold text-[#1b1b18] ">Account Settings</h1>
+                <p class="mt-1 text-sm text-[#706f6c] ">Manage your account settings and preferences</p>
             </div>
 
             <!-- Settings Card -->
@@ -41,7 +41,7 @@
                 @endif
 
                 <!-- Settings Form -->
-                <form action="{{ route('profile.update') }}" method="POST">
+                <form action="{{ route('profile.update') }}" method="POST" class="bg-white dark:bg-[#23232b] rounded-lg shadow-md p-6">
                     @csrf
                     @method('PUT')
 
