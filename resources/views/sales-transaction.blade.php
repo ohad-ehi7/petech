@@ -55,7 +55,7 @@
                 <span>25 Apr 2025</span>
               </label>
             </td>
-            <td class="px-6 py-4 text-blue-600 hover:underline cursor-pointer">SR-00001</td>
+            <td class="px-6 py-4 text-blue-600 hover:underline cursor-pointer"><a href="sales-receipt">SR-00001</a></td>
             <td class="px-6 py-4">001</td>
             <td class="px-6 py-4">PHP 172.60</td>
             <td class="px-6 py-4">CASH</td>

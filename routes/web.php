@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SalesReceiptController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,6 +43,14 @@ Route::get('card-type', function () {
 
 Route::get('sales-transaction', function () {
     return view('sales-transaction');
+});
+
+Route::get('/sales-receipt/{id}/pdf', [SalesReceiptController::class, 'generatePDF'])->name('sales-receipt.pdf');
+
+Route::get('sales-receipt', function () {
+    // For testing, let's get the first sale
+    $sale = \App\Models\Sale::with(['customer', 'salesItems.product'])->first();
+    return view('sales-receipt', ['sale' => $sale]);
 });
 
 // Settings Routes

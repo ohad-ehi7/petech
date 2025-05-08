@@ -3,6 +3,9 @@
     <div class="w-full mt-4 mx-auto bg-white p-12 rounded">
       <h1 class="text-2xl font-bold mb-4">Point of Sale</h1>
 
+      <!-- Filter Dropdown -->
+     
+
     <!-- Customer Info -->
     <div class="grid grid-cols-1 gap-4 mb-6">
       <div>
@@ -204,6 +207,30 @@ By using this inventory system, you agree to follow all rules related to proper 
   </body>
 
   <script>
+    // Add these new functions for the filter dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+      const filterToggle = document.getElementById('filterToggle');
+      const dropdownPeriod = document.getElementById('dropdownPeriod');
+
+      // Toggle dropdown
+      filterToggle.addEventListener('click', function() {
+        dropdownPeriod.classList.toggle('hidden');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!filterToggle.contains(event.target) && !dropdownPeriod.contains(event.target)) {
+          dropdownPeriod.classList.add('hidden');
+        }
+      });
+    });
+
+    function selectPeriod(period) {
+      document.getElementById('selectedPeriod').textContent = period;
+      document.getElementById('dropdownPeriod').classList.add('hidden');
+      // Add your filter logic here
+    }
+
     function addNewRow() {
       const tbody = document.getElementById('itemTableBody');
       const newRow = document.createElement('tr');
@@ -285,6 +312,7 @@ By using this inventory system, you agree to follow all rules related to proper 
       const amount = quantity * rate;
       
       row.querySelector('.amount-input').value = amount.toFixed(2);
+      updateTotals();
     }
 
     function previewImage(input) {
@@ -336,7 +364,8 @@ By using this inventory system, you agree to follow all rules related to proper 
       editingMode.forEach(el => el.classList.add('hidden'));
       savedMode.forEach(el => el.classList.remove('hidden'));
 
-      updateTotals();
+      // Force update totals after saving
+      setTimeout(updateTotals, 0);
     }
 
     function deleteRow(button) {
@@ -346,8 +375,120 @@ By using this inventory system, you agree to follow all rules related to proper 
     }
 
     function updateTotals() {
-      // This function will be implemented to update the totals when rows are added/removed
-      // or when values are changed
+      const rows = document.querySelectorAll('#itemTableBody tr');
+      let subtotal = 0;
+      let totalVat = 0;
+
+      rows.forEach(row => {
+        // Get amount from either editing mode or saved mode
+        let amount = 0;
+        if (row.querySelector('.amount-input')) {
+          // For rows in editing mode
+          amount = parseFloat(row.querySelector('.amount-input').value) || 0;
+        } else {
+          // For saved rows
+          const amountText = row.querySelector('.amount')?.textContent;
+          amount = parseFloat(amountText) || 0;
+        }
+
+        // Get tax type
+        let taxType = '';
+        if (row.querySelector('select')) {
+          // For rows in editing mode
+          taxType = row.querySelector('select').value;
+        } else {
+          // For saved rows
+          const taxText = row.querySelector('.tax')?.textContent;
+          taxType = taxText || '';
+        }
+
+        subtotal += amount;
+
+        // Calculate VAT if applicable
+        if (taxType.includes('vat')) {
+          const vatAmount = amount * 0.12;
+          totalVat += vatAmount;
+        }
+      });
+
+      console.log('Subtotal:', subtotal); // Debug log
+      console.log('VAT:', totalVat); // Debug log
+
+      // Update Sub Total
+      const subTotalElement = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:first-child span:last-child');
+      if (subTotalElement) {
+        subTotalElement.textContent = subtotal.toFixed(2);
+      }
+
+      // Update VAT
+      const vatElement = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(4) span:last-child');
+      if (vatElement) {
+        vatElement.textContent = totalVat.toFixed(2);
+      }
+
+      // Get discount value
+      const discountInput = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(2) input[type="number"]');
+      const discountType = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(2) select');
+      let discount = 0;
+      if (discountInput && discountType) {
+        const discountValue = parseFloat(discountInput.value) || 0;
+        discount = discountType.value === '%' ? (subtotal * discountValue / 100) : discountValue;
+      }
+
+      // Get shipping value
+      const shippingInput = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(3) input[type="number"]');
+      const shipping = parseFloat(shippingInput?.value) || 0;
+
+      // Get adjustment value
+      const adjustmentInput = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(5) input[type="number"]');
+      const adjustment = parseFloat(adjustmentInput?.value) || 0;
+
+      // Calculate final total
+      const finalTotal = subtotal + totalVat - discount + shipping + adjustment;
+
+      console.log('Final Total:', finalTotal); // Debug log
+
+      // Update Total
+      const totalElement = document.querySelector('.border-t.pt-4.flex.justify-between.items-center.font-bold.text-lg.text-gray-800 span:last-child');
+      if (totalElement) {
+        totalElement.textContent = finalTotal.toFixed(2);
+      }
+
+      // Update discount display
+      const discountDisplay = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(2) span:last-child');
+      if (discountDisplay) {
+        discountDisplay.textContent = discount.toFixed(2);
+      }
+
+      // Update shipping display
+      const shippingDisplay = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(3) span:last-child');
+      if (shippingDisplay) {
+        shippingDisplay.textContent = shipping.toFixed(2);
+      }
+
+      // Update adjustment display
+      const adjustmentDisplay = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(5) span:last-child');
+      if (adjustmentDisplay) {
+        adjustmentDisplay.textContent = adjustment.toFixed(2);
+      }
     }
+
+    // Add event listeners for all inputs that affect totals
+    document.addEventListener('DOMContentLoaded', function() {
+      // Listen for changes in discount, shipping, and adjustment inputs
+      const totalInputs = document.querySelectorAll('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 input[type="number"]');
+      totalInputs.forEach(input => {
+        input.addEventListener('input', updateTotals);
+      });
+
+      // Listen for changes in discount type
+      const discountType = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(2) select');
+      if (discountType) {
+        discountType.addEventListener('change', updateTotals);
+      }
+
+      // Initial calculation
+      updateTotals();
+    });
   </script>
 </x-header>
