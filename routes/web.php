@@ -1,71 +1,57 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
+// Home Routes
 Route::get('/', function () {
     return view('landing');
-});
-
-Route::get('test', function () {
-    return view('test');
-});
-
-
-Route::get('home', function () {
-    return view('home');
-});
-
-Route::get('product-list', function () {
-    return view('product-list');
-});
-
-Route::get('new-item', function () {
-    return view('new-item');
-});
-
-Route::get('product-overview', function () {
-    return view('product-overview');
-});
-
-Route::get('product-transaction', function () {
-    return view('product-transaction');
-});
-
-Route::get('point-of-sale', function () {
-    return view('point-of-sale');
-});
-
-Route::get('card-type', function () {
-    return view('card-type');
-});
-
-Route::get('sales-transaction', function () {
-    return view('sales-transaction');
-});
-
-// Settings Routes
-Route::get('/settings', function () {
-    return view('settings');
-})->name('settings');
-
-Route::get('/new-category', function () {
-    return view('new-category');
-})->name('new-category');
-
-Route::get('/new-supplier', function () {
-    return view('new-supplier');
-})->name('new-supplier');
-
-Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+})->name('landing');
 
 // Authentication Routes
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/landing', [AuthController::class, 'index'])->name('login');
+Route::post('/landing', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/home', function () {
+        return view('home');
+    })->name('home');
 
-    //TO BE ADDED: Middlware, might be annoying sa developer kay sigeg login2 every time na mag access HAHAH
+// Product Routes
+    Route::get('/product-list', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/new-item', [ProductController::class, 'create'])->name('products.create');
+    Route::get('/product-overview/', [ProductController::class, 'show'])->name('products.show');
+    Route::get('/product-transaction/{product}', [ProductController::class, 'inventoryStatus'])->name('products.transaction');
 
+
+// Supplier Route
+    Route::get('/suppplier/create', [SupplierController::class, 'create'])->name('suppliers.create');
+
+// Category Routes
+    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+// Sales Routes
+    Route::get('/point-of-sale', function () {
+        return view('point-of-sale');
+    })->name('pos.index');
+
+    Route::get('/sales-transaction', function () {
+        return view('sales-transaction');
+    })->name('sales.transaction');
+
+// Settings Routes
+    Route::get('/settings', function () {
+        return view('settings');
+    })->name('settings');
 });
 

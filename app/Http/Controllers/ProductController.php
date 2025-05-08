@@ -233,4 +233,26 @@ class ProductController extends Controller
         $product->load(['transactions', 'inventory']);
         return view('product-transaction', compact('product'));
     }
+
+    /**
+     * Get all categories for dropdown.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCategories()
+    {
+        $categories = Category::orderBy('CategoryName')->get(['CategoryID', 'CategoryName']);
+        return response()->json($categories);
+    }
+
+    /**
+     * Get all suppliers for dropdown.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getSuppliers()
+    {
+        $suppliers = Supplier::orderBy('SupplierName')->get(['SupplierID', 'SupplierName']);
+        return response()->json($suppliers);
+    }
 }

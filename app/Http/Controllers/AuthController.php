@@ -13,7 +13,7 @@ use Illuminate\Validation\Rule;
 class AuthController extends Controller
 {
     public function index(){
-        return view('login');
+        return view('landing');
     }
     public function login(Request $request)
     {

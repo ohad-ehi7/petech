@@ -33,13 +33,13 @@
 <aside id="sidebar-multi-level-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 " aria-label="Sidebar">
 
 <div class="w-full">
-  <img src="images/sidebar.png" alt="ulo" class="w-full h-auto block object-cover">
+  <img src="{{ asset('images/sidebar.png') }}" alt="ulo" class="w-full h-auto block object-cover">
 </div>
    <div class="h-full px-3 py-4 overflow-y-auto bg-[#1F509A] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
       <ul class="space-y-2 font-medium">
       <li>
-        <x-nav-link href="home" :active="request()->is('home')">
+        <x-nav-link href="{{ route('home') }}" :active="request()->is('home')">
                 <span class="flex items-center gap-3">
                 <i class="fa-solid fa-house text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                 Home
@@ -57,11 +57,11 @@
                   </svg>
             </button>
 
-            <ul id="dropdown-inventory" class="{{ request()->is('new-item*') || request()->is('category*') || request()->is('product-list*') || request()->is('product-overview*') ? '' : 'hidden' }} py-2 space-y-2">
+            <ul id="dropdown-inventory" class="{{ request()->is('new-item*') || request()->is('categories*') || request()->is('product-list*') || request()->is('product-overview*') ? '' : 'hidden' }} py-2 space-y-2">
                   <li class="list-none">
                     <div class="flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0] group">
                       <!-- Link portion (icon + text) -->
-                      <a href="product-list" class="flex-1 flex items-center">
+                      <a href="{{ route('products.index') }}" class="flex-1 flex items-center">
                         <i class="fa-brands fa-product-hunt text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                         <span class="text-left rtl:text-right whitespace-nowrap">Product List</span>
                       </a>
@@ -81,16 +81,16 @@
                     <!-- Dropdown submenu -->
                     <ul id="dropdown-submenu" class="{{ request()->is('product-overview*') ? '' : 'hidden' }} py-2 space-y-2 list-none pl-0">
                       <li>
-                        <a href="product-overview" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Product Overview</a>
+                        <a href="{{ route('products.show', ['product' => 1]) }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Product Overview</a>
                       </li>
                     </ul>
                   </li>
 
                   <li>
-                     <x-nav-link href="new-item" :active="request()->is('new-item')" :menu_item="true" >Add Item</x-nav-link>
+                     <x-nav-link href="{{ route('products.create') }}" :active="request()->is('new-item')" :menu_item="true" >Add Item</x-nav-link>
                   </li>
                   <li>
-                      <x-nav-link href="new-category" :active="request()->is('new-category')" :menu_item="true" >Category</x-nav-link>
+                      <x-nav-link href="{{ route('categories.create') }}" :active="request()->is('categories/create')" :menu_item="true" >Category</x-nav-link>
                   </li>
 
             </ul>
@@ -115,10 +115,10 @@
             <ul id="sales-dropdown" class="{{ request()->is('point-of-sale*') || request()->is('sales-transaction*') ? '' : 'hidden' }} py-2 space-y-2">
               <li>
 
-                  <x-nav-link href="point-of-sale" :active="request()->is('point-of-sale')" :menu_item="true" >POS</x-nav-link>
+                  <x-nav-link href="{{ route('pos.index') }}" :active="request()->is('point-of-sale')" :menu_item="true" >POS</x-nav-link>
               </li>
               <li>
-                  <x-nav-link href="sales-transaction" :active="request()->is('sales-transaction')" :menu_item="true" >Transaction</x-nav-link>
+                  <x-nav-link href="{{ route('sales.transaction') }}" :active="request()->is('sales-transaction')" :menu_item="true" >Transaction</x-nav-link>
               </li>
 
             </ul>
@@ -148,7 +148,7 @@
             </ul>
          </li>
          <li>
-             <x-nav-link href="new-supplier" :active="request()->is('new-supplier')" :menu_item="false" >
+             <x-nav-link href="{{ route('suppliers.create') }}" :active="request()->is('new-supplier')" :menu_item="false" >
                <span class="flex-1 whitespace-nowrap">
                <i class="fa-solid fa-truck-field text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                Supplier</span>
@@ -224,7 +224,7 @@
       <!-- Add Item Button -->
 
       <li>
-        <a href="new-item">
+        <a href="{{ route('products.create') }}">
               <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
                   <i class="fa-solid fa-plus text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
               </button>
@@ -250,7 +250,7 @@
            <!-- User Profile Button -->
       <li class="relative">
         <button id="userProfile" type="button" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
-          <img src="images/profile-icon.png" alt="User  Profile" class="w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600 transition duration-150 ease-in-out transform hover:scale-105">
+          <img src="{{ asset('images/profile-icon.png') }}" alt="User  Profile" class="w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600 transition duration-150 ease-in-out transform hover:scale-105">
         </button>
         <!-- Dropdown Menu -->
         <div id="userProfileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 z-50">

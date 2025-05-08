@@ -65,13 +65,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium mb-1">Category*</label>
-                            <select name="CategoryID" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                            <select name="CategoryID" id="categorySelect" class="w-full border border-gray-300 rounded-lg px-3 py-2">
                                 <option value="">Select Category</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Supplier</label>
-                            <select name="SupplierID" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                            <select name="SupplierID" id="supplierSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2">
                                 <option value="">Select Supplier</option>
                             </select>
                         </div>
