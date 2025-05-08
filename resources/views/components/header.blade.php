@@ -112,13 +112,13 @@
               </svg>
             </button>
 
-            <ul id="sales-dropdown" class="{{ request()->is('point-of-sale*') || request()->is('transaction*') ? '' : 'hidden' }} py-2 space-y-2">
+            <ul id="sales-dropdown" class="{{ request()->is('point-of-sale*') || request()->is('sales-transaction*') ? '' : 'hidden' }} py-2 space-y-2">
               <li>
 
                   <x-nav-link href="point-of-sale" :active="request()->is('point-of-sale')" :menu_item="true" >POS</x-nav-link>
               </li>
               <li>
-                  <x-nav-link href="transaction" :active="request()->is('transaction')" :menu_item="true" >Transaction</x-nav-link>
+                  <x-nav-link href="sales-transaction" :active="request()->is('sales-transaction')" :menu_item="true" >Transaction</x-nav-link>
               </li>
 
             </ul>
@@ -250,16 +250,36 @@
 
       <!-- Settings Button -->
       <li>
-        <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-          <i class="fa-solid fa-cogs text-black dark:text-black group-hover:text-gray-900 dark:group-hover:text-white"></i>
-        </button>
+        <a href="{{ route('settings') }}">
+          <button id="settings" type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <i class="fa-solid fa-cogs text-black dark:text-black group-hover:text-gray-900 dark:group-hover:text-white"></i>
+          </button>
+        </a>
       </li>
 
            <!-- User Profile Button -->
-           <li>
-        <button type="button" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+      <li class="relative">
+        <button id="userProfile" type="button" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
           <img src="images/profile-icon.png" alt="User  Profile" class="w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600 transition duration-150 ease-in-out transform hover:scale-105">
         </button>
+        <!-- Dropdown Menu -->
+        <div id="userProfileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 z-50">
+          <div class="py-2">
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <i class="fa-solid fa-user mr-2"></i>Profile
+            </a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <i class="fa-solid fa-gear mr-2"></i>Settings
+            </a>
+            <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+            <form method="POST" action="{{route('logout')}}">
+              @csrf
+              <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <i class="fa-solid fa-right-from-bracket mr-2"></i>Sign Out
+              </button>
+            </form>
+          </div>
+        </div>
       </li>
       </ul>
     </div>
@@ -332,6 +352,22 @@
           });
         });
 
+        // User Profile Dropdown Toggle
+        document.getElementById('userProfile').addEventListener('click', function(e) {
+          e.stopPropagation();
+          const dropdown = document.getElementById('userProfileDropdown');
+          dropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+          const dropdown = document.getElementById('userProfileDropdown');
+          const userProfile = document.getElementById('userProfile');
+
+          if (!userProfile.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add('hidden');
+          }
+        });
 
     </script>
 

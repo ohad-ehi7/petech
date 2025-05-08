@@ -172,7 +172,7 @@
                             </div>
                         </div>
 
-                        <form method="POST" action="/" class="space-y-4">
+                        <form method="POST" action="{{route('login')}}" class="space-y-4">
                             @csrf
 
                             @if($errors->has('password') || $errors->has('email'))

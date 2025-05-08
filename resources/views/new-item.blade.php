@@ -58,9 +58,6 @@
                             <input type="text" value="12" class="w-22 border border-gray-300 rounded-lg px-2 py-1" />
                             <input type="text" value="12" class="w-22 border border-gray-300 rounded-lg px-2 py-1" />
                             <input type="text" value="12" class="w-22 border border-gray-300 rounded-lg px-2 py-1" />
-                            <select class="border border-gray-300 rounded-lg px-2 py-1">
-                                <option>cm</option>
-                            </select>
                         </div>
                     </div>
                     <div>
@@ -69,6 +66,8 @@
                             <input type="text" value="45" class="w-20 border border-gray-300 rounded-lg px-2 py-1" />
                             <select class="border border-gray-300 rounded-lg px-2 py-1">
                                 <option>g</option>
+                                <option>mL</option>
+                                <option>L</option>
                             </select>
                         </div>
                     </div>
