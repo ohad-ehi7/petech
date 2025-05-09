@@ -233,10 +233,78 @@
       </li>
 
       <!-- Notification Button -->
-      <li>
-        <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
+      <li class="relative">
+        <button type="button" 
+                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                onclick="toggleNotifications()">
           <i class="fa-solid fa-bell text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
+          <!-- Notification Badge -->
+          <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">3</span>
         </button>
+
+        <!-- Notification Dropdown -->
+        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+          <div class="p-3 border-b border-gray-200">
+            <div class="flex justify-between items-center">
+              <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
+              <button class="text-xs text-blue-600 hover:text-blue-800">Mark all as read</button>
+            </div>
+          </div>
+          
+          <div class="max-h-96 overflow-y-auto">
+            <!-- Unread Notification -->
+            <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
+                    <i class="fa-solid fa-cart-shopping text-blue-600"></i>
+                  </span>
+                </div>
+                <div class="ml-3 w-0 flex-1">
+                  <p class="text-sm font-medium text-gray-900">New Sale</p>
+                  <p class="text-sm text-gray-500">Ken Sevellino made a purchase of Php 172.60</p>
+                  <p class="text-xs text-gray-400 mt-1">2 minutes ago</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Unread Notification -->
+            <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-yellow-100">
+                    <i class="fa-solid fa-exclamation-triangle text-yellow-600"></i>
+                  </span>
+                </div>
+                <div class="ml-3 w-0 flex-1">
+                  <p class="text-sm font-medium text-gray-900">Low Stock Alert</p>
+                  <p class="text-sm text-gray-500">Bearbrand Milk is running low on stock</p>
+                  <p class="text-xs text-gray-400 mt-1">1 hour ago</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Read Notification -->
+            <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100">
+                    <i class="fa-solid fa-check text-green-600"></i>
+                  </span>
+                </div>
+                <div class="ml-3 w-0 flex-1">
+                  <p class="text-sm font-medium text-gray-900">Payment Received</p>
+                  <p class="text-sm text-gray-500">Payment of Php 500.00 has been received</p>
+                  <p class="text-xs text-gray-400 mt-1">2 hours ago</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 border-t border-gray-200">
+            <a href="#" class="text-sm text-center text-blue-600 hover:text-blue-800 block">View all notifications</a>
+          </div>
+        </div>
       </li>
 
       <!-- Settings Button -->
@@ -356,6 +424,21 @@
           const userProfile = document.getElementById('userProfile');
 
           if (!userProfile.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add('hidden');
+          }
+        });
+
+        function toggleNotifications() {
+          const dropdown = document.getElementById('notificationDropdown');
+          dropdown.classList.toggle('hidden');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+          const dropdown = document.getElementById('notificationDropdown');
+          const button = event.target.closest('button');
+          
+          if (!button && !dropdown.contains(event.target)) {
             dropdown.classList.add('hidden');
           }
         });
