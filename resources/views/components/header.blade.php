@@ -138,13 +138,13 @@
             </button>
             <ul id="dropdown-example" class="hidden py-2 space-y-2">
                   <li>
-                     <a href="#" class="flex items-center w-full p-2 pl-11 group text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">Products</a>
+                     <a href="purchase-product" class="flex items-center w-full p-2 pl-11 group text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">Products</a>
                   </li>
                   <li>
-                     <a href="#" class="flex items-center w-full p-2 pl-11 group text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">Billing</a>
+                     <a href="purchase-billing" class="flex items-center w-full p-2 pl-11 group text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">Billing</a>
                   </li>
                   <li>
-                     <a href="#" class="flex items-center w-full p-2 pl-11 group text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">Invoice</a>
+                     <a href="purchase-invoice" class="flex items-center w-full p-2 pl-11 group text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">Invoice</a>
                   </li>
             </ul>
          </li>
@@ -235,74 +235,95 @@
       <!-- Notification Button -->
       <li class="relative">
         <button type="button" 
-                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group transition-all duration-200"
                 onclick="toggleNotifications()">
-          <i class="fa-solid fa-bell text-black dark:text-black group-hover:text-black dark:group-hover:text-black"></i>
+          <i class="fa-solid fa-bell text-black dark:text-black group-hover:text-black dark:group-hover:text-black transition-transform duration-200 group-hover:rotate-12"></i>
           <!-- Notification Badge -->
-          <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">3</span>
+          <span class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white transform bg-red-500 rounded-full animate-pulse">3</span>
         </button>
 
         <!-- Notification Dropdown -->
-        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-          <div class="p-3 border-b border-gray-200">
+        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-xl border border-gray-200 z-50 transform transition-all duration-200 ease-in-out">
+          <div class="p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl">
             <div class="flex justify-between items-center">
-              <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
-              <button class="text-xs text-blue-600 hover:text-blue-800">Mark all as read</button>
+              <h3 class="text-base font-semibold text-gray-900">Notifications</h3>
+              <button class="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200">Mark all as read</button>
             </div>
           </div>
           
-          <div class="max-h-96 overflow-y-auto">
+          <div class="max-h-[480px] overflow-y-auto custom-scrollbar">
             <!-- Unread Notification -->
-            <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
-              <div class="flex items-start">
+            <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
+              <div class="flex items-start space-x-4">
                 <div class="flex-shrink-0">
-                  <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
-                    <i class="fa-solid fa-cart-shopping text-blue-600"></i>
+                  <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-blue-100 shadow-sm">
+                    <i class="fa-solid fa-cart-shopping text-blue-600 text-lg"></i>
                   </span>
                 </div>
-                <div class="ml-3 w-0 flex-1">
-                  <p class="text-sm font-medium text-gray-900">New Sale</p>
-                  <p class="text-sm text-gray-500">Ken Sevellino made a purchase of Php 172.60</p>
-                  <p class="text-xs text-gray-400 mt-1">2 minutes ago</p>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between">
+                    <p class="text-sm font-semibold text-gray-900">New Sale</p>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">New</span>
+                  </div>
+                  <p class="text-sm text-gray-600 mt-1">Ken Sevellino made a purchase of Php 172.60</p>
+                  <p class="text-xs text-gray-400 mt-2 flex items-center">
+                    <i class="fa-regular fa-clock mr-1"></i>
+                    2 minutes ago
+                  </p>
                 </div>
               </div>
             </div>
 
             <!-- Unread Notification -->
-            <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
-              <div class="flex items-start">
+            <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
+              <div class="flex items-start space-x-4">
                 <div class="flex-shrink-0">
-                  <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-yellow-100">
-                    <i class="fa-solid fa-exclamation-triangle text-yellow-600"></i>
+                  <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-yellow-100 shadow-sm">
+                    <i class="fa-solid fa-exclamation-triangle text-yellow-600 text-lg"></i>
                   </span>
                 </div>
-                <div class="ml-3 w-0 flex-1">
-                  <p class="text-sm font-medium text-gray-900">Low Stock Alert</p>
-                  <p class="text-sm text-gray-500">Bearbrand Milk is running low on stock</p>
-                  <p class="text-xs text-gray-400 mt-1">1 hour ago</p>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between">
+                    <p class="text-sm font-semibold text-gray-900">Low Stock Alert</p>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full">Warning</span>
+                  </div>
+                  <p class="text-sm text-gray-600 mt-1">Bearbrand Milk is running low on stock</p>
+                  <p class="text-xs text-gray-400 mt-2 flex items-center">
+                    <i class="fa-regular fa-clock mr-1"></i>
+                    1 hour ago
+                  </p>
                 </div>
               </div>
             </div>
 
             <!-- Read Notification -->
-            <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
-              <div class="flex items-start">
+            <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
+              <div class="flex items-start space-x-4">
                 <div class="flex-shrink-0">
-                  <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100">
-                    <i class="fa-solid fa-check text-green-600"></i>
+                  <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-green-100 shadow-sm">
+                    <i class="fa-solid fa-check text-green-600 text-lg"></i>
                   </span>
                 </div>
-                <div class="ml-3 w-0 flex-1">
-                  <p class="text-sm font-medium text-gray-900">Payment Received</p>
-                  <p class="text-sm text-gray-500">Payment of Php 500.00 has been received</p>
-                  <p class="text-xs text-gray-400 mt-1">2 hours ago</p>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between">
+                    <p class="text-sm font-semibold text-gray-900">Payment Received</p>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">Completed</span>
+                  </div>
+                  <p class="text-sm text-gray-600 mt-1">Payment of Php 500.00 has been received</p>
+                  <p class="text-xs text-gray-400 mt-2 flex items-center">
+                    <i class="fa-regular fa-clock mr-1"></i>
+                    2 hours ago
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="p-3 border-t border-gray-200">
-            <a href="#" class="text-sm text-center text-blue-600 hover:text-blue-800 block">View all notifications</a>
+          <div class="p-4 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+            <a href="#" class="text-sm text-center text-blue-600 hover:text-blue-800 font-medium block transition-colors duration-200">
+              View all notifications
+              <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
           </div>
         </div>
       </li>

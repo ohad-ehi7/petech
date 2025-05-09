@@ -64,6 +64,22 @@ Route::middleware('auth')->group(function () {
         return view('settings');
     })->name('settings');
 
+// Purchase Routes
+    Route::get('/purchase-product', function () {
+        return view('purchase-product');
+    })->name('purchase.product');
+
+    Route::get('/purchase-billing', function () {
+        return view('purchase-billing');
+    })->name('purchase.billing');
+
+    Route::get('/purchase-invoice', function () {
+        return view('purchase-invoice');
+    })->name('purchase.invoice');
+
+    Route::get('/suppliers/purchase-invoice', function () {
+        return view('purchase-invoice');
+    })->name('suppliers.purchase.invoice');
 
 });
 
