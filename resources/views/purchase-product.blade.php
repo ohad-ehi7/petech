@@ -14,27 +14,27 @@
       <h3 class="text-lg font-semibold text-gray-800 mb-6">Create Purchase Order</h3>
       <form id="poForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-2">
-          <label class="text-sm font-medium text-gray-700">Supplier Name</label>
-          <input type="text" placeholder="Enter supplier name" class="input" required />
+          <label class="text-sm font-medium text-gray-700">Supplier Name </label>
+          <input type="text" placeholder="Enter supplier name" class="input ml-2 p-2" required />
         </div>
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700">Product Name</label>
-          <input type="text" placeholder="Enter product name" class="input" required />
+          <input type="text" placeholder="Enter product name" class="input ml-2 p-2" required />
         </div>
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700">Quantity</label>
-          <input type="number" placeholder="Enter quantity" class="input" required />
+          <input type="number" placeholder="Enter quantity" class="input ml-2 p-2" required />
         </div>
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700">Cost per Unit</label>
           <div class="relative">
             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-            <input type="number" placeholder="0.00" class="input pl-8" required />
+            <input type="number" placeholder="0.00" class="input pl-8 " required />
           </div>
         </div>
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700">Expected Delivery Date</label>
-          <input type="date" class="input" required />
+          <input type="date" class="input " required />
         </div>
         <div class="flex items-end">
           <button type="submit" class="w-full bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2">

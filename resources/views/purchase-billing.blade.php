@@ -14,17 +14,17 @@
       <form id="billForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700">Supplier Name</label>
-          <input type="text" id="supplier" placeholder="Enter supplier name" class="input" required>
+          <input type="text" id="supplier" placeholder="Enter supplier name" class="input ml-2 p-2" required>
         </div>
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700">PO Reference</label>
-          <input type="text" id="poRef" placeholder="Enter PO reference" class="input" required>
+          <input type="text" id="poRef" placeholder="Enter PO reference" class="input ml-2 p-2" required>
         </div>
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700">Amount</label>
           <div class="relative">
             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-            <input type="number" id="amount" placeholder="0.00" class="input pl-8" required>
+            <input type="number" id="amount" placeholder="0.00" class="input pl-8 p-2" required>
           </div>
         </div>
         <div class="space-y-2">

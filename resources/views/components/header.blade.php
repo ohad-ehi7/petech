@@ -171,12 +171,7 @@
             </a>
          </li>
          <li>
-        <a href="#" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
-            <span class="flex-1 whitespace-nowrap flex items-center">
-            <i class="fa-solid fa-list-check text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
-            Configure Featured List
-            </span>
-        </a>
+        
         </li>
 
 
