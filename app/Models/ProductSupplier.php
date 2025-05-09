@@ -12,6 +12,15 @@ class ProductSupplier extends Model
     use HasFactory;
     protected $primaryKey = 'ProductSupplierID';
 
+    protected $fillable = [
+        'ProductID',
+        'SupplierID',
+        'PurchasePrice',
+        'SupplierProductCode',
+        'LeadTime',
+        'MinimumOrderQuantity'
+    ];
+
     public function Supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class, 'SupplierID', 'SupplierID');

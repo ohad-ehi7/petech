@@ -81,7 +81,8 @@
                     <!-- Dropdown submenu -->
                     <ul id="dropdown-submenu" class="{{ request()->is('product-overview*') ? '' : 'hidden' }} py-2 space-y-2 list-none pl-0">
                       <li>
-                        <a href="{{ route('products.show', ['product' => 1]) }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Product Overview</a>
+                          <x-nav-link href="{{ route('products.show') }}" :active="request()->is('product-overview')" :menu_item="true" >Product Overview</x-nav-link>
+{{--                        <a href="{{ route('products.show', ['product' => 1]) }}" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-[#3A7CE0] dark:text-white">Product Overview</a>--}}
                       </li>
                     </ul>
                   </li>
@@ -148,7 +149,7 @@
             </ul>
          </li>
          <li>
-             <x-nav-link href="{{ route('suppliers.create') }}" :active="request()->is('new-supplier')" :menu_item="false" >
+             <x-nav-link href="{{ route('suppliers.create') }}" :active="request()->is('suppliers/create')" :menu_item="false" >
                <span class="flex-1 whitespace-nowrap">
                <i class="fa-solid fa-truck-field text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                Supplier</span>

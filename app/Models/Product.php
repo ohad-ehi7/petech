@@ -14,6 +14,24 @@ class Product extends Model
     use HasFactory;
     protected $primaryKey = 'ProductID';
 
+    protected $fillable = [
+        'ProductName',
+        'Unit',
+        'IsReturnable',
+        'CategoryID',
+        'SupplierID',
+        'Brand',
+        'SKU',
+        'Description',
+        'Weight',
+        'WeightUnit',
+        'SellingPrice',
+        'CostPrice',
+        'OpeningStock',
+        'ReorderLevel',
+        'ImagePath'
+    ];
+
     // Many to many from Supplier table
     public function productSuppliers(): HasMany
     {

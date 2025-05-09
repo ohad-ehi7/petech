@@ -1,7 +1,8 @@
 <x-header>
     <div class="p-10">
         <div class="bg-white rounded-xl shadow-md p-6">
-            <form class="space-y-8">
+            <form method="POST" action="{{ route('products.create') }}" class="space-y-8" enctype="multipart/form-data">
+                @csrf
                 <h1 class="text-2xl font-bold mb-6">Add new item</h1>
 
                 <!-- Basic Information Section -->
@@ -12,30 +13,39 @@
                             <!-- Name -->
                             <div>
                                 <label class="block text-sm font-medium mb-2">Product Name*</label>
-                                <input type="text" name="ProductName" class="w-full border border-gray-300 rounded-lg px-3 py-2" />
+                                <input type="text" name="ProductName" value="{{ old('ProductName') }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('ProductName') border-red-500 @enderror" required />
+                                @error('ProductName')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                             <!-- SKU -->
                             <div>
                                 <label class="block text-sm font-medium mb-2">SKU</label>
-                                <input type="text" name="SKU" class="w-full border border-gray-300 rounded-lg px-3 py-2" />
+                                <input type="text" name="SKU" value="{{ old('SKU') }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('SKU') border-red-500 @enderror" />
+                                @error('SKU')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                             <!-- Unit -->
                             <div>
                                 <label class="block text-sm font-medium mb-2">Unit*</label>
-                                <select name="Unit" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                <select name="Unit" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('Unit') border-red-500 @enderror" required>
                                     <option value="">Select or type to add</option>
-                                    <option value="piece">Piece</option>
-                                    <option value="box">Box</option>
-                                    <option value="kg">Kilogram</option>
-                                    <option value="g">Gram</option>
-                                    <option value="L">Liter</option>
-                                    <option value="mL">Milliliter</option>
+                                    <option value="piece" {{ old('Unit') == 'piece' ? 'selected' : '' }}>Piece</option>
+                                    <option value="box" {{ old('Unit') == 'box' ? 'selected' : '' }}>Box</option>
+                                    <option value="kg" {{ old('Unit') == 'kg' ? 'selected' : '' }}>Kilogram</option>
+                                    <option value="g" {{ old('Unit') == 'g' ? 'selected' : '' }}>Gram</option>
+                                    <option value="L" {{ old('Unit') == 'L' ? 'selected' : '' }}>Liter</option>
+                                    <option value="mL" {{ old('Unit') == 'mL' ? 'selected' : '' }}>Milliliter</option>
                                 </select>
+                                @error('Unit')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                             <!-- Returnable Item -->
                             <div>
                                 <label class="inline-flex items-center">
-                                    <input type="checkbox" name="IsReturnable" class="w-4 h-4">
+                                    <input type="checkbox" name="IsReturnable" value="1" {{ old('IsReturnable') ? 'checked' : '' }} class="w-4 h-4">
                                     <span class="ml-2 text-sm">Returnable Item</span>
                                 </label>
                             </div>
@@ -44,7 +54,7 @@
                         <!-- Image Upload -->
                         <div class="flex flex-col">
                             <label class="block text-sm font-medium mb-2">Product Image</label>
-                            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors @error('product_image') border-red-500 @enderror">
                                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                     <svg class="w-10 h-10 mb-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5A5.5 5.5 0 0 0 5.207 5.021A4 4 0 0 0 5 13h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
@@ -52,8 +62,11 @@
                                     <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
                                     <p class="text-xs text-gray-500">PNG, JPG or JPEG (MAX. 5MB)</p>
                                 </div>
-                                <input id="dropzone-file" type="file" class="hidden" accept="image/*" />
+                                <input id="dropzone-file" type="file" name="product_image" class="hidden" accept="image/*" />
                             </label>
+                            @error('product_image')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
@@ -65,15 +78,31 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium mb-1">Category*</label>
-                            <select name="CategoryID" id="categorySelect" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                            <select name="CategoryID" id="categorySelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('CategoryID') border-red-500 @enderror" required>
                                 <option value="">Select Category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->CategoryID }}" {{ old('CategoryID') == $category->CategoryID ? 'selected' : '' }}>
+                                        {{ $category->CategoryName }}
+                                    </option>
+                                @endforeach
                             </select>
+                            @error('CategoryID')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Supplier</label>
-                            <select name="SupplierID" id="supplierSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                            <select name="SupplierID" id="supplierSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('SupplierID') border-red-500 @enderror">
                                 <option value="">Select Supplier</option>
+                                @foreach ($suppliers as $supplier)
+                                    <option value="{{ $supplier->SupplierID }}" {{ old('SupplierID') == $supplier->SupplierID ? 'selected' : '' }}>
+                                        {{ $supplier->SupplierName }}
+                                    </option>
+                                @endforeach
                             </select>
+                            @error('SupplierID')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
@@ -85,11 +114,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium mb-1">Brand</label>
-                            <input type="text" name="Brand" class="w-full border border-gray-300 rounded-lg px-3 py-2" />
+                            <input type="text" name="Brand" value="{{ old('Brand') }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('Brand') border-red-500 @enderror" />
+                            @error('Brand')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Description</label>
-                            <textarea name="Description" class="w-full border border-gray-300 rounded-lg px-3 py-2"></textarea>
+                            <textarea name="Description" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('Description') border-red-500 @enderror">{{ old('Description') }}</textarea>
+                            @error('Description')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
@@ -102,14 +137,20 @@
                         <div>
                             <label class="block text-sm font-medium mb-1">Weight</label>
                             <div class="flex space-x-2">
-                                <input type="number" name="Weight" step="0.01" class="w-32 border border-gray-300 rounded-lg px-3 py-2" />
-                                <select name="WeightUnit" class="border border-gray-300 rounded-lg px-3 py-2">
-                                    <option value="g">g</option>
-                                    <option value="kg">kg</option>
-                                    <option value="mL">mL</option>
-                                    <option value="L">L</option>
+                                <input type="number" name="Weight" step="0.01" value="{{ old('Weight') }}" class="w-32 border border-gray-300 rounded-lg px-3 py-2 @error('Weight') border-red-500 @enderror" />
+                                <select name="WeightUnit" class="border border-gray-300 rounded-lg px-3 py-2 @error('WeightUnit') border-red-500 @enderror">
+                                    <option value="g" {{ old('WeightUnit') == 'g' ? 'selected' : '' }}>g</option>
+                                    <option value="kg" {{ old('WeightUnit') == 'kg' ? 'selected' : '' }}>kg</option>
+                                    <option value="mL" {{ old('WeightUnit') == 'mL' ? 'selected' : '' }}>mL</option>
+                                    <option value="L" {{ old('WeightUnit') == 'L' ? 'selected' : '' }}>L</option>
                                 </select>
                             </div>
+                            @error('Weight')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                            @error('WeightUnit')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
@@ -123,15 +164,21 @@
                             <label class="block text-sm font-medium mb-1">Selling Price*</label>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-                                <input type="number" name="SellingPrice" step="0.01" class="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2" placeholder="0.00" />
+                                <input type="number" name="SellingPrice" step="0.01" value="{{ old('SellingPrice') }}" class="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2 @error('SellingPrice') border-red-500 @enderror" placeholder="0.00" required />
                             </div>
+                            @error('SellingPrice')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Cost Price*</label>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-                                <input type="number" name="CostPrice" step="0.01" class="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2" placeholder="0.00" />
+                                <input type="number" name="CostPrice" step="0.01" value="{{ old('CostPrice') }}" class="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2 @error('CostPrice') border-red-500 @enderror" placeholder="0.00" required />
                             </div>
+                            @error('CostPrice')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
@@ -143,11 +190,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium mb-1">Opening Stock</label>
-                            <input type="number" name="OpeningStock" class="w-full border border-gray-300 rounded-lg px-3 py-2" />
+                            <input type="number" name="OpeningStock" value="{{ old('OpeningStock') }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('OpeningStock') border-red-500 @enderror" />
+                            @error('OpeningStock')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Reorder Level</label>
-                            <input type="number" name="ReorderLevel" class="w-full border border-gray-300 rounded-lg px-3 py-2" />
+                            <input type="number" name="ReorderLevel" value="{{ old('ReorderLevel') }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('ReorderLevel') border-red-500 @enderror" />
+                            @error('ReorderLevel')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
@@ -155,7 +208,7 @@
 
                 <!-- Save and Cancel Buttons -->
                 <div class="flex justify-end space-x-4 mt-6">
-                    <button type="button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors">Cancel</button>
+                    <a href="{{ route('products.index') }}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors">Cancel</a>
                     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Save</button>
                 </div>
             </form>
