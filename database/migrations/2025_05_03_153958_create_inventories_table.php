@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('ProductID')->constrained('products', 'ProductID')->onDelete('cascade');
             $table->integer('QuantityOnHand')->default(0);
             $table->integer('ReorderLevel')->default(0);
-            $table->timestamp('LastStockUpdate')->nullable();
+            $table->timestamp('LastUpdated')->nullable();
             $table->timestamps();
         });
     }
