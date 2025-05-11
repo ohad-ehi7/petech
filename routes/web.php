@@ -90,5 +90,11 @@ Route::middleware('auth')->group(function () {
         return view('add-supplier');
     })->name('add-suppliers');
 
+//Reports Routes
+
+    Route::get('/reports', function () {
+        return view('reports');
+    })->name('reports');
+
 });
 

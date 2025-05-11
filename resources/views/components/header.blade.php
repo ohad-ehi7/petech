@@ -130,7 +130,7 @@
             </x-nav-link>
          </li>
          <li>
-            <a href="#" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
+            <a href="reports" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
                <span class="flex-1 whitespace-nowrap">
                <i class="fa-solid fa-chart-line text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                Reports</span>
