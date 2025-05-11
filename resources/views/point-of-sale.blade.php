@@ -1,494 +1,551 @@
 <x-header>
-  <body class="bg-gray-50 p-6">
-    <div class="w-full mt-4 mx-auto bg-white p-12 rounded">
-      <h1 class="text-2xl font-bold mb-4">Point of Sale</h1>
-
-      <!-- Filter Dropdown -->
-     
-
-    <!-- Customer Info -->
-    <div class="grid grid-cols-1 gap-4 mb-6">
-      <div>
-        <label class="block text-sm font-medium">Customer Name</label>
-        <input type="text" class="mt-1 w-[900px] border-gray-300 rounded-md shadow-sm p-2" value="Ken Savellino">
-      </div>
-      <div>
-        <label class="block text-sm font-medium">Receipt Date</label>
-        <input type="date" class="mt-1 w-[900px] border-gray-300 rounded-md shadow-sm p-2" value="2025-04-25">
-      </div>
-      <div>
-        <label class="block text-sm font-medium">Sales Receipt#</label>
-        <input type="text" class="mt-1 w-[900px] border-gray-300 rounded-md shadow-sm p-2" value="SR-00002">
-      </div>
-      <div>
-        <label class="block text-sm font-medium">Salesperson</label>
-        <select class="mt-1 w-[900px] border-gray-300 rounded-md shadow-sm p-2">
-          <option>Select or Add Salesperson</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Item Table -->
-    <div class="overflow-auto mb-6 p-4">
-      <table class="min-w-full text-sm text-left border" id="itemTable">
-        <h4 class="bg-gray-100 w-full p-4 font-bold rounded-l">Item Table</h4>
-        <thead class="bg-white">
-          <tr>
-            <th class="p-2 border">Item Details</th>
-            <th class="p-2 border">Quantity</th>
-            <th class="p-2 border">Rate</th>
-            <th class="p-2 border">Tax</th>
-            <th class="p-2 border">Amount</th>
-            <th class="p-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="itemTableBody">
-          <tr>
-            <td class="p-2 border">
-              <div class="flex items-center space-x-4">
-                <div class="w-16 h-16 overflow-hidden">
-                  <img src="https://www.nestle.com.ph/sites/g/files/pydnoa336/files/styles/scale_992/public/2022-03/Bear-Brand-Sterilized-Milk-110ml.png" alt="Bearbrand Milk" class="w-full h-full object-contain">
-                </div>
+    <div class="flex h-screen bg-gray-50">
+        <!-- Left Section: Product Selection -->
+        <div class="w-2/3 p-6 overflow-y-auto">
+            <!-- Search and Filter Bar -->
+            <div class="mb-6 flex items-center space-x-4">
                 <div class="flex-1">
-                  <div class="font-medium">Bearbrand Milk</div>
-                  <div class="text-xs text-gray-500">SKU: P001</div>
+                    <div class="relative">
+                        <input type="text" 
+                               id="searchInput"
+                               placeholder="Search products..." 
+                               class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
                 </div>
-              </div>
-            </td>
-            <td class="p-2 border text-center">1.00</td>
-            <td class="p-2 border">50.00</td>
-            <td class="p-2 border">vat [12%]</td>
-            <td class="p-2 border">50.00</td>
-            <td class="p-2 border text-center text-red-500 cursor-pointer" onclick="deleteRow(this)">&times;</td>
-          </tr>
-          <tr>
-            <td class="p-2 border">
-              <div class="flex items-center space-x-4">
-                <div class="w-16 h-16 overflow-hidden">
-                  <img src="https://www.nescafe.com/gb/sites/default/files/2020-07/nescafe-original-jar.png" alt="Nescafe Coffee" class="w-full h-full object-contain">
-                </div>
-                <div class="flex-1">
-                  <div class="font-medium">Nescafe Coffee</div>
-                  <div class="text-xs text-gray-500">SKU: P002</div>
-                </div>
-              </div>
-            </td>
-            <td class="p-2 border text-center">1.00</td>
-            <td class="p-2 border">55.00</td>
-            <td class="p-2 border">vat [12%]</td>
-            <td class="p-2 border">55.00</td>
-            <td class="p-2 border text-center text-red-500 cursor-pointer" onclick="deleteRow(this)">&times;</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Totals -->
-    <div class="grid grid-cols-2 gap-4 mb-6">
-      <div class="space-y-2 p-4">
-        <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="addNewRow()"><i class="fa-solid fa-plus mr-2"></i>Add New Row</button>
-        <button class="bg-blue-100 text-blue-700 px-4 py-2 rounded"><i class="fa-solid fa-plus mr-2 "></i>Add Items in Bulk</button>
-      </div>
-      <div class="bg-gray-50 p-6 rounded ml-32 w-full max-w-md space-y-4">
-        <!-- Sub Total -->
-        <div class="flex justify-between items-center">
-          <span class="font-medium text-gray-700">Sub Total</span>
-          <span class="text-gray-900 font-medium">160.00</span>
-        </div>
-
-        <!-- Discount -->
-        <div class="flex justify-between items-center">
-          <span class="text-gray-700">Discount</span>
-          <div class="flex items-center space-x-2">
-            <input type="number" value="0" class="w-16 px-2 py-1 border border-gray-300 rounded text-right" />
-            <select class="border border-gray-300 rounded px-1 py-1">
-              <option>%</option>
-              <option>PHP</option>
-            </select>
-          </div>
-          <span class="w-14 text-right">0.00</span>
-        </div>
-
-        <!-- Shipping Charges -->
-        <div class="flex justify-between items-center">
-          <span class="text-gray-700 flex items-center">
-            Shipping Charges
-            <span class="ml-1 text-gray-400 cursor-help" title="Enter delivery cost">
-              <i class="fa-solid fa-circle-question"></i>
-            </span>
-          </span>
-          <input type="number" class="border border-gray-300 rounded px-2 py-1 w-24 text-right" />
-          <span class="w-14 text-right">0.00</span>
-        </div>
-
-        <!-- VAT -->
-        <div class="flex justify-between items-center">
-          <span class="text-gray-700">vat [12%]</span>
-          <span class="w-14 text-right">19.20</span>
-        </div>
-
-        <!-- Adjustment -->
-        <div class="flex justify-between items-center">
-          <span class="text-gray-700 flex items-center">
-            <span class="border border-dashed border-gray-400 rounded px-2 py-1 mr-2">Adjustment</span>
-            <span class="text-gray-400 cursor-help" title="Optional additional adjustment">
-              <i class="fa-solid fa-circle-question"></i>
-            </span>
-          </span>
-          <input type="number" class="border border-gray-300 rounded px-2 py-1 w-24 text-right" />
-          <span class="w-14 text-right">0.00</span>
-        </div>
-
-        <!-- Total -->
-        <div class="border-t pt-4 flex justify-between items-center font-bold text-lg text-gray-800">
-          <span>Total ( PHP )</span>
-          <span>179.20</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Notes -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium p-2">Customer Notes</label>
-      <textarea class="mt-1 w-full h-32 border-gray-300 rounded-md shadow-lg "></textarea>
-    </div>
-
-   <!-- Terms & Attach Files -->
-   <div class="grid grid-cols-2 gap-6 text-sm mb-6">
-      <!-- Terms -->
-      <div>
-          <h3 class="font-semibold text-xl mb-2">Terms & Conditions</h3>
-          <textarea class="w-full p-2 border border-gray-300 rounded text-md" rows="5" readonly>
-By using this inventory system, you agree to follow all rules related to proper use. Only authorized users may access the system, and you are responsible for your own account. All information entered must be accurate and honest. Misuse of the system may lead to account suspension. User roles determine access levels, and these must not be bypassed. System updates may happen anytime without prior notice.
-          </textarea>
-        </div>
-
-      <!-- File Upload -->
-      <div class="flex flex-col ml-4">
-          <h3 class="font-semibold mb-2 p-2">Attach File(s) to Sales Receipt</h3>
-          <div class="space-y-2">
-            <input type="file" id="fileUpload"
-              class="text-sm file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-100 file:text-gray-700"
-              multiple>
-            <p class="text-sm text-gray-500">You can upload a maximum of 5 files, 10MB each</p>
-          </div>
-        </div>
-      </div>
-
-
-    <!-- Payment Details -->
-    <div class="mb-6">
-        <h3 class="font-semibold mb-4 text-sm">Payment Details</h3>
-        <div class="grid grid-cols-3 gap-4 items-end">
-          <div>
-            <label class="block text-xs text-red-500 font-medium mb-1">Payment Mode*</label>
-            <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" value="Cash">
-          </div>
-          <div>
-            <label class="block text-xs text-red-500 font-medium mb-1">Deposit To*</label>
-            <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" value="Petty Cash">
-          </div>
-          <div>
-            <label class="block text-xs text-gray-700 font-medium mb-1">Reference#</label>
-            <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" value="001">
-          </div>
-        </div>
-      </div>
-
-    <!-- Action Buttons -->
-     <div class="flex justify-start space-x-2 mt-4">
-        <button class="bg-gray-100 border px-4 py-2 rounded text-sm">Save</button>
-        <button class="bg-blue-600 text-white px-4 py-2 rounded text-sm">Save and Send</button>
-        <button class="bg-gray-200 px-4 py-2 rounded text-sm">Cancel</button>
-      </div>
-
-    
-    </div>
-  </body>
-
-  <script>
-    // Add these new functions for the filter dropdown
-    document.addEventListener('DOMContentLoaded', function() {
-      const filterToggle = document.getElementById('filterToggle');
-      const dropdownPeriod = document.getElementById('dropdownPeriod');
-
-      // Toggle dropdown
-      filterToggle.addEventListener('click', function() {
-        dropdownPeriod.classList.toggle('hidden');
-      });
-
-      // Close dropdown when clicking outside
-      document.addEventListener('click', function(event) {
-        if (!filterToggle.contains(event.target) && !dropdownPeriod.contains(event.target)) {
-          dropdownPeriod.classList.add('hidden');
-        }
-      });
-    });
-
-    function selectPeriod(period) {
-      document.getElementById('selectedPeriod').textContent = period;
-      document.getElementById('dropdownPeriod').classList.add('hidden');
-      // Add your filter logic here
-    }
-
-    function addNewRow() {
-      const tbody = document.getElementById('itemTableBody');
-      const newRow = document.createElement('tr');
-      
-      newRow.innerHTML = `
-        <td class="p-2 border">
-          <div class="editing-mode">
-            <div class="flex items-center space-x-4">
-              <div class="w-16 h-16 overflow-hidden relative">
-                <input type="file" class="hidden" accept="image/*" onchange="previewImage(this)">
-                <img src="" alt="" class="w-full h-full object-contain hidden item-image-preview">
-                <div class="w-full h-full flex items-center justify-center bg-gray-100 cursor-pointer image-upload-placeholder" onclick="document.querySelector('input[type=file]').click()">
-                  <i class="fa-solid fa-image text-gray-400"></i>
-                </div>
-              </div>
-              <div class="flex-1">
-                <input type="text" class="w-full p-1 border rounded" placeholder="Item Name">
-                <input type="text" class="w-full p-1 border rounded mt-1" placeholder="SKU">
-              </div>
+                <select id="categoryFilter" class="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Categories</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->CategoryID }}">{{ $category->CategoryName }}</option>
+                    @endforeach
+                </select>
             </div>
-          </div>
-          <div class="saved-mode hidden">
-            <div class="flex items-center space-x-4">
-              <div class="w-16 h-16 overflow-hidden">
-                <img src="" alt="" class="w-full h-full object-contain saved-item-image">
-              </div>
-              <div class="flex-1">
-                <div class="font-medium item-name"></div>
-                <div class="text-xs text-gray-500 sku"></div>
-              </div>
+
+            <!-- Product Grid -->
+            <div id="productGrid" class="grid grid-cols-3 gap-4">
+                @foreach($products as $product)
+                <div class="product-card bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 cursor-pointer" 
+                     data-product-id="{{ $product->ProductID }}"
+                     data-product-name="{{ strtolower($product->ProductName) }}"
+                     data-category-id="{{ $product->CategoryID }}"
+                     onclick="showQuantityModal({{ $product->ProductID }}, '{{ $product->ProductName }}', {{ $product->SellingPrice }}, {{ $product->inventory->QuantityOnHand ?? 0 }})">
+                    <div class="aspect-square mb-3 bg-gray-100 rounded-lg overflow-hidden">
+                        @if($product->Product_Image)
+                            <img src="{{ asset('storage/' . $product->Product_Image) }}" 
+                                 alt="{{ $product->ProductName }}" 
+                                 class="w-full h-full object-contain">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fa-solid fa-image text-gray-400 text-4xl"></i>
+                            </div>
+                        @endif
+                    </div>
+                    <h3 class="font-medium text-gray-900 truncate">{{ $product->ProductName }}</h3>
+                    <p class="text-sm text-gray-500 mb-2">SKU: {{ $product->SKU }}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-semibold text-blue-600">₱{{ number_format($product->SellingPrice, 2) }}</span>
+                        <span class="text-sm text-gray-500">Stock: {{ $product->inventory->QuantityOnHand ?? 0 }}</span>
+                    </div>
+                </div>
+                @endforeach
             </div>
-          </div>
-        </td>
-        <td class="p-2 border text-center">
-          <div class="editing-mode">
-            <input type="number" class="w-full p-1 border rounded text-center quantity-input" value="1.00" min="0" step="0.01" onchange="calculateAmount(this)">
-          </div>
-          <div class="saved-mode hidden text-center quantity"></div>
-        </td>
-        <td class="p-2 border">
-          <div class="editing-mode">
-            <input type="number" class="w-full p-1 border rounded rate-input" value="0.00" min="0" step="0.01" onchange="calculateAmount(this)">
-          </div>
-          <div class="saved-mode hidden rate"></div>
-        </td>
-        <td class="p-2 border">
-          <div class="editing-mode">
-            <select class="w-full p-1 border rounded" onchange="calculateAmount(this)">
-              <option>vat [12%]</option>
-              <option>No Tax</option>
-            </select>
-          </div>
-          <div class="saved-mode hidden tax"></div>
-        </td>
-        <td class="p-2 border">
-          <div class="editing-mode">
-            <input type="number" class="w-full p-1 border rounded amount-input" value="0.00" readonly>
-          </div>
-          <div class="saved-mode hidden amount"></div>
-        </td>
-        <td class="p-2 border text-center">
-          <div class="editing-mode">
-            <button class="bg-green-500 text-white px-2 py-1 rounded text-sm mr-1" onclick="saveRow(this)">Save</button>
-            <span class="text-red-500 cursor-pointer" onclick="deleteRow(this)">&times;</span>
-          </div>
-          <div class="saved-mode hidden">
-            <span class="text-red-500 cursor-pointer" onclick="deleteRow(this)">&times;</span>
-          </div>
-        </td>
-      `;
+        </div>
 
-      tbody.appendChild(newRow);
-    }
+        <!-- Right Section: Cart and Checkout -->
+        <div class="w-1/3 bg-white border-l border-gray-200 flex flex-col">
+            <!-- Cart Header -->
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-xl font-bold text-gray-900">Current Sale</h2>
+                <div class="mt-2 flex items-center space-x-2">
+                    <input type="text" 
+                           id="customerName"
+                           placeholder="Customer Name" 
+                           class="flex-1 px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <button onclick="generateCustomerName()" class="px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Generate Customer Name">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                </div>
+            </div>
 
-    function calculateAmount(element) {
-      const row = element.closest('tr');
-      const quantity = parseFloat(row.querySelector('.quantity-input').value) || 0;
-      const rate = parseFloat(row.querySelector('.rate-input').value) || 0;
-      const amount = quantity * rate;
-      
-      row.querySelector('.amount-input').value = amount.toFixed(2);
-      updateTotals();
-    }
+            <!-- Cart Items -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <div id="cart-items" class="space-y-4">
+                    <!-- Cart items will be dynamically added here -->
+                </div>
+            </div>
 
-    function previewImage(input) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        const row = input.closest('tr');
-        const preview = row.querySelector('.item-image-preview');
-        const placeholder = row.querySelector('.image-upload-placeholder');
-        
-        reader.onload = function(e) {
-          preview.src = e.target.result;
-          preview.classList.remove('hidden');
-          placeholder.classList.add('hidden');
+            <!-- Cart Summary -->
+            <div class="border-t border-gray-200 p-6 bg-gray-50">
+                <div class="space-y-3">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Subtotal</span>
+                        <span class="font-medium" id="subtotal">₱0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">VAT (12%)</span>
+                        <span class="font-medium" id="vat">₱0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Discount</span>
+                        <div class="flex items-center space-x-2">
+                            <input type="number" 
+                                   class="w-20 px-2 py-1 rounded border border-gray-300 text-right" 
+                                   value="0" 
+                                   min="0" 
+                                   step="0.01">
+                            <select class="px-2 py-1 rounded border border-gray-300">
+                                <option value="%">%</option>
+                                <option value="PHP">₱</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-200 pt-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold">Total</span>
+                            <span class="text-2xl font-bold text-blue-600" id="total">₱0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Buttons -->
+                <div class="mt-6 space-y-3">
+                    <button onclick="processPayment()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                        <i class="fa-solid fa-cash-register mr-2"></i>Process Payment
+                    </button>
+                    <button onclick="printReceipt()" class="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors" disabled>
+                        <i class="fa-solid fa-print mr-2"></i>Print Receipt
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quantity Selection Modal -->
+    <div id="quantityModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-96 shadow-2xl transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900" id="modalProductName"></h3>
+                <button onclick="closeQuantityModal()" class="text-gray-400 hover:text-gray-500 transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="mb-4">
+                <div class="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>Price:</span>
+                    <span id="modalProductPrice"></span>
+                </div>
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>Available Stock:</span>
+                    <span id="modalProductStock"></span>
+                </div>
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>In Cart:</span>
+                    <span id="modalProductInCart">0</span>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                <div class="flex items-center space-x-3">
+                    <button onclick="decrementQuantity()" class="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <input type="number" 
+                           id="quantityInput" 
+                           class="w-20 text-center border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                           value="1" 
+                           min="1">
+                    <button onclick="incrementQuantity()" class="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeQuantityModal()" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                    Cancel
+                </button>
+                <button onclick="addToCart()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cash Payment Modal -->
+    <div id="cashPaymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-96 shadow-2xl transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Cash Payment</h3>
+                <button onclick="closeCashPaymentModal()" class="text-gray-400 hover:text-gray-500 transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>Total Amount:</span>
+                    <span id="paymentTotal" class="font-semibold"></span>
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Amount Received</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-2 text-gray-500">₱</span>
+                        <input type="number" 
+                               id="amountReceived" 
+                               class="w-full pl-8 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               placeholder="0.00"
+                               step="0.01"
+                               min="0">
+                    </div>
+                </div>
+
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>Change:</span>
+                    <span id="changeAmount" class="font-semibold">₱0.00</span>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end space-x-3">
+                <button onclick="closeCashPaymentModal()" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                    Cancel
+                </button>
+                <button onclick="completeCashPayment()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Complete Payment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        let currentProduct = null;
+        let maxStock = 0;
+        let originalStock = 0;
+
+        function showQuantityModal(productId, productName, price, stock) {
+            currentProduct = {
+                id: productId,
+                name: productName,
+                price: price
+            };
+            
+            // Calculate available stock by subtracting items in cart
+            const itemsInCart = cart.filter(item => item.id === productId)
+                                  .reduce((sum, item) => sum + item.quantity, 0);
+            originalStock = stock;
+            maxStock = stock - itemsInCart;
+
+            document.getElementById('modalProductName').textContent = productName;
+            document.getElementById('modalProductPrice').textContent = `₱${price.toFixed(2)}`;
+            document.getElementById('modalProductStock').textContent = maxStock;
+            document.getElementById('modalProductInCart').textContent = itemsInCart;
+            document.getElementById('quantityInput').value = 1;
+            
+            const modal = document.getElementById('quantityModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
         }
-        
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
 
-    function saveRow(button) {
-      const row = button.closest('tr');
-      const editingMode = row.querySelectorAll('.editing-mode');
-      const savedMode = row.querySelectorAll('.saved-mode');
-      
-      // Get values from inputs
-      const itemName = row.querySelector('input[placeholder="Item Name"]').value;
-      const sku = row.querySelector('input[placeholder="SKU"]').value;
-      const quantity = row.querySelector('.quantity-input').value;
-      const rate = row.querySelector('.rate-input').value;
-      const tax = row.querySelector('select').value;
-      const amount = row.querySelector('.amount-input').value;
-      const imagePreview = row.querySelector('.item-image-preview');
-      const savedImage = row.querySelector('.saved-item-image');
-
-      // Update saved mode divs
-      row.querySelector('.item-name').textContent = itemName;
-      row.querySelector('.sku').textContent = `SKU: ${sku}`;
-      row.querySelector('.quantity').textContent = quantity;
-      row.querySelector('.rate').textContent = rate;
-      row.querySelector('.tax').textContent = tax;
-      row.querySelector('.amount').textContent = amount;
-      
-      // Update saved image
-      if (imagePreview.src) {
-        savedImage.src = imagePreview.src;
-      }
-
-      // Hide editing mode, show saved mode
-      editingMode.forEach(el => el.classList.add('hidden'));
-      savedMode.forEach(el => el.classList.remove('hidden'));
-
-      // Force update totals after saving
-      setTimeout(updateTotals, 0);
-    }
-
-    function deleteRow(button) {
-      const row = button.closest('tr');
-      row.remove();
-      updateTotals();
-    }
-
-    function updateTotals() {
-      const rows = document.querySelectorAll('#itemTableBody tr');
-      let subtotal = 0;
-      let totalVat = 0;
-
-      rows.forEach(row => {
-        // Get amount from either editing mode or saved mode
-        let amount = 0;
-        if (row.querySelector('.amount-input')) {
-          // For rows in editing mode
-          amount = parseFloat(row.querySelector('.amount-input').value) || 0;
-        } else {
-          // For saved rows
-          const amountText = row.querySelector('.amount')?.textContent;
-          amount = parseFloat(amountText) || 0;
+        function closeQuantityModal() {
+            const modal = document.getElementById('quantityModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = ''; // Restore scrolling
+            currentProduct = null;
         }
 
-        // Get tax type
-        let taxType = '';
-        if (row.querySelector('select')) {
-          // For rows in editing mode
-          taxType = row.querySelector('select').value;
-        } else {
-          // For saved rows
-          const taxText = row.querySelector('.tax')?.textContent;
-          taxType = taxText || '';
+        function incrementQuantity() {
+            const input = document.getElementById('quantityInput');
+            const newValue = parseInt(input.value) + 1;
+            if (newValue <= maxStock) {
+                input.value = newValue;
+            }
         }
 
-        subtotal += amount;
-
-        // Calculate VAT if applicable
-        if (taxType.includes('vat')) {
-          const vatAmount = amount * 0.12;
-          totalVat += vatAmount;
+        function decrementQuantity() {
+            const input = document.getElementById('quantityInput');
+            const newValue = parseInt(input.value) - 1;
+            if (newValue >= 1) {
+                input.value = newValue;
+            }
         }
-      });
 
-      console.log('Subtotal:', subtotal); // Debug log
-      console.log('VAT:', totalVat); // Debug log
+        function addToCart() {
+            if (!currentProduct) return;
 
-      // Update Sub Total
-      const subTotalElement = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:first-child span:last-child');
-      if (subTotalElement) {
-        subTotalElement.textContent = subtotal.toFixed(2);
-      }
+            const quantity = parseInt(document.getElementById('quantityInput').value);
+            if (quantity < 1 || quantity > maxStock) return;
 
-      // Update VAT
-      const vatElement = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(4) span:last-child');
-      if (vatElement) {
-        vatElement.textContent = totalVat.toFixed(2);
-      }
+            // Add to cart array
+            cart.push({
+                ...currentProduct,
+                quantity: quantity
+            });
 
-      // Get discount value
-      const discountInput = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(2) input[type="number"]');
-      const discountType = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(2) select');
-      let discount = 0;
-      if (discountInput && discountType) {
-        const discountValue = parseFloat(discountInput.value) || 0;
-        discount = discountType.value === '%' ? (subtotal * discountValue / 100) : discountValue;
-      }
+            // Update cart display
+            updateCart();
+            
+            // Close modal
+            closeQuantityModal();
+        }
 
-      // Get shipping value
-      const shippingInput = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(3) input[type="number"]');
-      const shipping = parseFloat(shippingInput?.value) || 0;
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
 
-      // Get adjustment value
-      const adjustmentInput = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(5) input[type="number"]');
-      const adjustment = parseFloat(adjustmentInput?.value) || 0;
+            // Group items by product ID
+            const groupedItems = cart.reduce((groups, item) => {
+                if (!groups[item.id]) {
+                    groups[item.id] = {
+                        ...item,
+                        totalQuantity: 0
+                    };
+                }
+                groups[item.id].totalQuantity += item.quantity;
+                return groups;
+            }, {});
 
-      // Calculate final total
-      const finalTotal = subtotal + totalVat - discount + shipping + adjustment;
+            // Display grouped items
+            Object.values(groupedItems).forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+                itemElement.innerHTML = `
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-900">${item.name}</h4>
+                        <div class="text-sm text-gray-500">
+                            ${item.totalQuantity} × ₱${item.price.toFixed(2)}
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="font-medium text-gray-900">₱${(item.totalQuantity * item.price).toFixed(2)}</span>
+                        <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-600">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                cartItems.appendChild(itemElement);
+            });
 
-      console.log('Final Total:', finalTotal); // Debug log
+            updateTotals();
+        }
 
-      // Update Total
-      const totalElement = document.querySelector('.border-t.pt-4.flex.justify-between.items-center.font-bold.text-lg.text-gray-800 span:last-child');
-      if (totalElement) {
-        totalElement.textContent = finalTotal.toFixed(2);
-      }
+        function removeFromCart(productId) {
+            // Remove all instances of this product from cart
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
 
-      // Update discount display
-      const discountDisplay = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(2) span:last-child');
-      if (discountDisplay) {
-        discountDisplay.textContent = discount.toFixed(2);
-      }
+        function updateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const vat = subtotal * 0.12;
+            const discount = calculateDiscount();
+            const total = subtotal + vat - discount;
 
-      // Update shipping display
-      const shippingDisplay = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(3) span:last-child');
-      if (shippingDisplay) {
-        shippingDisplay.textContent = shipping.toFixed(2);
-      }
+            document.getElementById('subtotal').textContent = `₱${subtotal.toFixed(2)}`;
+            document.getElementById('vat').textContent = `₱${vat.toFixed(2)}`;
+            document.getElementById('total').textContent = `₱${total.toFixed(2)}`;
+        }
 
-      // Update adjustment display
-      const adjustmentDisplay = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(5) span:last-child');
-      if (adjustmentDisplay) {
-        adjustmentDisplay.textContent = adjustment.toFixed(2);
-      }
-    }
+        function calculateDiscount() {
+            const discountInput = document.querySelector('input[type="number"]');
+            const discountType = document.querySelector('select');
+            const discountValue = parseFloat(discountInput.value) || 0;
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            if (discountType.value === '%') {
+                return (subtotal * discountValue / 100);
+            }
+            return discountValue;
+        }
 
-    // Add event listeners for all inputs that affect totals
-    document.addEventListener('DOMContentLoaded', function() {
-      // Listen for changes in discount, shipping, and adjustment inputs
-      const totalInputs = document.querySelectorAll('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 input[type="number"]');
-      totalInputs.forEach(input => {
-        input.addEventListener('input', updateTotals);
-      });
+        // Close modal when clicking outside
+        document.getElementById('quantityModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeQuantityModal();
+            }
+        });
 
-      // Listen for changes in discount type
-      const discountType = document.querySelector('.bg-gray-50.p-6.rounded.ml-32.w-full.max-w-md.space-y-4 div:nth-child(2) select');
-      if (discountType) {
-        discountType.addEventListener('change', updateTotals);
-      }
+        // Handle quantity input validation
+        document.getElementById('quantityInput').addEventListener('input', function(e) {
+            let value = parseInt(e.target.value);
+            if (isNaN(value) || value < 1) {
+                e.target.value = 1;
+            } else if (value > maxStock) {
+                e.target.value = maxStock;
+            }
+        });
 
-      // Initial calculation
-      updateTotals();
-    });
-  </script>
+        // Search and Filter Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const productCards = document.querySelectorAll('.product-card');
+
+            function filterProducts() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedCategory = categoryFilter.value;
+
+                productCards.forEach(card => {
+                    const productName = card.dataset.productName;
+                    const categoryId = card.dataset.categoryId;
+                    
+                    const matchesSearch = productName.includes(searchTerm);
+                    const matchesCategory = !selectedCategory || categoryId === selectedCategory;
+
+                    if (matchesSearch && matchesCategory) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            // Add event listeners for search and filter
+            searchInput.addEventListener('input', filterProducts);
+            categoryFilter.addEventListener('change', filterProducts);
+
+            // Initial filter
+            filterProducts();
+        });
+
+        // Customer Name Generation
+        function generateCustomerName() {
+            const timestamp = new Date().getTime();
+            const randomNum = Math.floor(Math.random() * 1000);
+            const customerName = `Customer-${timestamp}-${randomNum}`;
+            document.getElementById('customerName').value = customerName;
+        }
+
+        // Payment Processing
+        function processPayment() {
+            const customerName = document.getElementById('customerName').value.trim();
+            if (!customerName) {
+                alert('Please enter or generate a customer name');
+                return;
+            }
+
+            if (cart.length === 0) {
+                alert('Cart is empty');
+                return;
+            }
+
+            // Calculate total amount
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const vat = subtotal * 0.12;
+            const total = subtotal + vat;
+
+            // Show cash payment modal
+            document.getElementById('paymentTotal').textContent = `₱${total.toFixed(2)}`;
+            document.getElementById('amountReceived').value = '';
+            document.getElementById('changeAmount').textContent = '₱0.00';
+            
+            const modal = document.getElementById('cashPaymentModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCashPaymentModal() {
+            const modal = document.getElementById('cashPaymentModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        // Handle amount received input
+        document.getElementById('amountReceived').addEventListener('input', function(e) {
+            const total = parseFloat(document.getElementById('paymentTotal').textContent.replace('₱', ''));
+            const received = parseFloat(e.target.value) || 0;
+            const change = received - total;
+            
+            document.getElementById('changeAmount').textContent = `₱${change >= 0 ? change.toFixed(2) : '0.00'}`;
+        });
+
+        function completeCashPayment() {
+            const total = parseFloat(document.getElementById('paymentTotal').textContent.replace('₱', ''));
+            const received = parseFloat(document.getElementById('amountReceived').value) || 0;
+            
+            if (received < total) {
+                alert('Amount received is less than the total amount');
+                return;
+            }
+
+            // Here you would typically:
+            // 1. Update inventory
+            // 2. Record the transaction
+            // 3. Clear the cart
+            // 4. Enable receipt printing
+
+            // For now, we'll just enable the print button and close the modal
+            document.querySelector('button[onclick="printReceipt()"]').disabled = false;
+            closeCashPaymentModal();
+            
+            // Clear the cart
+            cart = [];
+            updateCart();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('cashPaymentModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCashPaymentModal();
+            }
+        });
+
+        // Receipt Printing
+        function printReceipt() {
+            const customerName = document.getElementById('customerName').value;
+            const date = new Date().toLocaleString();
+            const receiptNumber = `REC-${Date.now()}`;
+            
+            // Create receipt content
+            const receiptContent = `
+                <div style="font-family: Arial, sans-serif; max-width: 300px; margin: 0 auto; padding: 20px;">
+                    <h2 style="text-align: center; margin-bottom: 20px;">Sales Receipt</h2>
+                    <div style="margin-bottom: 10px;">
+                        <strong>Receipt #:</strong> ${receiptNumber}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>Date:</strong> ${date}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>Customer:</strong> ${customerName}
+                    </div>
+                    <hr style="margin: 15px 0;">
+                    <div style="margin-bottom: 10px;">
+                        ${cart.map(item => `
+                            <div style="margin-bottom: 5px;">
+                                ${item.name} x ${item.quantity} = ₱${(item.price * item.quantity).toFixed(2)}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <hr style="margin: 15px 0;">
+                    <div style="text-align: right;">
+                        <div style="margin-bottom: 5px;">
+                            <strong>Subtotal:</strong> ₱${cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}
+                        </div>
+                        <div style="margin-bottom: 5px;">
+                            <strong>VAT (12%):</strong> ₱${(cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 0.12).toFixed(2)}
+                        </div>
+                        <div style="font-size: 1.2em; font-weight: bold;">
+                            <strong>Total:</strong> ₱${(cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.12).toFixed(2)}
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        Thank you for your purchase!
+                    </div>
+                </div>
+            `;
+
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(receiptContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
 </x-header>

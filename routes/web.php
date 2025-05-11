@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\POSController;
 use Illuminate\Support\Facades\Route;
 
 // Home Routes
@@ -25,10 +26,12 @@ Route::middleware('auth')->group(function () {
 // Product Routes
     Route::get('/product-list', [ProductController::class, 'index'])->name('products.index');
     Route::get('/new-item', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/new-item', [ProductController::class, 'store'])->name('products.create');
-    Route::get('/product-overview/', [ProductController::class, 'show'])->name('products.show');
+    Route::post('/new-item', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/product-overview/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/product-overview/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/product-overview/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    Route::get('/product-overview/{product}', [ProductController::class, 'show'])->name('products.show');
     Route::get('/product-transaction/', [ProductController::class, 'inventoryStatus'])->name('products.transaction');
-
 
 // Supplier Routes
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
@@ -53,9 +56,7 @@ Route::middleware('auth')->group(function () {
     
 
 // Sales Routes
-    Route::get('/point-of-sale', function () {
-        return view('point-of-sale');
-    })->name('pos.index');
+    Route::get('/point-of-sale', [POSController::class, 'index'])->name('pos.index');
 
     Route::get('/sales-transaction', function () {
         return view('sales-transaction');
