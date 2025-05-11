@@ -74,7 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::get('suppliers/purchase-billing', function () {
         return view('purchase-billing');
     })->name('purchase.billing');
-    
+
     Route::get('/suppliers/purchase-invoice', function () {
         return view('purchase-invoice');
     })->name('suppliers.purchase.invoice');

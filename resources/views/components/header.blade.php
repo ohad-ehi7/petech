@@ -122,27 +122,7 @@
 
 
 
-         <li>
-            <button type="button" class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-            <span class="flex-1 text-left rtl:text-right whitespace-nowrap">
-            <i class="fa-solid fa-bag-shopping text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
-            Purchase</span>
-                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                  </svg>
-            </button>
-            <ul id="dropdown-example" class="hidden py-2 space-y-2">
-                  <li>
-                     <a href="purchase-product" class="flex items-center w-full p-2 pl-11 group text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">Products</a>
-                  </li>
-                  <li>
-                     <a href="purchase-billing" class="flex items-center w-full p-2 pl-11 group text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">Billing</a>
-                  </li>
-                  <li>
-                     <a href="purchase-invoice" class="flex items-center w-full p-2 pl-11 group text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">Invoice</a>
-                  </li>
-            </ul>
-         </li>
+         
          <li>
              <x-nav-link href="{{ route('suppliers.index') }}" :active="request()->is('suppliers/create')" :menu_item="false" >
                <span class="flex-1 whitespace-nowrap">
