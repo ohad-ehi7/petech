@@ -1,7 +1,7 @@
 <?php
 /**
  * Product Controller
- * 
+ *
  * Handles all product-related operations including CRUD operations,
  * image management, and inventory tracking.
  *
@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Validator;
 
 /**
  * Class ProductController
- * 
+ *
  * Manages product operations including creation, updates, deletion,
  * and inventory management.
  *
@@ -42,7 +42,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with(['category', 'suppliers'])->get();
+        $products = Product::with(['category', 'suppliers', 'inventory'])->get();
         return view('product-list', compact('products'));
     }
 
@@ -55,7 +55,8 @@ class ProductController extends Controller
     {
         $categories = Category::all();
         $suppliers = Supplier::all();
-        return view('new-item', compact('categories', 'suppliers'));
+        $lastProductId = Product::orderBy('ProductID', 'desc')->value('ProductID') ?? 0;
+        return view('new-item', compact('categories', 'suppliers', 'lastProductId'));
     }
 
     /**
@@ -72,7 +73,7 @@ class ProductController extends Controller
             'Unit' => 'required|string|max:50',
             'CategoryID' => 'required|exists:categories,CategoryID',
             'SupplierID' => 'nullable|exists:suppliers,SupplierID',
-            'SKU' => 'nullable|string|unique:products,SKU',
+            'SKU' => 'required|string|unique:products,SKU',
             'Description' => 'nullable|string',
             'Brand' => 'nullable|string|max:255',
             'Weight' => 'nullable|numeric|min:0',
@@ -80,10 +81,11 @@ class ProductController extends Controller
             'SellingPrice' => 'required|numeric|min:0',
             'CostPrice' => 'required|numeric|min:0',
             'OpeningStock' => 'nullable|integer|min:0',
-            'ReorderLevel' => 'nullable|integer|min:0',
+            'ReorderLevel' => 'required|integer|min:0',
             'IsReturnable' => 'boolean',
-            'product_image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120' // 5MB max
+            'Product_Image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120' // 5MB max
         ]);
+
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -95,17 +97,28 @@ class ProductController extends Controller
         $data['IsReturnable'] = $request->has('IsReturnable');
 
         // Handle image upload
-        if ($request->hasFile('product_image')) {
-            $imagePath = $request->file('product_image')->store('products', 'public');
-            $data['ImagePath'] = $imagePath;
+        if ($request->hasFile('Product_Image')) {
+            $imagePath = $request->file('Product_Image')->store('products', 'public');
+            \Log::info('Storing image at path: ' . $imagePath);
+            \Log::info('Full storage path: ' . storage_path('app/public/' . $imagePath));
+            $data['Product_Image'] = $imagePath;
         }
 
         $product = Product::create($data);
 
+        // Create initial inventory record
+        $product->inventory()->create([
+            'QuantityOnHand' => $request->OpeningStock ?? 0,
+            'ReorderLevel' => $request->ReorderLevel ?? 0,
+            'LastUpdated' => now(),
+            'Status' => 'active',
+        ]);
+
         // Handle supplier relationship if provided
         if ($request->has('SupplierID')) {
             $product->productSuppliers()->create([
-                'SupplierID' => $request->SupplierID
+                'SupplierID' => $request->SupplierID,
+                'PurchasePrice' => $request->CostPrice // Using CostPrice as PurchasePrice
             ]);
         }
 
@@ -123,7 +136,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load(['category', 'suppliers', 'transactions']);
-        return view('product-overview', compact('product'));
+        return view('products.show', compact('product'));
     }
 
     /**
@@ -137,7 +150,7 @@ class ProductController extends Controller
     {
         $categories = Category::all();
         $suppliers = Supplier::all();
-        return view('edit-item', compact('product', 'categories', 'suppliers'));
+        return view('products.edit', compact('product', 'categories', 'suppliers'));
     }
 
     /**
@@ -150,12 +163,15 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        \Log::info('Update method called for product: ' . $product->ProductID);
+        \Log::info('Request data:', $request->all());
+
         $validator = Validator::make($request->all(), [
             'ProductName' => 'required|string|max:255',
             'Unit' => 'required|string|max:50',
             'CategoryID' => 'required|exists:categories,CategoryID',
             'SupplierID' => 'nullable|exists:suppliers,SupplierID',
-            'SKU' => 'nullable|string|unique:products,SKU,' . $product->ProductID . ',ProductID',
+            // 'SKU' => 'required|string|unique:products,SKU,' . $product->ProductID . ',ProductID',
             'Description' => 'nullable|string',
             'Brand' => 'nullable|string|max:255',
             'Weight' => 'nullable|numeric|min:0',
@@ -163,42 +179,64 @@ class ProductController extends Controller
             'SellingPrice' => 'required|numeric|min:0',
             'CostPrice' => 'required|numeric|min:0',
             'OpeningStock' => 'nullable|integer|min:0',
-            'ReorderLevel' => 'nullable|integer|min:0',
+            'ReorderLevel' => 'required|integer|min:0',
             'IsReturnable' => 'boolean',
-            'product_image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120'
+            'Product_Image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120'
         ]);
 
         if ($validator->fails()) {
+            \Log::error('Validation failed:', $validator->errors()->toArray());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $data = $request->all();
-        $data['IsReturnable'] = $request->has('IsReturnable');
+        try {
+            $data = $request->all();
+            $data['IsReturnable'] = $request->has('IsReturnable');
 
-        // Handle image upload
-        if ($request->hasFile('product_image')) {
-            // Delete old image if exists
-            if ($product->ImagePath) {
-                Storage::disk('public')->delete($product->ImagePath);
+            // Handle image upload
+            if ($request->hasFile('Product_Image')) {
+                // Delete old image if exists
+                if ($product->Product_Image) {
+                    \Log::info('Deleting old image: ' . $product->Product_Image);
+                    Storage::disk('public')->delete($product->Product_Image);
+                }
+                $imagePath = $request->file('Product_Image')->store('products', 'public');
+                \Log::info('Storing new image at path: ' . $imagePath);
+                \Log::info('Full storage path: ' . storage_path('app/public/' . $imagePath));
+                $data['Product_Image'] = $imagePath;
             }
-            $imagePath = $request->file('product_image')->store('products', 'public');
-            $data['ImagePath'] = $imagePath;
-        }
 
-        $product->update($data);
+            \Log::info('Updating product with data:', $data);
+            $product->update($data);
 
-        // Update supplier relationship if provided
-        if ($request->has('SupplierID')) {
-            $product->productSuppliers()->delete(); // Remove old relationships
-            $product->productSuppliers()->create([
-                'SupplierID' => $request->SupplierID
+            // Update inventory record
+            \Log::info('Updating inventory record');
+            $product->inventory()->update([
+                'QuantityOnHand' => $request->OpeningStock ?? $product->inventory->QuantityOnHand,
+                'ReorderLevel' => $request->ReorderLevel,
+                'LastUpdated' => now()
             ]);
-        }
 
-        return redirect()->route('products.index')
-            ->with('success', 'Product updated successfully.');
+            // Update supplier relationship if provided
+            if ($request->has('SupplierID')) {
+                $product->productSuppliers()->delete(); // Remove old relationships
+                $product->productSuppliers()->create([
+                    'SupplierID' => $request->SupplierID,
+                    'PurchasePrice' => $request->CostPrice // Using CostPrice as PurchasePrice
+                ]);
+            }
+
+            \Log::info('Product updated successfully');
+            return redirect()->route('products.index')
+                ->with('success', 'Product updated successfully.');
+        } catch (\Exception $e) {
+            \Log::error('Error updating product: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Error updating product: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**
@@ -211,8 +249,8 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         // Delete product image if exists
-        if ($product->ImagePath) {
-            Storage::disk('public')->delete($product->ImagePath);
+        if ($product->Product_Image) {
+            Storage::disk('public')->delete($product->Product_Image);
         }
 
         $product->delete();

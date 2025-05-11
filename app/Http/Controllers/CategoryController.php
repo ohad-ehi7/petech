@@ -1,7 +1,7 @@
 <?php
 /**
  * Category Controller
- * 
+ *
  * Handles all category-related operations including CRUD operations.
  *
  * @category Controllers
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Validator;
 
 /**
  * Class CategoryController
- * 
+ *
  * Manages category operations including creation, updates, and deletion.
  *
  * @category Controllers
@@ -98,7 +98,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('edit-category', compact('category'));
+        return view('category.edit-category', compact('category'));
     }
 
     /**
