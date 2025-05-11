@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\POSController;
+use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 
 // Home Routes
@@ -49,18 +50,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-    Route::get('/category-card', function () {
-        return view('category-card');
-    })->name('category.card');
-    
-    
-
 // Sales Routes
     Route::get('/point-of-sale', [POSController::class, 'index'])->name('pos.index');
 
-    Route::get('/sales-transaction', function () {
-        return view('sales-transaction');
-    })->name('sales.transaction');
+    Route::get('/sales-transaction', [SaleController::class, 'index'])->name('sales.transaction');
 
     Route::get('/sales-receipt', function () {
         return view('sales-receipt');
@@ -74,21 +67,24 @@ Route::middleware('auth')->group(function () {
 // Purchase Routes
 
 
-    Route::get('/purchase-product', function () {
+    Route::get('/suppliers/purchase-product', function () {
         return view('purchase-product');
     })->name('suppliers.purchase.product');
 
-    Route::get('purchase-billing', function () {
+    Route::get('suppliers/purchase-billing', function () {
         return view('purchase-billing');
     })->name('purchase.billing');
-    
-    Route::get('/purchase-invoice', function () {
+
+    Route::get('/suppliers/purchase-invoice', function () {
         return view('purchase-invoice');
     })->name('suppliers.purchase.invoice');
 
-    Route::get('/suppliers/add-supplier', function () {
-        return view('add-supplier');
-    })->name('add-suppliers');
+// Sales routes
+Route::post('/sales/process', [SaleController::class, 'processSale']);
+
+Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
+Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
+Route::delete('/sales/bulk-delete', [SaleController::class, 'bulkDelete'])->name('sales.bulk-delete');
 
 //Reports Routes
 

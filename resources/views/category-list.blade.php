@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+<x-header :title="'Categories'">
+=======
 <x-header>
 
 
+>>>>>>> c96ca784ad1bc405245dc843b97afc5637ba6125
     <div class="p-10">
         <div class="bg-white rounded-xl shadow-md p-6">
             <div class="flex justify-between items-center mb-6">

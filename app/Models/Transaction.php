@@ -13,6 +13,23 @@ class Transaction extends Model
 
     protected $primaryKey = 'TransactionID';
 
+    protected $fillable = [
+        'ProductID',
+        'TransactionType',
+        'QuantityChange',
+        'UnitPrice',
+        'TotalAmount',
+        'ReferenceID',
+        'TransactionDate'
+    ];
+
+    protected $casts = [
+        'QuantityChange' => 'integer',
+        'UnitPrice' => 'decimal:2',
+        'TotalAmount' => 'decimal:2',
+        'TransactionDate' => 'datetime'
+    ];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'ProductID', 'ProductID');

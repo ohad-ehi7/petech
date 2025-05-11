@@ -15,6 +15,21 @@ class Sale extends Model
 
     protected $primaryKey = 'SaleID';
 
+    protected $fillable = [
+        'SaleDate',
+        'CustomerID',
+        'TotalAmount',
+        'DiscountAmount',
+        'PaymentMethod',
+        'ClerkID'
+    ];
+
+    protected $casts = [
+        'SaleDate' => 'datetime',
+        'TotalAmount' => 'decimal:2',
+        'DiscountAmount' => 'decimal:2'
+    ];
+
     public function salesItems(): HasMany
     {
         return $this->hasMany(SalesItem::class, 'SaleID', 'SaleID');
@@ -35,6 +50,8 @@ class Sale extends Model
         return $this->hasMany(Transaction::class, 'ReferenceID', 'SaleID');
     }
 
-
-
+    public function clerk(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'ClerkID');
+    }
 }
