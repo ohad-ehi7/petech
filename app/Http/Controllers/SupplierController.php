@@ -16,6 +16,7 @@ namespace App\Http\Controllers;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class SupplierController
@@ -60,23 +61,33 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'SupplierName' => 'required|string|max:255',
-            'ContactNumber' => 'nullable|string|max:20',
-            'Email' => 'nullable|email|max:255',
-            'Address' => 'nullable|string'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        if ($validator->fails()) {
+            $validator = Validator::make($request->all(), [
+                'SupplierName' => 'required|string|max:255',
+                'ContactNumber' => 'nullable|string|max:20',
+                'Email' => 'nullable|email|max:255',
+                'Address' => 'nullable|string'
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            Supplier::create($request->all());
+
+            DB::commit();
+            return redirect()->route('suppliers.index')
+                ->with('success', 'Supplier created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()
-                ->withErrors($validator)
+                ->with('error', 'Error creating supplier: ' . $e->getMessage())
                 ->withInput();
         }
-
-        Supplier::create($request->all());
-
-        return redirect()->route('suppliers.index')
-            ->with('success', 'Supplier created successfully.');
     }
 
     /**
@@ -114,23 +125,48 @@ class SupplierController extends Controller
      */
     public function update(Request $request, Supplier $supplier)
     {
-        $validator = Validator::make($request->all(), [
-            'SupplierName' => 'required|string|max:255',
-            'ContactNumber' => 'nullable|string|max:20',
-            'Email' => 'nullable|email|max:255',
-            'Address' => 'nullable|string'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        if ($validator->fails()) {
+            $validator = Validator::make($request->all(), [
+                'SupplierName' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    function ($attribute, $value, $fail) use ($request, $supplier) {
+                        $exists = Supplier::where('SupplierName', $value)
+                            ->where('SupplierID', '!=', $supplier->SupplierID)
+                            ->exists();
+                        
+                        if ($exists) {
+                            $fail('A supplier with this name already exists.');
+                        }
+                    }
+                ],
+                'ContactPerson' => 'nullable|string|max:255',
+                'Email' => 'nullable|email|max:255',
+                'Phone' => 'nullable|string|max:20',
+                'Address' => 'nullable|string',
+                'Status' => 'required|in:active,inactive'
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            $supplier->update($request->all());
+
+            DB::commit();
+            return redirect()->route('suppliers.index')
+                ->with('success', 'Supplier updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()
-                ->withErrors($validator)
+                ->with('error', 'Error updating supplier: ' . $e->getMessage())
                 ->withInput();
         }
-
-        $supplier->update($request->all());
-
-        return redirect()->route('suppliers.index')
-            ->with('success', 'Supplier updated successfully.');
     }
 
     /**
@@ -142,15 +178,23 @@ class SupplierController extends Controller
      */
     public function destroy(Supplier $supplier)
     {
-        // Check if supplier has products
-        if ($supplier->products()->count() > 0) {
+        try {
+            DB::beginTransaction();
+
+            // Check if supplier has products
+            if ($supplier->products()->exists()) {
+                throw new \Exception('Cannot delete supplier with associated products.');
+            }
+
+            $supplier->delete();
+
+            DB::commit();
             return redirect()->route('suppliers.index')
-                ->with('error', 'Cannot delete supplier with associated products.');
+                ->with('success', 'Supplier deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Error deleting supplier: ' . $e->getMessage());
         }
-
-        $supplier->delete();
-
-        return redirect()->route('suppliers.index')
-            ->with('success', 'Supplier deleted successfully.');
     }
 }

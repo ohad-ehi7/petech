@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Product;
+use App\Models\InventoryLog;
 
 class SaleController extends Controller
 {
@@ -52,33 +53,26 @@ class SaleController extends Controller
 
             // Process each item in the sale
             foreach ($request->items as $item) {
-                // Verify inventory
-                $inventory = Inventory::where('ProductID', $item['product_id'])->first();
-                if (!$inventory || $inventory->QuantityOnHand < $item['quantity']) {
-                    throw new \Exception("Insufficient stock for product ID: {$item['product_id']}");
-                }
-
-                // Create sales item record
+                $product = Product::findOrFail($item['product_id']);
+                
+                // Create sales item
                 $sale->salesItems()->create([
                     'ProductID' => $item['product_id'],
                     'Quantity' => $item['quantity'],
                     'PriceAtSale' => $item['price']
                 ]);
 
-                // Create transaction record
-                Transaction::create([
-                    'ProductID' => $item['product_id'],
-                    'TransactionType' => 'Sale',
-                    'QuantityChange' => -$item['quantity'],
-                    'UnitPrice' => $item['price'],
-                    'TotalAmount' => $item['price'] * $item['quantity'],
-                    'ReferenceID' => $sale->SaleID,
-                    'TransactionDate' => now()
-                ]);
-
                 // Update inventory
-                $inventory->QuantityOnHand -= $item['quantity'];
-                $inventory->save();
+                $product->inventory()->decrement('QuantityOnHand', $item['quantity']);
+
+                // Create inventory log for stock out
+                InventoryLog::create([
+                    'ProductID' => $item['product_id'],
+                    'type' => 'stock_out',
+                    'quantity' => $item['quantity'],
+                    'notes' => 'Sale #' . $sale->SaleID,
+                    'created_by' => Auth::id()
+                ]);
             }
 
             DB::commit();
@@ -232,6 +226,154 @@ class SaleController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
             return response()->json(['message' => 'Error deleting sales: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $sale = Sale::create([
+                'CustomerID' => $request->CustomerID,
+                'SaleDate' => now(),
+                'TotalAmount' => $request->TotalAmount,
+                'PaymentMethod' => $request->PaymentMethod,
+                'Status' => 'completed',
+                'Notes' => $request->Notes
+            ]);
+
+            foreach ($request->items as $item) {
+                $product = Product::findOrFail($item['ProductID']);
+                
+                // Create sale item
+                $sale->salesItems()->create([
+                    'ProductID' => $item['ProductID'],
+                    'Quantity' => $item['Quantity'],
+                    'PriceAtSale' => $item['Price'],
+                    'Subtotal' => $item['Quantity'] * $item['Price']
+                ]);
+
+                // Update inventory
+                $inventory = $product->inventory;
+                $inventory->QuantityOnHand -= $item['Quantity'];
+                $inventory->save();
+
+                // Create inventory log
+                InventoryLog::create([
+                    'ProductID' => $item['ProductID'],
+                    'type' => 'stock_out',
+                    'quantity' => $item['Quantity'],
+                    'notes' => 'Sale transaction #' . $sale->SaleID,
+                    'created_by' => Auth::id()
+                ]);
+            }
+
+            DB::commit();
+            return response()->json(['success' => true, 'sale_id' => $sale->SaleID]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function update(Request $request, Sale $sale)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Update sale details
+            $sale->update([
+                'CustomerID' => $request->CustomerID,
+                'TotalAmount' => $request->TotalAmount,
+                'PaymentMethod' => $request->PaymentMethod,
+                'Notes' => $request->Notes
+            ]);
+
+            // Delete existing sale items and restore inventory
+            foreach ($sale->salesItems as $item) {
+                $inventory = $item->product->inventory;
+                $inventory->QuantityOnHand += $item->Quantity;
+                $inventory->save();
+
+                // Create inventory log for reversal
+                InventoryLog::create([
+                    'ProductID' => $item->ProductID,
+                    'type' => 'stock_in',
+                    'quantity' => $item->Quantity,
+                    'notes' => 'Reversal of sale #' . $sale->SaleID,
+                    'created_by' => Auth::id()
+                ]);
+            }
+            $sale->salesItems()->delete();
+
+            // Create new sale items
+            foreach ($request->items as $item) {
+                $product = Product::findOrFail($item['ProductID']);
+                
+                // Create sale item
+                $sale->salesItems()->create([
+                    'ProductID' => $item['ProductID'],
+                    'Quantity' => $item['Quantity'],
+                    'PriceAtSale' => $item['Price'],
+                    'Subtotal' => $item['Quantity'] * $item['Price']
+                ]);
+
+                // Update inventory
+                $inventory = $product->inventory;
+                $inventory->QuantityOnHand -= $item['Quantity'];
+                $inventory->save();
+
+                // Create inventory log
+                InventoryLog::create([
+                    'ProductID' => $item['ProductID'],
+                    'type' => 'stock_out',
+                    'quantity' => $item['Quantity'],
+                    'notes' => 'Updated sale #' . $sale->SaleID,
+                    'created_by' => Auth::id()
+                ]);
+            }
+
+            DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function destroy(Sale $sale)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Restore inventory for each item
+            foreach ($sale->salesItems as $item) {
+                $inventory = $item->product->inventory;
+                $inventory->QuantityOnHand += $item->Quantity;
+                $inventory->save();
+
+                // Create inventory log for reversal
+                InventoryLog::create([
+                    'ProductID' => $item->ProductID,
+                    'type' => 'stock_in',
+                    'quantity' => $item->Quantity,
+                    'notes' => 'Cancellation of sale #' . $sale->SaleID,
+                    'created_by' => Auth::id()
+                ]);
+            }
+
+            // Delete sale items and the sale
+            $sale->salesItems()->delete();
+            $sale->delete();
+
+            DB::commit();
+            return redirect()->route('sales.index')
+                ->with('success', 'Sale deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Error deleting sale: ' . $e->getMessage());
         }
     }
 }

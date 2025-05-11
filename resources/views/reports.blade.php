@@ -1,232 +1,274 @@
 <x-header :title="'Reports'">
 
-    <!-- Profile section -->
-    <div class="relative flex items-center p-4 border border-gray-200 shadow bg-cover bg-center overflow-hidden" style="background-color: rgba(255, 255, 255, 0.8);">
-        <!-- Background layer -->
-        <div class="absolute inset-0 bg-cover bg-center opacity-40" style="background-image: url('images/small-background.png'); z-index: 0;"></div>
+    <div class="p-6">
+        <!-- Sales Activity Section -->
+        <div class="mb-8">
+            <h2 class="mb-4 text-lg font-semibold">Sales Activity</h2>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Today's Sales</div>
+                    <div class="text-2xl font-bold text-blue-600">₱{{ number_format($todaySales, 2) }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Items Sold Today</div>
+                    <div class="text-2xl font-bold text-green-600">{{ $itemsSoldToday }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Transactions Today</div>
+                    <div class="text-2xl font-bold text-purple-600">{{ $transactionsToday }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Void Transactions</div>
+                    <div class="text-2xl font-bold text-red-600">{{ $voidTransactionsToday }}</div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Foreground content -->
-        <div class="relative z-10 flex items-center">
-            <img src="images/profile-icon.png" alt="Picture nako" class="w-12 h-12 rounded-full border-2 border-gray-300 dark:border-gray-600 mr-4">
-            <div class="flex flex-col">
-                <!-- <h2 class="text-lg font-semibold text-black">Hello, {{Auth::user()->name}}</h2> -->
-                <p class="text-black">Changchang Store IMS/SMS</p>
+        <!-- Inventory Summary Section -->
+        <div class="mb-8">
+            <h2 class="mb-4 text-lg font-semibold">Inventory Summary</h2>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-5">
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Quantity in Hand</div>
+                    <div class="text-2xl font-bold text-blue-600">{{ $inventorySummary['quantity_in_hand'] }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Quantity to Receive</div>
+                    <div class="text-2xl font-bold text-yellow-600">{{ $inventorySummary['quantity_to_receive'] }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Low Stock Items</div>
+                    <div class="text-2xl font-bold text-red-600">{{ $inventorySummary['low_stock_items'] }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Total Items</div>
+                    <div class="text-2xl font-bold text-green-600">{{ $inventorySummary['total_items'] }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Active Items</div>
+                    <div class="text-2xl font-bold text-purple-600">{{ $inventorySummary['active_items'] }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Item Details Section -->
+        <div class="mb-8">
+            <h2 class="mb-4 text-lg font-semibold">Item Details</h2>
+            <div class="p-4 bg-white rounded-lg shadow">
+                <h3 class="mb-4 text-md font-medium">Top Selling Items This Month</h3>
+                <div class="overflow-x-auto">
+                    <table id="topSellingItemsTable" class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Product Name</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Quantity Sold</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Total Sales</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($topSellingItems as $item)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $item->ProductName }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $item->total_quantity }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">₱{{ number_format($item->total_sales ?? 0, 2) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $item->CategoryName ?? 'N/A' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales History Section -->
+        <div class="mb-8">
+            <h2 class="mb-4 text-lg font-semibold">Sales History</h2>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-5">
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Draft</div>
+                    <div class="text-2xl font-bold text-yellow-600">{{ $salesHistory['draft'] }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Confirmed</div>
+                    <div class="text-2xl font-bold text-blue-600">{{ $salesHistory['confirmed'] }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Packed</div>
+                    <div class="text-2xl font-bold text-purple-600">{{ $salesHistory['packed'] }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Shipped</div>
+                    <div class="text-2xl font-bold text-green-600">{{ $salesHistory['shipped'] }}</div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+                    <div class="text-sm text-gray-500">Invoiced</div>
+                    <div class="text-2xl font-bold text-indigo-600">{{ $salesHistory['invoiced'] }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Sales Chart -->
+        <div class="mb-8">
+            <h2 class="mb-4 text-lg font-semibold">Monthly Sales</h2>
+            <div class="p-4 bg-white rounded-lg shadow">
+                <div class="mb-4">
+                    <div class="text-sm text-gray-500">Total Sales This Month</div>
+                    <div class="text-2xl font-bold text-blue-600">₱{{ number_format($monthlyTotal, 2) }}</div>
+                </div>
+                <div class="h-64">
+                    <canvas id="monthlySalesChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-5 gap-4 p-4">
-        <div class="col-span-3">
-            <div class="max-w-3xl mx-auto rounded-lg overflow-hidden shadow border border-gray-200">
-                <!-- Header -->
-                <div class="bg-blue-400 text-black p-4 text-sm font-semibold">
-                    Sales Activity
-                </div>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dt-buttons {
+            margin-bottom: 1rem;
+        }
+        .dt-button {
+            background-color: #4F46E5 !important;
+            color: white !important;
+            border: none !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0.375rem !important;
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+            margin-right: 0.5rem !important;
+            transition: all 0.2s !important;
+        }
+        .dt-button:hover {
+            background-color: #4338CA !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        .dt-button:active {
+            transform: translateY(0) !important;
+        }
+        .dataTables_filter input {
+            border: 1px solid #E5E7EB !important;
+            border-radius: 0.375rem !important;
+            padding: 0.5rem !important;
+            margin-left: 0.5rem !important;
+        }
+        .dataTables_length select {
+            border: 1px solid #E5E7EB !important;
+            border-radius: 0.375rem !important;
+            padding: 0.5rem !important;
+            margin: 0 0.5rem !important;
+        }
+        .dataTables_info {
+            color: #6B7280 !important;
+            font-size: 0.875rem !important;
+        }
+        .paginate_button {
+            border: 1px solid #E5E7EB !important;
+            border-radius: 0.375rem !important;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem !important;
+            color: #4B5563 !important;
+        }
+        .paginate_button.current {
+            background-color: #4F46E5 !important;
+            color: white !important;
+            border-color: #4F46E5 !important;
+        }
+        .paginate_button:hover:not(.current) {
+            background-color: #F3F4F6 !important;
+            color: #1F2937 !important;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#topSellingItemsTable').DataTable({
+                dom: '<"flex flex-wrap items-center justify-between"<"flex items-center"B><"flex items-center"lf>>rtip',
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i> Copy',
+                        className: 'dt-button'
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i> CSV',
+                        className: 'dt-button'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i> Excel',
+                        className: 'dt-button'
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="fas fa-file-pdf"></i> PDF',
+                        className: 'dt-button'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i> Print',
+                        className: 'dt-button'
+                    }
+                ],
+                order: [[1, 'desc']], // Sort by quantity sold by default
+                pageLength: 10,
+                language: {
+                    search: "Search items:",
+                    lengthMenu: "Show _MENU_ items per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ items"
+                }
+            });
 
-                <!-- Content -->
-                <div class="bg-white grid grid-cols-4 text-center divide-x divide-gray-200 p-4">
-                    <!-- Today Sales -->
-                    <div>
-                        <div class="text-2xl font-bold text-blue-500">₱5,200</div>
-                        <div class="text-gray-500 text-sm">Peso</div>
-                        <div class="mt-2 text-xs text-gray-600 flex items-center justify-center gap-1">
-                            <span>⚙</span>
-                            TODAY SALES
-                        </div>
-                    </div>
-
-                    <!-- Items Sold -->
-                    <div>
-                        <div class="text-2xl font-bold text-green-500">45</div>
-                        <div class="text-gray-500 text-sm">Products</div>
-                        <div class="mt-2 text-xs text-gray-600 flex items-center justify-center gap-1">
-                            <span>⚙</span>
-                            ITEMS SOLD
-                        </div>
-                    </div>
-
-                    <!-- Transactions -->
-                    <div>
-                        <div class="text-2xl font-bold text-green-500">5</div>
-                        <div class="text-gray-500 text-sm">Qty</div>
-                        <div class="mt-2 text-xs text-gray-600 flex items-center justify-center gap-1">
-                            <span>⚙</span>
-                            TRANSACTIONS
-                        </div>
-                    </div>
-
-                    <!-- Void -->
-                    <div>
-                        <div class="text-2xl font-bold text-red-500">10</div>
-                        <div class="text-gray-500 text-sm">Qty</div>
-                        <div class="mt-2 text-xs text-gray-600 flex items-center justify-center gap-1">
-                            <span>✖</span>
-                            VOID
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-2">
-            <div class="rounded-lg shadow-md overflow-hidden">
-                <div class="bg-purple-400">
-                    <h2 class="text-black text-sm font-semibold p-4">Inventory Summary</h2>
-                </div>
-                <div class="bg-white px-4 py-3 text-sm space-y-4">
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">QUANTITY IN HAND</span>
-                        <span class="font-semibold text-gray-800">100</span>
-                    </div>
-                    <hr />
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">QUANTITY TO BE RECEIVED</span>
-                        <span class="font-semibold text-gray-800">25</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-2">
-            <div class="rounded-lg shadow-md overflow-hidden">
-                <div class="bg-gray-400">
-                    <h2 class="text-black text-sm font-semibold p-4">Item Details</h2>
-                </div>
-                <div class="bg-white p-4 flex justify-between items-center">
-                    <!-- Left Side -->
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-red-500 text-sm">Low Stock Items</span>
-                            <span class="text-red-500 font-semibold">0</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600 text-sm">All Item Groups</span>
-                            <span class="text-black font-semibold">0</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600 text-sm">All Items</span>
-                            <span class="text-black font-semibold">0</span>
-                        </div>
-                    </div>
-
-                    <!-- Divider -->
-                    <div class="border-l h-auto mx-4"></div>
-
-                    <!-- Right Side (Active Items Circle Placeholder) -->
-                    <div class="flex flex-col items-center justify-center text-xs text-gray-400">
-                        <span class="text-gray-600 mb-2 font-semibold">Active Items</span>
-                        <div class="w-20 h-20 flex items-center justify-center rounded-full border-[6px] border-gray-200 text-center">
-                            <span class="text-[10px] text-center leading-tight">No Active Items</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-3">
-            <div class="rounded-lg shadow-md overflow-hidden">
-                <!-- Header -->
-                <div class="bg-amber-400 flex justify-between items-center">
-                    <h2 class="text-black text-sm font-semibold p-4">Top Selling Items</h2>
-                    <span class="text-sm text-gray-800">This Month <span class="text-xs">&#9662;</span></span>
-                </div>
-
-                <!-- Content -->
-                <div class="bg-white flex justify-center items-center h-40 px-4 py-6 text-sm text-gray-400 text-center">
-                    No items were invoiced in this time frame
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-1">
-            <!-- Purchase Order Card -->
-            <div class="bg-white rounded-lg shadow-lg">
-                <!-- Header -->
-                <div class="flex justify-between items-center bg-green-400 text-black rounded-t-lg">
-                    <h2 class="font-semibold p-4">Purchase Order</h2>
-                    <div class="text-sm cursor-pointer">
-                        This Month <span class="text-blue-800">▾</span>
-                    </div>
-                </div>
-
-                <!-- Body -->
-                <div class="flex flex-col items-center justify-center px-4 py-6 space-y-4">
-                    <div class="text-sm text-gray-600">Quantity Ordered</div>
-                    <div class="text-2xl text-blue-500 font-semibold">0</div>
-
-                    <hr class="w-full border-t border-gray-200" />
-
-                    <div class="text-sm text-gray-600">Total Cost</div>
-                    <div class="text-xl text-blue-500 font-bold">PHP0.00</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-4">
-            <!-- Sales History Card -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                <!-- Header -->
-                <div class="flex justify-between items-center bg-sky-300 rounded-t-lg">
-                    <h2 class="text-black font-semibold p-4">Sales History</h2>
-                    <div class="text-sm text-black cursor-pointer">
-                        This Month <span class="text-blue-800">▾</span>
-                    </div>
-                </div>
-
-                <!-- Table Head -->
-                <div class="bg-gray-100 text-sm text-gray-600 font-semibold px-4 py-2 grid grid-cols-6">
-                    <div>Channel</div>
-                    <div>Draft</div>
-                    <div>Confirmed</div>
-                    <div>Packed</div>
-                    <div>Shipped</div>
-                    <div>Invoiced</div>
-                </div>
-
-                <!-- Table Body (Empty State) -->
-                <div class="flex justify-center items-center h-40 text-gray-400 text-sm">
-                    No sales were made in this time frame
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-5">
-            <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                <div class="flex justify-between items-center bg-indigo-200 rounded-t-xl">
-                    <h2 class="text-sm font-semibold text-gray-800 p-4">Sales Order Summary (in PHP)</h2>
-                    <div class="text-sm text-gray-600 mr-2">This Month</div>
-                </div>
-                <div class="p-4 flex flex-col md:flex-row">
-                    <!-- Chart area -->
-                    <div class="flex-1">
-                        <div class="h-64 flex items-center justify-center text-gray-400 text-sm border border-dashed border-gray-200 rounded-lg">
-                            No data found.
-                        </div>
-                        <div class="flex justify-between text-xs text-gray-500 mt-2 px-2">
-                            <span>01 Mar</span>
-                            <span>05 Mar</span>
-                            <span>09 Mar</span>
-                            <span>13 Mar</span>
-                            <span>17 Mar</span>
-                            <span>21 Mar</span>
-                            <span>25 Mar</span>
-                            <span>29 Mar</span>
-                            <span>31 Mar</span>
-                        </div>
-                    </div>
-                    <!-- Total Sales -->
-                    <div class="md:w-48 mt-6 md:mt-0 md:ml-6">
-                        <h3 class="text-sm font-medium text-gray-600 mb-2">Total Sales</h3>
-                        <div class="flex items-center bg-blue-50 border border-blue-200 rounded-md px-3 py-2">
-                            <div class="h-3 w-3 bg-cyan-400 rounded-full mr-2"></div>
-                            <div>
-                                <p class="text-xs text-gray-500">DIRECT SALES</p>
-                                <p class="text-lg font-semibold text-gray-700">PHP0.00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+            // Initialize Chart
+            const ctx = document.getElementById('monthlySalesChart').getContext('2d');
+            const monthlySales = @json($monthlySales);
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthlySales.map(item => item.date),
+                    datasets: [{
+                        label: 'Daily Sales',
+                        data: monthlySales.map(item => item.total),
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Daily Sales Trend'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₱' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </x-header>

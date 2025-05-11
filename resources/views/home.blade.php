@@ -27,7 +27,7 @@
                 <div class="bg-white grid grid-cols-4 text-center divide-x divide-gray-200 p-4">
                     <!-- Today Sales -->
                     <div>
-                        <div class="text-2xl font-bold text-blue-500">₱5,200</div>
+                        <div class="text-2xl font-bold text-blue-500">₱{{ number_format($todaySales, 2) }}</div>
                         <div class="text-gray-500 text-sm">Peso</div>
                         <div class="mt-2 text-xs text-gray-600 flex items-center justify-center gap-1">
                             <span>⚙</span>
@@ -37,7 +37,7 @@
 
                     <!-- Items Sold -->
                     <div>
-                        <div class="text-2xl font-bold text-green-500">45</div>
+                        <div class="text-2xl font-bold text-green-500">{{ $itemsSoldToday }}</div>
                         <div class="text-gray-500 text-sm">Products</div>
                         <div class="mt-2 text-xs text-gray-600 flex items-center justify-center gap-1">
                             <span>⚙</span>
@@ -47,7 +47,7 @@
 
                     <!-- Transactions -->
                     <div>
-                        <div class="text-2xl font-bold text-green-500">5</div>
+                        <div class="text-2xl font-bold text-green-500">{{ $transactionsToday }}</div>
                         <div class="text-gray-500 text-sm">Qty</div>
                         <div class="mt-2 text-xs text-gray-600 flex items-center justify-center gap-1">
                             <span>⚙</span>
@@ -57,7 +57,7 @@
 
                     <!-- Void -->
                     <div>
-                        <div class="text-2xl font-bold text-red-500">10</div>
+                        <div class="text-2xl font-bold text-red-500">{{ $voidTransactionsToday }}</div>
                         <div class="text-gray-500 text-sm">Qty</div>
                         <div class="mt-2 text-xs text-gray-600 flex items-center justify-center gap-1">
                             <span>✖</span>
@@ -76,12 +76,12 @@
                 <div class="bg-white px-4 py-3 text-sm space-y-4">
                     <div class="flex justify-between">
                         <span class="text-gray-500">QUANTITY IN HAND</span>
-                        <span class="font-semibold text-gray-800">100</span>
+                        <span class="font-semibold text-gray-800">{{ $inventorySummary['quantity_in_hand'] }}</span>
                     </div>
                     <hr />
                     <div class="flex justify-between">
                         <span class="text-gray-500">QUANTITY TO BE RECEIVED</span>
-                        <span class="font-semibold text-gray-800">25</span>
+                        <span class="font-semibold text-gray-800">{{ $inventorySummary['quantity_to_receive'] }}</span>
                     </div>
                 </div>
             </div>
@@ -97,26 +97,26 @@
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
                             <span class="text-red-500 text-sm">Low Stock Items</span>
-                            <span class="text-red-500 font-semibold">0</span>
+                            <span class="text-red-500 font-semibold">{{ $inventorySummary['low_stock_items'] }}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-gray-600 text-sm">All Item Groups</span>
-                            <span class="text-black font-semibold">0</span>
+                            <span class="text-black font-semibold">{{ $inventorySummary['total_items'] }}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-gray-600 text-sm">All Items</span>
-                            <span class="text-black font-semibold">0</span>
+                            <span class="text-black font-semibold">{{ $inventorySummary['active_items'] }}</span>
                         </div>
                     </div>
 
                     <!-- Divider -->
                     <div class="border-l h-auto mx-4"></div>
 
-                    <!-- Right Side (Active Items Circle Placeholder) -->
+                    <!-- Right Side (Active Items Circle) -->
                     <div class="flex flex-col items-center justify-center text-xs text-gray-400">
                         <span class="text-gray-600 mb-2 font-semibold">Active Items</span>
                         <div class="w-20 h-20 flex items-center justify-center rounded-full border-[6px] border-gray-200 text-center">
-                            <span class="text-[10px] text-center leading-tight">No Active Items</span>
+                            <span class="text-[10px] text-center leading-tight">{{ $inventorySummary['active_items'] }}</span>
                         </div>
                     </div>
                 </div>
@@ -128,12 +128,46 @@
                 <!-- Header -->
                 <div class="bg-amber-400 flex justify-between items-center">
                     <h2 class="text-black text-sm font-semibold p-4">Top Selling Items</h2>
-                    <span class="text-sm text-gray-800">This Month <span class="text-xs">&#9662;</span></span>
+                    <form method="GET" action="{{ route('home') }}" class="mr-4">
+                        <select name="date_range" class="text-sm text-gray-800 bg-transparent border-none focus:ring-0" onchange="this.form.submit()">
+                            <option value="today" {{ $dateRange === 'today' ? 'selected' : '' }}>Today</option>
+                            <option value="yesterday" {{ $dateRange === 'yesterday' ? 'selected' : '' }}>Yesterday</option>
+                            <option value="this_week" {{ $dateRange === 'this_week' ? 'selected' : '' }}>This Week</option>
+                            <option value="last_week" {{ $dateRange === 'last_week' ? 'selected' : '' }}>Last Week</option>
+                            <option value="this_month" {{ $dateRange === 'this_month' ? 'selected' : '' }}>This Month</option>
+                            <option value="last_month" {{ $dateRange === 'last_month' ? 'selected' : '' }}>Last Month</option>
+                            <option value="this_year" {{ $dateRange === 'this_year' ? 'selected' : '' }}>This Year</option>
+                            <option value="last_year" {{ $dateRange === 'last_year' ? 'selected' : '' }}>Last Year</option>
+                        </select>
+                    </form>
                 </div>
 
                 <!-- Content -->
-                <div class="bg-white flex justify-center items-center h-40 px-4 py-6 text-sm text-gray-400 text-center">
-                    No items were invoiced in this time frame
+                <div class="bg-white p-4">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity Sold</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Sales</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($topSellingItems as $item)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item->ProductName }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ (int)$item->total_quantity }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₱{{ number_format($item->total_sales ?? 0, 2) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item->CategoryName ?? 'N/A' }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No items were invoiced in this time frame</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -168,9 +202,18 @@
                 <!-- Header -->
                 <div class="flex justify-between items-center bg-sky-300 rounded-t-lg">
                     <h2 class="text-black font-semibold p-4">Sales History</h2>
-                    <div class="text-sm text-black cursor-pointer">
-                        This Month <span class="text-blue-800">▾</span>
-                    </div>
+                    <form method="GET" action="{{ route('home') }}" class="mr-4">
+                        <select name="date_range" class="text-sm text-black bg-transparent border-none focus:ring-0" onchange="this.form.submit()">
+                            <option value="today" {{ $dateRange === 'today' ? 'selected' : '' }}>Today</option>
+                            <option value="yesterday" {{ $dateRange === 'yesterday' ? 'selected' : '' }}>Yesterday</option>
+                            <option value="this_week" {{ $dateRange === 'this_week' ? 'selected' : '' }}>This Week</option>
+                            <option value="last_week" {{ $dateRange === 'last_week' ? 'selected' : '' }}>Last Week</option>
+                            <option value="this_month" {{ $dateRange === 'this_month' ? 'selected' : '' }}>This Month</option>
+                            <option value="last_month" {{ $dateRange === 'last_month' ? 'selected' : '' }}>Last Month</option>
+                            <option value="this_year" {{ $dateRange === 'this_year' ? 'selected' : '' }}>This Year</option>
+                            <option value="last_year" {{ $dateRange === 'last_year' ? 'selected' : '' }}>Last Year</option>
+                        </select>
+                    </form>
                 </div>
 
                 <!-- Table Head -->
@@ -183,9 +226,16 @@
                     <div>Invoiced</div>
                 </div>
 
-                <!-- Table Body (Empty State) -->
-                <div class="flex justify-center items-center h-40 text-gray-400 text-sm">
-                    No sales were made in this time frame
+                <!-- Table Body -->
+                <div class="bg-white">
+                    <div class="grid grid-cols-6 px-4 py-3 text-sm">
+                        <div class="font-medium text-gray-900">Direct Sales</div>
+                        <div class="text-yellow-600 font-medium">{{ $salesHistory['draft'] }}</div>
+                        <div class="text-blue-600 font-medium">{{ $salesHistory['confirmed'] }}</div>
+                        <div class="text-purple-600 font-medium">{{ $salesHistory['packed'] }}</div>
+                        <div class="text-green-600 font-medium">{{ $salesHistory['shipped'] }}</div>
+                        <div class="text-indigo-600 font-medium">{{ $salesHistory['invoiced'] }}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -194,24 +244,29 @@
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
                 <div class="flex justify-between items-center bg-indigo-200 rounded-t-xl">
                     <h2 class="text-sm font-semibold text-gray-800 p-4">Sales Order Summary (in PHP)</h2>
-                    <div class="text-sm text-gray-600 mr-2">This Month</div>
+                    <form method="GET" action="{{ route('home') }}" class="mr-4">
+                        <select name="date_range" class="text-sm text-gray-600 bg-transparent border-none focus:ring-0" onchange="this.form.submit()">
+                            <option value="today" {{ $dateRange === 'today' ? 'selected' : '' }}>Today</option>
+                            <option value="yesterday" {{ $dateRange === 'yesterday' ? 'selected' : '' }}>Yesterday</option>
+                            <option value="this_week" {{ $dateRange === 'this_week' ? 'selected' : '' }}>This Week</option>
+                            <option value="last_week" {{ $dateRange === 'last_week' ? 'selected' : '' }}>Last Week</option>
+                            <option value="this_month" {{ $dateRange === 'this_month' ? 'selected' : '' }}>This Month</option>
+                            <option value="last_month" {{ $dateRange === 'last_month' ? 'selected' : '' }}>Last Month</option>
+                            <option value="this_year" {{ $dateRange === 'this_year' ? 'selected' : '' }}>This Year</option>
+                            <option value="last_year" {{ $dateRange === 'last_year' ? 'selected' : '' }}>Last Year</option>
+                        </select>
+                    </form>
                 </div>
                 <div class="p-4 flex flex-col md:flex-row">
                     <!-- Chart area -->
                     <div class="flex-1">
-                        <div class="h-64 flex items-center justify-center text-gray-400 text-sm border border-dashed border-gray-200 rounded-lg">
-                            No data found.
+                        <div class="h-64">
+                            <canvas id="monthlySalesChart"></canvas>
                         </div>
                         <div class="flex justify-between text-xs text-gray-500 mt-2 px-2">
-                            <span>01 Mar</span>
-                            <span>05 Mar</span>
-                            <span>09 Mar</span>
-                            <span>13 Mar</span>
-                            <span>17 Mar</span>
-                            <span>21 Mar</span>
-                            <span>25 Mar</span>
-                            <span>29 Mar</span>
-                            <span>31 Mar</span>
+                            @foreach($monthlySales as $sale)
+                                <span>{{ \Carbon\Carbon::parse($sale->date)->format('d M') }}</span>
+                            @endforeach
                         </div>
                     </div>
                     <!-- Total Sales -->
@@ -221,7 +276,7 @@
                             <div class="h-3 w-3 bg-cyan-400 rounded-full mr-2"></div>
                             <div>
                                 <p class="text-xs text-gray-500">DIRECT SALES</p>
-                                <p class="text-lg font-semibold text-gray-700">PHP0.00</p>
+                                <p class="text-lg font-semibold text-gray-700">₱{{ number_format($monthlyTotal, 2) }}</p>
                             </div>
                         </div>
                     </div>
@@ -229,4 +284,50 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('monthlySalesChart').getContext('2d');
+            const monthlySales = @json($monthlySales);
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthlySales.map(item => item.date),
+                    datasets: [{
+                        label: 'Daily Sales',
+                        data: monthlySales.map(item => item.total),
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Daily Sales Trend'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₱' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </x-header>

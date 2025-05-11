@@ -17,9 +17,12 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Supplier;
+use App\Models\InventoryLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class ProductController
@@ -121,37 +124,60 @@ class ProductController extends Controller
                 ->withInput();
         }
 
-        $data = $request->all();
-        $data['IsReturnable'] = $request->has('IsReturnable');
+        try {
+            DB::beginTransaction();
 
-        // Handle image upload
-        if ($request->hasFile('Product_Image')) {
-            $imagePath = $request->file('Product_Image')->store('products', 'public');
-            \Log::info('Storing image at path: ' . $imagePath);
-            \Log::info('Full storage path: ' . storage_path('app/public/' . $imagePath));
-            $data['Product_Image'] = $imagePath;
-        }
+            $data = $request->all();
+            $data['IsReturnable'] = $request->has('IsReturnable');
 
-        $product = Product::create($data);
+            // Handle image upload
+            if ($request->hasFile('Product_Image')) {
+                $imagePath = $request->file('Product_Image')->store('products', 'public');
+                \Log::info('Storing image at path: ' . $imagePath);
+                \Log::info('Full storage path: ' . storage_path('app/public/' . $imagePath));
+                $data['Product_Image'] = $imagePath;
+            }
 
-        // Create initial inventory record
-        $product->inventory()->create([
-            'QuantityOnHand' => $request->OpeningStock ?? 0,
-            'ReorderLevel' => $request->ReorderLevel ?? 0,
-            'LastUpdated' => now(),
-            'Status' => 'active',
-        ]);
+            // Create product
+            $product = Product::create($data);
 
-        // Handle supplier relationship if provided
-        if ($request->has('SupplierID')) {
-            $product->productSuppliers()->create([
-                'SupplierID' => $request->SupplierID,
-                'PurchasePrice' => $request->CostPrice // Using CostPrice as PurchasePrice
+            // Create initial inventory record
+            $product->inventory()->create([
+                'QuantityOnHand' => $request->OpeningStock ?? 0,
+                'ReorderLevel' => $request->ReorderLevel ?? 0,
+                'LastUpdated' => now(),
+                'Status' => 'active',
             ]);
-        }
 
-        return redirect()->route('products.index')
-            ->with('success', 'Product created successfully.');
+            // Create inventory log for initial stock
+            if ($request->OpeningStock > 0) {
+                InventoryLog::create([
+                    'ProductID' => $product->ProductID,
+                    'type' => 'stock_in',
+                    'quantity' => $request->OpeningStock,
+                    'notes' => 'Initial stock',
+                    'created_by' => Auth::id()
+                ]);
+            }
+
+            // Handle supplier relationship if provided
+            if ($request->has('SupplierID')) {
+                $product->productSuppliers()->create([
+                    'SupplierID' => $request->SupplierID,
+                    'PurchasePrice' => $request->CostPrice // Using CostPrice as PurchasePrice
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('products.index')
+                ->with('success', 'Product created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error creating product: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Error creating product: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**
@@ -195,11 +221,25 @@ class ProductController extends Controller
         \Log::info('Request data:', $request->all());
 
         $validator = Validator::make($request->all(), [
-            'ProductName' => 'required|string|max:255',
+            'ProductName' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request, $product) {
+                    // Check if product with same name exists in the same category, excluding current product
+                    $exists = Product::where('ProductName', $value)
+                        ->where('CategoryID', $request->CategoryID)
+                        ->where('ProductID', '!=', $product->ProductID)
+                        ->exists();
+                    
+                    if ($exists) {
+                        $fail('A product with this name already exists in the selected category.');
+                    }
+                }
+            ],
             'Unit' => 'required|string|max:50',
             'CategoryID' => 'required|exists:categories,CategoryID',
             'SupplierID' => 'nullable|exists:suppliers,SupplierID',
-            // 'SKU' => 'required|string|unique:products,SKU,' . $product->ProductID . ',ProductID',
             'Description' => 'nullable|string',
             'Brand' => 'nullable|string|max:255',
             'Weight' => 'nullable|numeric|min:0',
@@ -220,6 +260,8 @@ class ProductController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
             $data = $request->all();
             $data['IsReturnable'] = $request->has('IsReturnable');
 
@@ -227,39 +269,52 @@ class ProductController extends Controller
             if ($request->hasFile('Product_Image')) {
                 // Delete old image if exists
                 if ($product->Product_Image) {
-                    \Log::info('Deleting old image: ' . $product->Product_Image);
                     Storage::disk('public')->delete($product->Product_Image);
                 }
                 $imagePath = $request->file('Product_Image')->store('products', 'public');
-                \Log::info('Storing new image at path: ' . $imagePath);
-                \Log::info('Full storage path: ' . storage_path('app/public/' . $imagePath));
                 $data['Product_Image'] = $imagePath;
             }
 
-            \Log::info('Updating product with data:', $data);
+            // Update product
             $product->update($data);
 
-            // Update inventory record
-            \Log::info('Updating inventory record');
-            $product->inventory()->update([
-                'QuantityOnHand' => $request->OpeningStock ?? $product->inventory->QuantityOnHand,
-                'ReorderLevel' => $request->ReorderLevel,
-                'LastUpdated' => now()
-            ]);
+            // Update inventory if OpeningStock changed
+            if ($request->has('OpeningStock') && $request->OpeningStock != $product->inventory->QuantityOnHand) {
+                $oldQuantity = $product->inventory->QuantityOnHand;
+                $newQuantity = $request->OpeningStock;
+                $quantityChange = $newQuantity - $oldQuantity;
+
+                $product->inventory()->update([
+                    'QuantityOnHand' => $newQuantity,
+                    'ReorderLevel' => $request->ReorderLevel,
+                    'LastUpdated' => now()
+                ]);
+
+                // Create inventory log for the adjustment
+                InventoryLog::create([
+                    'ProductID' => $product->ProductID,
+                    'type' => $quantityChange > 0 ? 'stock_in' : 'stock_out',
+                    'quantity' => abs($quantityChange),
+                    'notes' => 'Stock adjustment during product update',
+                    'created_by' => Auth::id()
+                ]);
+            }
 
             // Update supplier relationship if provided
             if ($request->has('SupplierID')) {
                 $product->productSuppliers()->delete(); // Remove old relationships
                 $product->productSuppliers()->create([
                     'SupplierID' => $request->SupplierID,
-                    'PurchasePrice' => $request->CostPrice // Using CostPrice as PurchasePrice
+                    'PurchasePrice' => $request->CostPrice
                 ]);
             }
 
+            DB::commit();
             \Log::info('Product updated successfully');
             return redirect()->route('products.index')
                 ->with('success', 'Product updated successfully.');
         } catch (\Exception $e) {
+            DB::rollBack();
             \Log::error('Error updating product: ' . $e->getMessage());
             return redirect()->back()
                 ->with('error', 'Error updating product: ' . $e->getMessage())
@@ -276,15 +331,32 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // Delete product image if exists
-        if ($product->Product_Image) {
-            Storage::disk('public')->delete($product->Product_Image);
+        try {
+            DB::beginTransaction();
+
+            // Delete product image if exists
+            if ($product->Product_Image) {
+                Storage::disk('public')->delete($product->Product_Image);
+            }
+
+            // Delete related records
+            $product->productSuppliers()->delete();
+            $product->inventory()->delete();
+            $product->transactions()->delete();
+            $product->salesItems()->delete();
+
+            // Delete the product
+            $product->delete();
+
+            DB::commit();
+            return redirect()->route('products.index')
+                ->with('success', 'Product deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error deleting product: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Error deleting product: ' . $e->getMessage());
         }
-
-        $product->delete();
-
-        return redirect()->route('products.index')
-            ->with('success', 'Product deleted successfully.');
     }
 
     /**

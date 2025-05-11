@@ -2,10 +2,13 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InventoryLogController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 // Home Routes
@@ -20,9 +23,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/home', function () {
-        return view('home');
-    })->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Product Routes
     Route::get('/product-list', [ProductController::class, 'index'])->name('products.index');
@@ -88,9 +89,9 @@ Route::delete('/sales/bulk-delete', [SaleController::class, 'bulkDelete'])->name
 
 //Reports Routes
 
-    Route::get('/reports', function () {
-        return view('reports');
-    })->name('reports');
+    Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+
+    Route::get('/inventory-logs', [InventoryLogController::class, 'index'])->name('inventory.logs');
 
 });
 

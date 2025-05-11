@@ -16,6 +16,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class CategoryController
@@ -60,20 +61,30 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'CategoryName' => 'required|string|max:255|unique:categories,CategoryName'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        if ($validator->fails()) {
+            $validator = Validator::make($request->all(), [
+                'CategoryName' => 'required|string|max:255|unique:categories,CategoryName'
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            Category::create($request->all());
+
+            DB::commit();
+            return redirect()->route('categories.index')
+                ->with('success', 'Category created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()
-                ->withErrors($validator)
+                ->with('error', 'Error creating category: ' . $e->getMessage())
                 ->withInput();
         }
-
-        Category::create($request->all());
-
-        return redirect()->route('categories.index')
-            ->with('success', 'Category created successfully.');
     }
 
     /**
@@ -111,20 +122,44 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $validator = Validator::make($request->all(), [
-            'CategoryName' => 'required|string|max:255|unique:categories,CategoryName,' . $category->CategoryID . ',CategoryID'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        if ($validator->fails()) {
+            $validator = Validator::make($request->all(), [
+                'CategoryName' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    function ($attribute, $value, $fail) use ($request, $category) {
+                        $exists = Category::where('CategoryName', $value)
+                            ->where('CategoryID', '!=', $category->CategoryID)
+                            ->exists();
+                        
+                        if ($exists) {
+                            $fail('A category with this name already exists.');
+                        }
+                    }
+                ],
+                'Description' => 'nullable|string'
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            $category->update($request->all());
+
+            DB::commit();
+            return redirect()->route('categories.index')
+                ->with('success', 'Category updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()
-                ->withErrors($validator)
+                ->with('error', 'Error updating category: ' . $e->getMessage())
                 ->withInput();
         }
-
-        $category->update($request->all());
-
-        return redirect()->route('categories.index')
-            ->with('success', 'Category updated successfully.');
     }
 
     /**
@@ -136,15 +171,23 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        // Check if category has products
-        if ($category->products()->count() > 0) {
+        try {
+            DB::beginTransaction();
+
+            // Check if category has products
+            if ($category->products()->exists()) {
+                throw new \Exception('Cannot delete category with associated products.');
+            }
+
+            $category->delete();
+
+            DB::commit();
             return redirect()->route('categories.index')
-                ->with('error', 'Cannot delete category with associated products.');
+                ->with('success', 'Category deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Error deleting category: ' . $e->getMessage());
         }
-
-        $category->delete();
-
-        return redirect()->route('categories.index')
-            ->with('success', 'Category deleted successfully.');
     }
 }

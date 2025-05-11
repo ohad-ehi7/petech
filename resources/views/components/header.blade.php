@@ -131,19 +131,20 @@
             </x-nav-link>
          </li>
          <li>
-            <a href="reports" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
+
+             <x-nav-link href="{{ route('reports') }}" :active="request()->is('reports')" :menu_item="false" >
                <span class="flex-1 whitespace-nowrap">
                <i class="fa-solid fa-chart-line text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                Reports</span>
-               <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
-            </a>
+                 <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
+             </x-nav-link>
          </li>
          <li>
-            <a href="#" class="group flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]">
+             <x-nav-link href="{{ route('inventory.logs') }}" :active="request()->is('inventory-logs')" :menu_item="false" >
                <span class="flex-1 whitespace-nowrap">
                <i class="fa-solid fa-folder-open text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                Inventory Logs</span>
-            </a>
+             </x-nav-link>
          </li>
          <li>
 
