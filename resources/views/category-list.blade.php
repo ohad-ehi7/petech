@@ -1,4 +1,6 @@
 <x-header>
+
+
     <div class="p-10">
         <div class="bg-white rounded-xl shadow-md p-6">
             <div class="flex justify-between items-center mb-6">

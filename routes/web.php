@@ -46,6 +46,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
+    Route::get('/category-card', function () {
+        return view('category-card');
+    })->name('category.card');
+    
+    
+
 // Sales Routes
     Route::get('/point-of-sale', function () {
         return view('point-of-sale');
@@ -67,17 +73,21 @@ Route::middleware('auth')->group(function () {
 // Purchase Routes
 
 
-    Route::get('/suppliers/purchase-product', function () {
+    Route::get('/purchase-product', function () {
         return view('purchase-product');
     })->name('suppliers.purchase.product');
 
-    Route::get('suppliers/purchase-billing', function () {
+    Route::get('purchase-billing', function () {
         return view('purchase-billing');
     })->name('purchase.billing');
     
-    Route::get('/suppliers/purchase-invoice', function () {
+    Route::get('/purchase-invoice', function () {
         return view('purchase-invoice');
     })->name('suppliers.purchase.invoice');
+
+    Route::get('/suppliers/add-supplier', function () {
+        return view('add-supplier');
+    })->name('add-suppliers');
 
 });
 

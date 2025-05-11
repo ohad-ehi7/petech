@@ -48,6 +48,8 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock on hand</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Reorder Level</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Supplier</th>
+
             
           </tr>
         </thead>
@@ -56,13 +58,14 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <label class="inline-flex items-center space-x-2">
                 <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
-                <span>Bear Brand</span>
+                <a href="product-overview"><span>Bear Brand</span></a>
               </label>
             </td>
             <td class="px-6 py-4 text-blue-600 hover:underline cursor-pointer">PD01</td>
             <td class="px-6 py-4">45.00</td>
             <td class="px-6 py-4">12</td>
-            <td class="px-6 py-4 text-green-600 font-semibold">ACTIVE</td>
+            <td class="px-6 py-4 text-green-600 font-semibold">Good</td>
+             <td class="px-6 py-4">Davao Distribution</td>
           </tr>
           <tr>
           <td class="px-6 py-4 whitespace-nowrap">
@@ -72,9 +75,15 @@
               </label>
             </td>
             <td class="px-6 py-4 text-blue-600 hover:underline cursor-pointer">PD01</td>
-            <td class="px-6 py-4">45.00</td>
+            <td class="px-6 py-4">11.00</td>
             <td class="px-6 py-4">12</td>
-            <td class="px-6 py-4 text-red-500 font-semibold">VOID</td>
+            <td class="px-6 py-4 text-red-600">
+              <p class="font-bold">To Restock</p>
+              <p class="italic text-sm">
+                Reorder level reached, <br> you have to restock <span class="font-bold italic">ASAP</span>
+              </p>
+            </td>
+            <td class="px-6 py-4">Greatwall Trading</td>
           </tr>
         </tbody>
       </table>
