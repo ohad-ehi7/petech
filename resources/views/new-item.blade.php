@@ -1,4 +1,4 @@
-<x-header>
+<x-header :title="'Add New Product'">
     <div class="p-10">
         <div class="bg-white rounded-xl shadow-md p-6">
             <form method="POST" action="{{ route('products.create') }}" class="space-y-8" enctype="multipart/form-data">

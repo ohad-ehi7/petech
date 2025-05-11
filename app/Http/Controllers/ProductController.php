@@ -38,11 +38,26 @@ class ProductController extends Controller
     /**
      * Display a listing of the products.
      *
+     * @param  Request  $request  The incoming request
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'suppliers', 'inventory'])->get();
+        $query = Product::with(['category', 'suppliers', 'inventory']);
+
+        if ($request->has('search')) {
+            $searchTerm = $request->search;
+            $query->where(
+                function ($q) use ($searchTerm) {
+                    $q->where('ProductName', 'like', "%{$searchTerm}%")
+                      ->orWhere('SKU', 'like', "%{$searchTerm}%")
+                      ->orWhere('Brand', 'like', "%{$searchTerm}%")
+                      ->orWhere('Description', 'like', "%{$searchTerm}%");
+                }
+            );
+        }
+
+        $products = $query->get();
         return view('product-list', compact('products'));
     }
 
