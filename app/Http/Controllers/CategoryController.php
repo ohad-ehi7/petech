@@ -38,7 +38,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::with('products')->get();
-        return view('category-list', compact('categories'));
+        return view('category.category-list', compact('categories'));
     }
 
     /**
@@ -48,7 +48,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('new-category');
+        return view('category.new-category');
     }
 
     /**

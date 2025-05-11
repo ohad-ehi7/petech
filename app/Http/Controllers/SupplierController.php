@@ -1,7 +1,7 @@
 <?php
 /**
  * Supplier Controller
- * 
+ *
  * Handles all supplier-related operations including CRUD operations.
  *
  * @category Controllers
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Validator;
 
 /**
  * Class SupplierController
- * 
+ *
  * Manages supplier operations including creation, updates, and deletion.
  *
  * @category Controllers
@@ -38,7 +38,7 @@ class SupplierController extends Controller
     public function index()
     {
         $suppliers = Supplier::with('products')->get();
-        return view('supplier-list', compact('suppliers'));
+        return view('supplier.supplier-list', compact('suppliers'));
     }
 
     /**
@@ -48,7 +48,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        return view('new-supplier');
+        return view('supplier.add-supplier');
     }
 
     /**
@@ -101,7 +101,7 @@ class SupplierController extends Controller
      */
     public function edit(Supplier $supplier)
     {
-        return view('edit-supplier', compact('supplier'));
+        return view('supplier.edit-supplier', compact('supplier'));
     }
 
     /**

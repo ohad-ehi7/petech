@@ -154,8 +154,8 @@ class SaleController extends Controller
         }
 
         $sales = $query->orderBy('SaleDate', 'desc')->get();
-            
-        return view('sales-transaction', compact('sales'));
+
+        return view('transaction.sales-transaction', compact('sales'));
     }
 
     public function show(Sale $sale)
@@ -188,7 +188,7 @@ class SaleController extends Controller
             DB::beginTransaction();
 
             $sales = Sale::with(['salesItems', 'transactions'])->whereIn('SaleID', $request->saleIds)->get();
-            
+
             foreach ($sales as $sale) {
                 \Log::info('Processing sale for deletion', ['saleId' => $sale->SaleID]);
 

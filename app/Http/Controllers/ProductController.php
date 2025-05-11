@@ -58,7 +58,7 @@ class ProductController extends Controller
         }
 
         $products = $query->get();
-        return view('product-list', compact('products'));
+        return view('products.product-list', compact('products'));
     }
 
     /**
@@ -71,7 +71,7 @@ class ProductController extends Controller
         $categories = Category::all();
         $suppliers = Supplier::all();
         $lastProductId = Product::orderBy('ProductID', 'desc')->value('ProductID') ?? 0;
-        return view('new-item', compact('categories', 'suppliers', 'lastProductId'));
+        return view('products.new-item', compact('categories', 'suppliers', 'lastProductId'));
     }
 
     /**
@@ -84,7 +84,21 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ProductName' => 'required|string|max:255',
+            'ProductName' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request) {
+                    // Check if product with same name exists in the same category
+                    $exists = Product::where('ProductName', $value)
+                        ->where('CategoryID', $request->CategoryID)
+                        ->exists();
+                    
+                    if ($exists) {
+                        $fail('A product with this name already exists in the selected category.');
+                    }
+                }
+            ],
             'Unit' => 'required|string|max:50',
             'CategoryID' => 'required|exists:categories,CategoryID',
             'SupplierID' => 'nullable|exists:suppliers,SupplierID',
@@ -100,7 +114,6 @@ class ProductController extends Controller
             'IsReturnable' => 'boolean',
             'Product_Image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120' // 5MB max
         ]);
-
 
         if ($validator->fails()) {
             return redirect()->back()

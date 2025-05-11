@@ -17,7 +17,7 @@ class POSController extends Controller
     {
         $categories = Category::all();
         $products = Product::with(['category', 'inventory'])->get();
-        
-        return view('point-of-sale', compact('categories', 'products'));
+
+        return view('sales.point-of-sale', compact('categories', 'products'));
     }
-} 
+}

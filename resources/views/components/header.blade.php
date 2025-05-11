@@ -122,9 +122,9 @@
 
 
 
-         
+
          <li>
-             <x-nav-link href="{{ route('suppliers.index') }}" :active="request()->is('suppliers/create')" :menu_item="false" >
+             <x-nav-link href="{{ route('suppliers.index') }}" :active="request()->is('suppliers')" :menu_item="false" >
                <span class="flex-1 whitespace-nowrap">
                <i class="fa-solid fa-truck-field text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                Supplier</span>
@@ -146,7 +146,7 @@
             </a>
          </li>
          <li>
-        
+
         </li>
 
 
@@ -167,12 +167,12 @@
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
           </svg>
         </div>
-        <input type="search" 
-               name="search" 
+        <input type="search"
+               name="search"
                id="default-search"
                value="{{ request('search') }}"
                class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-               placeholder="Search Products..." 
+               placeholder="Search Products..."
                required />
       </div>
     </form>
@@ -208,7 +208,7 @@
 
       <!-- Notification Button -->
       <li class="relative">
-        <button type="button" 
+        <button type="button"
                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group transition-all duration-200"
                 onclick="toggleNotifications()">
           <i class="fa-solid fa-bell text-black dark:text-black group-hover:text-black dark:group-hover:text-black transition-transform duration-200 group-hover:rotate-12"></i>
@@ -224,7 +224,7 @@
               <button class="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200">Mark all as read</button>
             </div>
           </div>
-          
+
           <div class="max-h-[480px] overflow-y-auto custom-scrollbar">
             <!-- Unread Notification -->
             <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
@@ -432,7 +432,7 @@
         document.addEventListener('click', function(event) {
           const dropdown = document.getElementById('notificationDropdown');
           const button = event.target.closest('button');
-          
+
           if (!button && !dropdown.contains(event.target)) {
             dropdown.classList.add('hidden');
           }
