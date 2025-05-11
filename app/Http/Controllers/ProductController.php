@@ -293,4 +293,18 @@ class ProductController extends Controller
         $suppliers = Supplier::orderBy('SupplierName')->get(['SupplierID', 'SupplierName']);
         return response()->json($suppliers);
     }
+
+    /**
+     * Get the current stock for a product
+     *
+     * @param int $id The product ID
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getStock($id)
+    {
+        $product = Product::with('inventory')->findOrFail($id);
+        return response()->json([
+            'quantity' => $product->inventory->QuantityOnHand ?? 0
+        ]);
+    }
 }

@@ -12,6 +12,18 @@ class SalesItem extends Model
     use HasFactory;
     protected $primaryKey = 'SalesItemID';
 
+    protected $fillable = [
+        'SaleID',
+        'ProductID',
+        'Quantity',
+        'PriceAtSale'
+    ];
+
+    protected $casts = [
+        'Quantity' => 'integer',
+        'PriceAtSale' => 'decimal:2'
+    ];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'ProductID', 'ProductID');

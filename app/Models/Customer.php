@@ -12,6 +12,9 @@ class Customer extends Model
     use HasFactory;
 
     protected $primaryKey = 'CustomerID';
+    protected $fillable = [
+        'CustomerCode'
+    ];
 
     public function sales(): HasMany
     {

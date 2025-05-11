@@ -1,4 +1,4 @@
-    <x-header>
+    <x-header :title="'Settings'">
         <div class="min-h-screen bg-white-90 p-4 sm:p-8">
             <!-- Breadcrumb and Page Header -->
             <div class="max-w-4xl mx-auto mb-8">

@@ -1,4 +1,4 @@
-<x-header>
+<x-header :title="'Product Overview'">
     <div class="p-10">
         <div class="bg-white rounded-xl shadow-md p-6">
             <!-- Header with back button and actions -->

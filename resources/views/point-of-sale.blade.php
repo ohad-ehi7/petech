@@ -1,4 +1,5 @@
-<x-header>
+<x-header :title="'Point of Sale'">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="flex h-screen bg-gray-50">
         <!-- Left Section: Product Selection -->
         <div class="w-2/3 p-6 overflow-y-auto">
@@ -11,15 +12,15 @@
                                placeholder="Search products..." 
                                class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400"></i>
-                    </div>
-                </div>
+      </div>
+      </div>
                 <select id="categoryFilter" class="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <option value="">All Categories</option>
                     @foreach($categories as $category)
                         <option value="{{ $category->CategoryID }}">{{ $category->CategoryName }}</option>
                     @endforeach
-                </select>
-            </div>
+        </select>
+      </div>
 
             <!-- Product Grid -->
             <div id="productGrid" class="grid grid-cols-3 gap-4">
@@ -45,11 +46,11 @@
                     <div class="flex justify-between items-center">
                         <span class="text-lg font-semibold text-blue-600">₱{{ number_format($product->SellingPrice, 2) }}</span>
                         <span class="text-sm text-gray-500">Stock: {{ $product->inventory->QuantityOnHand ?? 0 }}</span>
-                    </div>
+    </div>
                 </div>
                 @endforeach
-            </div>
-        </div>
+                </div>
+              </div>
 
         <!-- Right Section: Cart and Checkout -->
         <div class="w-1/3 bg-white border-l border-gray-200 flex flex-col">
@@ -72,7 +73,7 @@
                 <div id="cart-items" class="space-y-4">
                     <!-- Cart items will be dynamically added here -->
                 </div>
-            </div>
+    </div>
 
             <!-- Cart Summary -->
             <div class="border-t border-gray-200 p-6 bg-gray-50">
@@ -80,14 +81,14 @@
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-600">Subtotal</span>
                         <span class="font-medium" id="subtotal">₱0.00</span>
-                    </div>
+      </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-600">VAT (12%)</span>
                         <span class="font-medium" id="vat">₱0.00</span>
-                    </div>
+        </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-600">Discount</span>
-                        <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-2">
                             <input type="number" 
                                    class="w-20 px-2 py-1 rounded border border-gray-300 text-right" 
                                    value="0" 
@@ -96,16 +97,16 @@
                             <select class="px-2 py-1 rounded border border-gray-300">
                                 <option value="%">%</option>
                                 <option value="PHP">₱</option>
-                            </select>
-                        </div>
-                    </div>
+            </select>
+          </div>
+        </div>
                     <div class="border-t border-gray-200 pt-3">
-                        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center">
                             <span class="text-lg font-bold">Total</span>
                             <span class="text-2xl font-bold text-blue-600" id="total">₱0.00</span>
-                        </div>
-                    </div>
-                </div>
+        </div>
+        </div>
+        </div>
 
                 <!-- Payment Buttons -->
                 <div class="mt-6 space-y-3">
@@ -115,9 +116,9 @@
                     <button onclick="printReceipt()" class="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors" disabled>
                         <i class="fa-solid fa-print mr-2"></i>Print Receipt
                     </button>
-                </div>
-            </div>
         </div>
+      </div>
+    </div>
     </div>
 
     <!-- Quantity Selection Modal -->
@@ -128,8 +129,8 @@
                 <button onclick="closeQuantityModal()" class="text-gray-400 hover:text-gray-500 transition-colors">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
-            </div>
-            
+        </div>
+
             <div class="mb-4">
                 <div class="flex justify-between text-sm text-gray-600 mb-2">
                     <span>Price:</span>
@@ -138,14 +139,14 @@
                 <div class="flex justify-between text-sm text-gray-600">
                     <span>Available Stock:</span>
                     <span id="modalProductStock"></span>
-                </div>
+          </div>
                 <div class="flex justify-between text-sm text-gray-600">
                     <span>In Cart:</span>
                     <span id="modalProductInCart">0</span>
-                </div>
-            </div>
+        </div>
+      </div>
 
-            <div class="mb-6">
+    <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                 <div class="flex items-center space-x-3">
                     <button onclick="decrementQuantity()" class="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50">
@@ -159,8 +160,8 @@
                     <button onclick="incrementQuantity()" class="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50">
                         <i class="fa-solid fa-plus"></i>
                     </button>
-                </div>
-            </div>
+          </div>
+          </div>
 
             <div class="flex justify-end space-x-3">
                 <button onclick="closeQuantityModal()" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
@@ -169,9 +170,9 @@
                 <button onclick="addToCart()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                     Add to Cart
                 </button>
-            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
     <!-- Cash Payment Modal -->
     <div id="cashPaymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
@@ -181,8 +182,8 @@
                 <button onclick="closeCashPaymentModal()" class="text-gray-400 hover:text-gray-500 transition-colors">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
-            </div>
-            
+      </div>
+
             <div class="space-y-4">
                 <div class="flex justify-between text-sm text-gray-600">
                     <span>Total Amount:</span>
@@ -199,13 +200,13 @@
                                placeholder="0.00"
                                step="0.01"
                                min="0">
-                    </div>
+    </div>
                 </div>
 
                 <div class="flex justify-between text-sm text-gray-600">
                     <span>Change:</span>
                     <span id="changeAmount" class="font-semibold">₱0.00</span>
-                </div>
+              </div>
             </div>
 
             <div class="mt-6 flex justify-end space-x-3">
@@ -216,8 +217,8 @@
                     Complete Payment
                 </button>
             </div>
-        </div>
-    </div>
+          </div>
+          </div>
 
     <script>
         let cart = [];
@@ -330,8 +331,8 @@
                 cartItems.appendChild(itemElement);
             });
 
-            updateTotals();
-        }
+      updateTotals();
+    }
 
         function removeFromCart(productId) {
             // Remove all instances of this product from cart
@@ -465,6 +466,30 @@
             document.getElementById('changeAmount').textContent = `₱${change >= 0 ? change.toFixed(2) : '0.00'}`;
         });
 
+        function updateStockDisplay(productId, newStock) {
+            // Update the stock display in the product card
+            const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+            if (productCard) {
+                const stockDisplay = productCard.querySelector('.text-sm.text-gray-500:last-child');
+                if (stockDisplay) {
+                    stockDisplay.textContent = `Stock: ${newStock}`;
+                }
+            }
+        }
+
+        function refreshAllStock() {
+            const productCards = document.querySelectorAll('.product-card');
+            productCards.forEach(card => {
+                const productId = card.dataset.productId;
+                fetch(`/api/products/${productId}/stock`)
+                    .then(response => response.json())
+                    .then(stockData => {
+                        updateStockDisplay(productId, stockData.quantity);
+                    })
+                    .catch(error => console.error('Error updating stock:', error));
+            });
+        }
+
         function completeCashPayment() {
             const total = parseFloat(document.getElementById('paymentTotal').textContent.replace('₱', ''));
             const received = parseFloat(document.getElementById('amountReceived').value) || 0;
@@ -474,29 +499,77 @@
                 return;
             }
 
-            // Here you would typically:
-            // 1. Update inventory
-            // 2. Record the transaction
-            // 3. Clear the cart
-            // 4. Enable receipt printing
+            // Prepare sale data
+            const saleData = {
+                customer_name: document.getElementById('customerName').value.trim(),
+                total_amount: total,
+                discount_amount: calculateDiscount(),
+                items: cart.map(item => ({
+                    product_id: item.id,
+                    quantity: item.quantity,
+                    price: item.price
+                }))
+            };
 
-            // For now, we'll just enable the print button and close the modal
-            document.querySelector('button[onclick="printReceipt()"]').disabled = false;
-            closeCashPaymentModal();
-            
-            // Clear the cart
-            cart = [];
-            updateCart();
+            // Show loading state
+            const completeButton = document.querySelector('button[onclick="completeCashPayment()"]');
+            const originalText = completeButton.innerHTML;
+            completeButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            completeButton.disabled = true;
+
+            // Send to server
+            fetch('/sales/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(saleData)
+            })
+            .then(async response => {
+                const data = await response.json();
+                if (!response.ok) {
+                    // Handle validation errors
+                    if (response.status === 422 && data.errors) {
+                        const errorMessages = Object.values(data.errors).flat();
+                        throw new Error(errorMessages.join('\n'));
+                    }
+                    throw new Error(data.message || 'Error processing sale');
+                }
+                return data;
+            })
+            .then(data => {
+                if (data.success) {
+                    // Enable receipt printing and close modal
+                    document.querySelector('button[onclick="printReceipt()"]').disabled = false;
+                    closeCashPaymentModal();
+                    
+                    // Clear the cart
+                    cart = [];
+                    updateCart();
+
+                    // Show success message
+                    alert('Payment processed successfully!');
+                    
+                    // Refresh the page to update stock
+                    window.location.reload();
+                } else {
+                    throw new Error(data.message || 'Error processing sale');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error processing sale: ' + error.message);
+            })
+            .finally(() => {
+                // Reset button state
+                completeButton.innerHTML = originalText;
+                completeButton.disabled = false;
+            });
         }
 
-        // Close modal when clicking outside
-        document.getElementById('cashPaymentModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeCashPaymentModal();
-            }
-        });
-
-        // Receipt Printing
+        // Update receipt printing to include sale ID
         function printReceipt() {
             const customerName = document.getElementById('customerName').value;
             const date = new Date().toLocaleString();
@@ -547,5 +620,5 @@
             printWindow.document.close();
             printWindow.print();
         }
-    </script>
+  </script>
 </x-header>

@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\POSController;
+use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 
 // Home Routes
@@ -52,9 +53,7 @@ Route::middleware('auth')->group(function () {
 // Sales Routes
     Route::get('/point-of-sale', [POSController::class, 'index'])->name('pos.index');
 
-    Route::get('/sales-transaction', function () {
-        return view('sales-transaction');
-    })->name('sales.transaction');
+    Route::get('/sales-transaction', [SaleController::class, 'index'])->name('sales.transaction');
 
     Route::get('/sales-receipt', function () {
         return view('sales-receipt');
@@ -79,6 +78,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/suppliers/purchase-invoice', function () {
         return view('purchase-invoice');
     })->name('suppliers.purchase.invoice');
+
+// Sales routes
+Route::post('/sales/process', [SaleController::class, 'processSale']);
+
+Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
+Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
+Route::delete('/sales/bulk-delete', [SaleController::class, 'bulkDelete'])->name('sales.bulk-delete');
 
 });
 
