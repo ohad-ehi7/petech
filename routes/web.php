@@ -86,5 +86,11 @@ Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
 Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
 Route::delete('/sales/bulk-delete', [SaleController::class, 'bulkDelete'])->name('sales.bulk-delete');
 
+//Reports Routes
+
+    Route::get('/reports', function () {
+        return view('reports');
+    })->name('reports');
+
 });
 
