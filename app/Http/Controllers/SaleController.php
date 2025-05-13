@@ -26,6 +26,7 @@ class SaleController extends Controller
             $request->validate([
                 'total_amount' => 'required|numeric|min:0',
                 'discount_amount' => 'nullable|numeric|min:0',
+                'amount_paid' => 'required|numeric|min:0',
                 'items' => 'required|array|min:1',
                 'items.*.product_id' => 'required|exists:products,ProductID',
                 'items.*.quantity' => 'required|integer|min:1',
@@ -47,58 +48,59 @@ class SaleController extends Controller
                 'CustomerID' => $customer->CustomerID,
                 'TotalAmount' => $request->total_amount,
                 'DiscountAmount' => $request->discount_amount ?? 0,
+                'AmountPaid' => $request->amount_paid,
                 'PaymentMethod' => 'Cash',
                 'ClerkID' => Auth::id()
             ]);
 
             // Process each item in the sale
             foreach ($request->items as $item) {
-                $product = Product::findOrFail($item['product_id']);
-                
                 // Create sales item
-                $sale->salesItems()->create([
+                $salesItem = $sale->salesItems()->create([
                     'ProductID' => $item['product_id'],
                     'Quantity' => $item['quantity'],
                     'PriceAtSale' => $item['price']
                 ]);
 
-                // Update inventory
-                $product->inventory()->decrement('QuantityOnHand', $item['quantity']);
-
-                // Create inventory log for stock out
-                InventoryLog::create([
+                // Create transaction record
+                Transaction::create([
                     'ProductID' => $item['product_id'],
-                    'type' => 'stock_out',
-                    'quantity' => $item['quantity'],
-                    'notes' => 'Sale #' . $sale->SaleID,
-                    'created_by' => Auth::id()
+                    'TransactionType' => 'SALE',
+                    'QuantityChange' => -$item['quantity'], // Negative because it's a sale
+                    'UnitPrice' => $item['price'],
+                    'TotalAmount' => $item['quantity'] * $item['price'],
+                    'ReferenceID' => $sale->SaleID,
+                    'TransactionDate' => now()
                 ]);
+
+                // Update inventory
+                $inventory = Inventory::where('ProductID', $item['product_id'])->first();
+                if ($inventory) {
+                    $inventory->QuantityOnHand -= $item['quantity'];
+                    $inventory->save();
+
+                    // Create inventory log
+                    InventoryLog::create([
+                        'ProductID' => $item['product_id'],
+                        'type' => 'stock_out',
+                        'quantity' => $item['quantity'],
+                        'notes' => 'Sale transaction #' . $sale->SaleID,
+                        'created_by' => Auth::id()
+                    ]);
+                }
             }
 
             DB::commit();
 
-            Log::info('Sale processed successfully', ['sale_id' => $sale->SaleID]);
-
             return response()->json([
                 'success' => true,
-                'sale_id' => $sale->SaleID,
-                'message' => 'Sale processed successfully'
+                'message' => 'Sale processed successfully',
+                'sale_id' => $sale->SaleID
             ]);
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollBack();
-            Log::error('Validation error in sale processing:', ['errors' => $e->errors()]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $e->errors()
-            ], 422);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error processing sale:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            Log::error('Error processing sale: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error processing sale: ' . $e->getMessage()
@@ -238,6 +240,7 @@ class SaleController extends Controller
                 'CustomerID' => $request->CustomerID,
                 'SaleDate' => now(),
                 'TotalAmount' => $request->TotalAmount,
+                'AmountPaid' => $request->TotalAmount,
                 'PaymentMethod' => $request->PaymentMethod,
                 'Status' => 'completed',
                 'Notes' => $request->Notes

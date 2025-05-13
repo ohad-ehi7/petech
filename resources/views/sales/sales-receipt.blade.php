@@ -139,9 +139,13 @@
             <span>Payment Mode</span>
             <span class="font-semibold">{{ isset($sale) ? ($sale->PaymentMethod ?? 'Cash') : 'Cash' }}</span>
           </div>
+          <div class="flex justify-between text-sm mb-1">
+            <span>Amount Paid</span>
+            <span class="font-semibold">₱{{ isset($sale) ? number_format($sale->AmountPaid, 2) : '0.00' }}</span>
+          </div>
           <div class="flex justify-between text-sm">
-            <span>Reference</span>
-            <span>{{ isset($sale) ? str_pad($sale->SaleID, 3, '0', STR_PAD_LEFT) : '001' }}</span>
+            <span>Change</span>
+            <span>₱{{ isset($sale) ? number_format($sale->AmountPaid - $sale->TotalAmount, 2) : '0.00' }}</span>
           </div>
         </div>
         <div class="flex-1 min-w-[200px]">

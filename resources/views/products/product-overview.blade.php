@@ -100,6 +100,13 @@
                             <div>
                                 <h3 class="text-sm font-medium text-gray-500">Current Stock</h3>
                                 <p class="mt-1">{{ $product->inventory->QuantityOnHand ?? 0 }} units</p>
+                                @if($product->inventory->QuantityOnHand <= ($product->OpeningStock/2 - 1))
+                                    <span class="text-red-500 text-sm">Low Stock</span>
+                                @endif
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-500">Opening Stock</h3>
+                                <p class="mt-1">{{ $product->OpeningStock ?? 0 }} units</p>
                             </div>
                             <div>
                                 <h3 class="text-sm font-medium text-gray-500">Reorder Level</h3>

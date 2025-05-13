@@ -62,6 +62,14 @@
                 <td class="py-2"><span class="font-bold text-lg">Total:</span></td>
                 <td class="py-2 text-right font-bold text-lg">Php {{ number_format($sale->TotalAmount, 2) }}</td>
             </tr>
+            <tr>
+                <td class="py-1"><span class="font-semibold">Amount Paid:</span></td>
+                <td class="py-1 text-right">Php {{ number_format($sale->AmountPaid, 2) }}</td>
+            </tr>
+            <tr>
+                <td class="py-1"><span class="font-semibold">Change:</span></td>
+                <td class="py-1 text-right">Php {{ number_format($sale->AmountPaid - $sale->TotalAmount, 2) }}</td>
+            </tr>
         </table>
     </div>
 

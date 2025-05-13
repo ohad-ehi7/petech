@@ -68,11 +68,11 @@
                                     <div class="text-sm text-gray-500">No image uploaded</div>
                                 @endif
                                 <div class="flex-1">
-                                    <input type="file" name="product_image" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                                    <input type="file" name="Product_Image" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                                     <p class="mt-1 text-sm text-gray-500">PNG, JPG, JPEG up to 5MB</p>
                                 </div>
                             </div>
-                            @error('product_image')
+                            @error('Product_Image')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -192,9 +192,13 @@
                     <h2 class="text-xl font-semibold mb-4 text-gray-800">Inventory</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium mb-1">Opening Stock</label>
-                            <input type="number" name="OpeningStock" value="{{ old('OpeningStock', $product->OpeningStock) }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('OpeningStock') border-red-500 @enderror" />
-                            @error('OpeningStock')
+                            <label class="block text-sm font-medium mb-1">Stock Adjustment</label>
+                            <div class="flex flex-col space-y-2">
+                                <input type="number" name="stock_adjustment" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('stock_adjustment') border-red-500 @enderror" placeholder="Enter positive number to add stock, negative to remove" />
+                                <p class="text-sm text-gray-500">Current stock: {{ $product->inventory->QuantityOnHand ?? 0 }} units</p>
+                                <p class="text-sm text-gray-500">Opening stock: {{ $product->OpeningStock ?? 0 }} units</p>
+                            </div>
+                            @error('stock_adjustment')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
