@@ -31,3 +31,4 @@ class Supplier extends Model
         return $this->hasManyThrough(Product::class, ProductSupplier::class, 'SupplierID', 'ProductID', 'SupplierID', 'ProductID');
     }
 }
+
