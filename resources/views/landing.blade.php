@@ -27,11 +27,11 @@
                 <div class="md:w-1/2 space-y-6">
                     <div class="flex items-center gap-3">
                         <Image
-                            src="https://placehold.co/60x60"
+                            src="images/profile-icon.png"
                             alt="Changchang Logo"
                             width={60}
                             height={60}
-                            class="rounded-full"
+                            class="rounded-full w-18 h-18"
                         />
                         <h1 class="text-2xl md:text-3xl font-bold text-[#1f509a]">Changchang Store IMS/SMS</h1>
                     </div>
@@ -79,7 +79,7 @@
             <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                 <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
                     <div class="shrink-0">
-                        <Image src="https://placehold.co/80x80" alt="POS Icon" width={80} height={80} />
+                        <Image src="images/cloud-base.png" alt="POS Icon" class="h-20 w-20" />
                     </div>
                     <div>
                         <h3 class="font-bold text-lg mb-2">Run your business from anywhere</h3>
@@ -89,7 +89,7 @@
 
                 <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
                     <div class="shrink-0">
-                        <Image src="https://placehold.co/80x80" alt="Inventory Icon" width={80} height={80} />
+                        <Image src="images/inventory.png" alt="Inventory Icon" class="w-20 h-20" />
                     </div>
                     <div>
                         <h3 class="font-bold text-lg mb-2">Track inventory without manual work</h3>
@@ -99,7 +99,7 @@
 
                 <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
                     <div class="shrink-0">
-                        <Image src="https://placehold.co/80x80" alt="Reports Icon" width={80} height={80} />
+                        <Image src="images/automate-sales.png" alt="Reports Icon" class="h-20 w-20" />
                     </div>
                     <div>
                         <h3 class="font-bold text-lg mb-2">Automate sales reporting</h3>
@@ -110,7 +110,7 @@
                 <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
                     <div class="shrink-0">
                         <Image
-                            src="https://placehold.co/80x80" alt="SMS Icon" width={80} height={80} />
+                            src="images/sms.png" alt="SMS Icon"  class="h-18 w-25"/>
                     </div>
                     <div>
                         <h3 class="font-bold text-lg mb-2">Run SMS Promotions</h3>
