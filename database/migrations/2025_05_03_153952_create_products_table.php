@@ -27,6 +27,7 @@ return new class extends Migration
             $table->decimal('CostPrice', 10, 2);
             $table->integer('OpeningStock')->nullable();
             $table->integer('ReorderLevel')->nullable();
+            $table->string('Product_Image')->nullable();
             $table->timestamps();
         });
     }

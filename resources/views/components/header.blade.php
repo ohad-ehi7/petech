@@ -136,7 +136,6 @@
                <span class="flex-1 whitespace-nowrap">
                <i class="fa-solid fa-chart-line text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
                Reports</span>
-                 <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
              </x-nav-link>
          </li>
          <li>
@@ -208,16 +207,14 @@
       </li>
 
       <!-- Notification Button -->
-      <li class="relative">
+      <!-- <li class="relative">
         <button type="button"
                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group transition-all duration-200"
                 onclick="toggleNotifications()">
           <i class="fa-solid fa-bell text-black dark:text-black group-hover:text-black dark:group-hover:text-black transition-transform duration-200 group-hover:rotate-12"></i>
-          <!-- Notification Badge -->
           <span class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white transform bg-red-500 rounded-full animate-pulse">3</span>
         </button>
 
-        <!-- Notification Dropdown -->
         <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-xl border border-gray-200 z-50 transform transition-all duration-200 ease-in-out">
           <div class="p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl">
             <div class="flex justify-between items-center">
@@ -227,7 +224,6 @@
           </div>
 
           <div class="max-h-[480px] overflow-y-auto custom-scrollbar">
-            <!-- Unread Notification -->
             <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
               <div class="flex items-start space-x-4">
                 <div class="flex-shrink-0">
@@ -249,7 +245,6 @@
               </div>
             </div>
 
-            <!-- Unread Notification -->
             <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
               <div class="flex items-start space-x-4">
                 <div class="flex-shrink-0">
@@ -271,7 +266,6 @@
               </div>
             </div>
 
-            <!-- Read Notification -->
             <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
               <div class="flex items-start space-x-4">
                 <div class="flex-shrink-0">
@@ -301,16 +295,15 @@
             </a>
           </div>
         </div>
-      </li>
+      </li> -->
 
-      <!-- Settings Button -->
-      <li>
+      <!-- <li>
         <a href="{{ route('settings') }}">
           <button id="settings" type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
             <i class="fa-solid fa-cogs text-black dark:text-black group-hover:text-gray-900 dark:group-hover:text-white"></i>
           </button>
         </a>
-      </li>
+      </li> -->
 
            <!-- User Profile Button -->
       <li class="relative">
@@ -320,10 +313,7 @@
         <!-- Dropdown Menu -->
         <div id="userProfileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 z-50">
           <div class="py-2">
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-              <i class="fa-solid fa-user mr-2"></i>Profile
-            </a>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <a href="{{ route('settings') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
               <i class="fa-solid fa-gear mr-2"></i>Settings
             </a>
             <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>

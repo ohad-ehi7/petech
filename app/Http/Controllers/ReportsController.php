@@ -39,7 +39,9 @@ class ReportsController extends Controller
         $inventorySummary = [
             'quantity_in_hand' => Inventory::sum('QuantityOnHand'),
             'quantity_to_receive' => 0, // This would come from purchase orders
-            'low_stock_items' => Inventory::where('QuantityOnHand', '<=', DB::raw('ReorderLevel'))
+            'low_stock_items' => DB::table('products')
+                ->join('inventories', 'products.ProductID', '=', 'inventories.ProductID')
+                ->whereRaw('inventories.QuantityOnHand <= (products.OpeningStock/2 - 1)')
                 ->count(),
             'total_items' => Product::count(),
             'active_items' => Product::whereHas('inventory', function($query) {

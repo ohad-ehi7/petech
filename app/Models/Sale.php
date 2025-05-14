@@ -20,6 +20,7 @@ class Sale extends Model
         'CustomerID',
         'TotalAmount',
         'DiscountAmount',
+        'AmountPaid',
         'PaymentMethod',
         'ClerkID'
     ];

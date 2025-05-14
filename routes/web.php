@@ -9,6 +9,7 @@ use App\Http\Controllers\POSController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 // Home Routes
@@ -92,6 +93,12 @@ Route::delete('/sales/bulk-delete', [SaleController::class, 'bulkDelete'])->name
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
 
     Route::get('/inventory-logs', [InventoryLogController::class, 'index'])->name('inventory.logs');
+
+// Transaction Routes
+Route::get('/products/{product}/transactions', [TransactionController::class, 'productTransactions'])->name('products.transactions');
+Route::get('/products/{product}/history', [TransactionController::class, 'productHistory'])->name('products.history');
+Route::get('/transactions/history', [TransactionController::class, 'getTransactionHistory'])->name('transactions.history');
+Route::get('/transactions/summary', [TransactionController::class, 'getTransactionSummary'])->name('transactions.summary');
 
 });
 

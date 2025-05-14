@@ -246,7 +246,7 @@ class ProductController extends Controller
             'WeightUnit' => 'nullable|string|max:10',
             'SellingPrice' => 'required|numeric|min:0',
             'CostPrice' => 'required|numeric|min:0',
-            'OpeningStock' => 'nullable|integer|min:0',
+            'stock_adjustment' => 'nullable|integer',
             'ReorderLevel' => 'required|integer|min:0',
             'IsReturnable' => 'boolean',
             'Product_Image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120'
@@ -278,26 +278,29 @@ class ProductController extends Controller
             // Update product
             $product->update($data);
 
-            // Update inventory if OpeningStock changed
-            if ($request->has('OpeningStock') && $request->OpeningStock != $product->inventory->QuantityOnHand) {
+            // Update inventory if stock changes are needed
+            if ($request->has('stock_adjustment')) {
                 $oldQuantity = $product->inventory->QuantityOnHand;
-                $newQuantity = $request->OpeningStock;
-                $quantityChange = $newQuantity - $oldQuantity;
+                $adjustment = $request->stock_adjustment; // This is the amount to add/subtract
+                $newTotalQuantity = $oldQuantity + $adjustment;
 
+                // Update inventory by adjusting the current stock
                 $product->inventory()->update([
-                    'QuantityOnHand' => $newQuantity,
+                    'QuantityOnHand' => $newTotalQuantity,
                     'ReorderLevel' => $request->ReorderLevel,
-                    'LastUpdated' => now()
+                    'LastUpdated' => now()->setTimezone(config('app.timezone')),
                 ]);
 
-                // Create inventory log for the adjustment
-                InventoryLog::create([
-                    'ProductID' => $product->ProductID,
-                    'type' => $quantityChange > 0 ? 'stock_in' : 'stock_out',
-                    'quantity' => abs($quantityChange),
-                    'notes' => 'Stock adjustment during product update',
-                    'created_by' => Auth::id()
-                ]);
+                // Only create log if there's an actual stock change
+                if ($adjustment != 0) {
+                    InventoryLog::create([
+                        'ProductID' => $product->ProductID,
+                        'type' => $adjustment > 0 ? 'stock_in' : 'stock_out',
+                        'quantity' => abs($adjustment),
+                        'notes' => 'Stock adjustment during product update',
+                        'created_by' => Auth::id()
+                    ]);
+                }
             }
 
             // Update supplier relationship if provided

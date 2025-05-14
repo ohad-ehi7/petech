@@ -96,15 +96,15 @@
                     <!-- Left Side -->
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
-                            <span class="text-red-500 text-sm">Low Stock Items</span>
+                            <span class="text-red-500 text-sm mr-2">Low Stock Items</span>
                             <span class="text-red-500 font-semibold">{{ $inventorySummary['low_stock_items'] }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600 text-sm">All Item Groups</span>
+                            <span class="text-gray-600 text-sm mr-2">All Item Groups</span>
                             <span class="text-black font-semibold">{{ $inventorySummary['total_items'] }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600 text-sm">All Items</span>
+                            <span class="text-gray-600 text-sm mr-2">All Items</span>
                             <span class="text-black font-semibold">{{ $inventorySummary['active_items'] }}</span>
                         </div>
                     </div>
@@ -178,20 +178,24 @@
                 <!-- Header -->
                 <div class="flex justify-between items-center bg-green-400 text-black rounded-t-lg">
                     <h2 class="font-semibold p-4">Purchase Order</h2>
-                    <div class="text-sm cursor-pointer">
-                        This Month <span class="text-blue-800">▾</span>
-                    </div>
                 </div>
 
                 <!-- Body -->
                 <div class="flex flex-col items-center justify-center px-4 py-6 space-y-4">
-                    <div class="text-sm text-gray-600">Quantity Ordered</div>
-                    <div class="text-2xl text-blue-500 font-semibold">0</div>
+                    <div class="text-sm text-gray-600">Total Products</div>
+                    <div class="text-2xl text-blue-500 font-semibold">{{ $products->count() }}</div>
 
                     <hr class="w-full border-t border-gray-200" />
 
-                    <div class="text-sm text-gray-600">Total Cost</div>
-                    <div class="text-xl text-blue-500 font-bold">PHP0.00</div>
+                    <div class="text-sm text-gray-600">Total Cost Value</div>
+                    <div class="text-xl text-blue-500 font-bold">₱{{ number_format($products->sum(function($product) {
+                        return $product->CostPrice * ($product->inventory->QuantityOnHand ?? 0);
+                    }), 2) }}</div>
+
+                    <hr class="w-full border-t border-gray-200" />
+
+                    <div class="text-sm text-gray-600">Average Cost Price</div>
+                    <div class="text-lg text-blue-500 font-semibold">₱{{ number_format($products->avg('CostPrice'), 2) }}</div>
                 </div>
             </div>
         </div>
@@ -290,7 +294,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('monthlySalesChart').getContext('2d');
             const monthlySales = @json($monthlySales);
-            
+
             new Chart(ctx, {
                 type: 'line',
                 data: {

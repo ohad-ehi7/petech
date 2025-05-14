@@ -33,9 +33,18 @@
                 <div>
                     <h2 class="text-lg font-semibold mb-4">Transaction Summary</h2>
                     <div class="space-y-2">
-                        <p><span class="font-medium">Subtotal:</span> ₱{{ number_format($sale->TotalAmount, 2) }}</p>
-                        <p><span class="font-medium">Discount:</span> ₱{{ number_format($sale->DiscountAmount, 2) }}</p>
-                        <p class="text-lg font-bold"><span class="font-medium">Total Amount:</span> ₱{{ number_format($sale->TotalAmount - $sale->DiscountAmount, 2) }}</p>
+                        @php
+                            $subtotal = $sale->salesItems->sum(function($item) { return $item->Quantity * $item->PriceAtSale; });
+                            $vat = $subtotal * 0.12;
+                            $discount = $sale->DiscountAmount;
+                            $total = $subtotal + $vat - $discount;
+                        @endphp
+                        <p><span class="font-medium">Subtotal:</span> ₱{{ number_format($subtotal, 2) }}</p>
+                        <p><span class="font-medium">VAT (12%):</span> ₱{{ number_format($vat, 2) }}</p>
+                        <p><span class="font-medium">Discount:</span> ₱{{ number_format($discount, 2) }}</p>
+                        <p class="text-lg font-bold"><span class="font-medium">Total Amount:</span> ₱{{ number_format($total, 2) }}</p>
+                        <p><span class="font-medium">Amount Paid:</span> ₱{{ number_format($sale->AmountPaid, 2) }}</p>
+                        <p><span class="font-medium">Change:</span> ₱{{ number_format($sale->AmountPaid - $total, 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -50,7 +59,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub Total</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">

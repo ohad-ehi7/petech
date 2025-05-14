@@ -88,18 +88,19 @@
         </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-600">Discount</span>
-          <div class="flex items-center space-x-2">
+                        <div class="flex items-center space-x-2">
                             <input type="number" 
+                                   id="discountInput"
                                    class="w-20 px-2 py-1 rounded border border-gray-300 text-right" 
                                    value="0" 
                                    min="0" 
                                    step="0.01">
-                            <select class="px-2 py-1 rounded border border-gray-300">
+                            <select id="discountType" class="px-2 py-1 rounded border border-gray-300">
                                 <option value="%">%</option>
                                 <option value="PHP">₱</option>
-            </select>
-          </div>
-        </div>
+                            </select>
+                        </div>
+                    </div>
                     <div class="border-t border-gray-200 pt-3">
         <div class="flex justify-between items-center">
                             <span class="text-lg font-bold">Total</span>
@@ -341,9 +342,11 @@
         }
 
         function updateTotals() {
+            // Calculate subtotal (before discount)
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const vat = subtotal * 0.12;
             const discount = calculateDiscount();
+            // Total is subtotal + VAT - discount
             const total = subtotal + vat - discount;
 
             document.getElementById('subtotal').textContent = `₱${subtotal.toFixed(2)}`;
@@ -352,8 +355,8 @@
         }
 
         function calculateDiscount() {
-            const discountInput = document.querySelector('input[type="number"]');
-            const discountType = document.querySelector('select');
+            const discountInput = document.getElementById('discountInput');
+            const discountType = document.getElementById('discountType');
             const discountValue = parseFloat(discountInput.value) || 0;
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             
@@ -362,6 +365,15 @@
             }
             return discountValue;
         }
+
+        // Add event listeners for discount changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const discountInput = document.getElementById('discountInput');
+            const discountType = document.getElementById('discountType');
+
+            discountInput.addEventListener('input', updateTotals);
+            discountType.addEventListener('change', updateTotals);
+        });
 
         // Close modal when clicking outside
         document.getElementById('quantityModal').addEventListener('click', function(e) {
@@ -434,10 +446,11 @@
                 return;
             }
 
-            // Calculate total amount
+            // Calculate total amount with discount
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const vat = subtotal * 0.12;
-            const total = subtotal + vat;
+            const discount = calculateDiscount();
+            const total = subtotal + vat - discount;
 
             // Show cash payment modal
             document.getElementById('paymentTotal').textContent = `₱${total.toFixed(2)}`;
@@ -467,7 +480,6 @@
         });
 
         function updateStockDisplay(productId, newStock) {
-            // Update the stock display in the product card
             const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
             if (productCard) {
                 const stockDisplay = productCard.querySelector('.text-sm.text-gray-500:last-child');
@@ -504,6 +516,7 @@
                 customer_name: document.getElementById('customerName').value.trim(),
                 total_amount: total,
                 discount_amount: calculateDiscount(),
+                amount_paid: parseFloat(document.getElementById('amountReceived').value),
                 items: cart.map(item => ({
                     product_id: item.id,
                     quantity: item.quantity,
@@ -541,8 +554,21 @@
             })
             .then(data => {
                 if (data.success) {
+                    // Store sale data for receipt printing
+                    window.lastSaleData = {
+                        customerName: document.getElementById('customerName').value.trim(),
+                        items: [...cart],
+                        subtotal: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                        vat: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 0.12,
+                        discount: calculateDiscount(),
+                        total: parseFloat(document.getElementById('paymentTotal').textContent.replace('₱', '')),
+                        amountPaid: parseFloat(document.getElementById('amountReceived').value),
+                        saleId: data.sale_id
+                    };
+
                     // Enable receipt printing and close modal
-                    document.querySelector('button[onclick="printReceipt()"]').disabled = false;
+                    const printButton = document.querySelector('button[onclick="printReceipt()"]');
+                    printButton.disabled = false;
                     closeCashPaymentModal();
                     
                     // Clear the cart
@@ -552,8 +578,13 @@
                     // Show success message
                     alert('Payment processed successfully!');
                     
-                    // Refresh the page to update stock
-                    window.location.reload();
+                    // Print receipt automatically
+                    printReceipt();
+                    
+                    // Refresh the page after a short delay to allow printing
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
                 } else {
                     throw new Error(data.message || 'Error processing sale');
                 }
@@ -569,11 +600,15 @@
             });
         }
 
-        // Update receipt printing to include sale ID
         function printReceipt() {
-            const customerName = document.getElementById('customerName').value;
+            if (!window.lastSaleData) {
+                alert('No sale data available for printing');
+                return;
+            }
+
+            const { customerName, items, subtotal, vat, discount, total, amountPaid, saleId } = window.lastSaleData;
             const date = new Date().toLocaleString();
-            const receiptNumber = `REC-${Date.now()}`;
+            const receiptNumber = `REC-${saleId}`;
             
             // Create receipt content
             const receiptContent = `
@@ -590,35 +625,73 @@
                     </div>
                     <hr style="margin: 15px 0;">
                     <div style="margin-bottom: 10px;">
-                        ${cart.map(item => `
+                        ${items.map(item => `
                             <div style="margin-bottom: 5px;">
                                 ${item.name} x ${item.quantity} = ₱${(item.price * item.quantity).toFixed(2)}
                             </div>
                         `).join('')}
                     </div>
                     <hr style="margin: 15px 0;">
-                    <div style="text-align: right;">
-                        <div style="margin-bottom: 5px;">
-                            <strong>Subtotal:</strong> ₱${cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}
-                        </div>
-                        <div style="margin-bottom: 5px;">
-                            <strong>VAT (12%):</strong> ₱${(cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 0.12).toFixed(2)}
-                        </div>
-                        <div style="font-size: 1.2em; font-weight: bold;">
-                            <strong>Total:</strong> ₱${(cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.12).toFixed(2)}
-                        </div>
+                    <div style="margin-bottom: 5px;">
+                        <strong>Subtotal:</strong> ₱${subtotal.toFixed(2)}
                     </div>
-                    <div style="text-align: center; margin-top: 20px;">
+                    <div style="margin-bottom: 5px;">
+                        <strong>VAT (12%):</strong> ₱${vat.toFixed(2)}
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <strong>Discount:</strong> ₱${discount.toFixed(2)}
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <strong>Total:</strong> ₱${total.toFixed(2)}
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <strong>Amount Paid:</strong> ₱${amountPaid.toFixed(2)}
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <strong>Change:</strong> ₱${(amountPaid - total).toFixed(2)}
+                    </div>
+                    <hr style="margin: 15px 0;">
+                    <div style="text-align: center; font-size: 12px; color: #666;">
                         Thank you for your purchase!
                     </div>
                 </div>
             `;
+            
+            // Create a hidden iframe for printing
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
 
-            // Create a new window for printing
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(receiptContent);
-            printWindow.document.close();
-            printWindow.print();
+            // Write the content to the iframe
+            iframe.contentWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <title>Sales Receipt</title>
+                        <style>
+                            @media print {
+                                body { margin: 0; }
+                                @page { margin: 0; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${receiptContent}
+                    </body>
+                </html>
+            `);
+
+            // Wait for the content to load before printing
+            iframe.contentWindow.document.addEventListener('DOMContentLoaded', function() {
+                iframe.contentWindow.print();
+                // Remove the iframe after printing is done or cancelled
+                iframe.contentWindow.onafterprint = function() {
+                    document.body.removeChild(iframe);
+                };
+            });
+
+            // Close the document writing
+            iframe.contentWindow.document.close();
         }
-  </script>
+    </script>
 </x-header>

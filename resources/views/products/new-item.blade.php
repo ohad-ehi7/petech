@@ -1,7 +1,7 @@
 <x-header :title="'Add New Product'">
     <div class="p-10">
         <div class="bg-white rounded-xl shadow-md p-6">
-            <form method="POST" action="{{ route('products.create') }}" class="space-y-8" enctype="multipart/form-data">
+            <form method="POST" action="{{route('products.store') }}" class="space-y-8" enctype="multipart/form-data">
                 @csrf
                 <h1 class="text-2xl font-bold mb-6">Add new item</h1>
 
@@ -52,17 +52,18 @@
                         <!-- Image Upload -->
                         <div class="flex flex-col">
                             <label class="block text-sm font-medium mb-2">Product Image</label>
-                            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors @error('product_image') border-red-500 @enderror">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors @error('Product_Image') border-red-500 @enderror">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6" id="upload-placeholder">
                                     <svg class="w-10 h-10 mb-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5A5.5 5.5 0 0 0 5.207 5.021A4 4 0 0 0 5 13h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                                     </svg>
                                     <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
                                     <p class="text-xs text-gray-500">PNG, JPG or JPEG (MAX. 5MB)</p>
                                 </div>
-                                <input id="dropzone-file" type="file" name="product_image" class="hidden" accept="image/*" />
+                                <img id="image-preview" class="hidden w-full h-full object-contain rounded-lg" alt="Image preview">
+                                <input id="dropzone-file" type="file" name="Product_Image" class="hidden" accept="image/*" onchange="previewImage(this)" />
                             </label>
-                            @error('product_image')
+                            @error('Product_Image')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -212,4 +213,27 @@
             </form>
         </div>
     </div>
+
+
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('image-preview');
+    const placeholder = document.getElementById('upload-placeholder');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+    }
+}
+</script>
 </x-header>

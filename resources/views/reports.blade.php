@@ -81,32 +81,32 @@
             </div>
         </div>
 
-        <!-- Sales History Section -->
-        <div class="mb-8">
-            <h2 class="mb-4 text-lg font-semibold">Sales History</h2>
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-5">
-                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Draft</div>
-                    <div class="text-2xl font-bold text-yellow-600">{{ $salesHistory['draft'] }}</div>
-                </div>
-                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Confirmed</div>
-                    <div class="text-2xl font-bold text-blue-600">{{ $salesHistory['confirmed'] }}</div>
-                </div>
-                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Packed</div>
-                    <div class="text-2xl font-bold text-purple-600">{{ $salesHistory['packed'] }}</div>
-                </div>
-                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Shipped</div>
-                    <div class="text-2xl font-bold text-green-600">{{ $salesHistory['shipped'] }}</div>
-                </div>
-                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Invoiced</div>
-                    <div class="text-2xl font-bold text-indigo-600">{{ $salesHistory['invoiced'] }}</div>
-                </div>
-            </div>
-        </div>
+{{--        <!-- Sales History Section -->--}}
+{{--        <div class="mb-8">--}}
+{{--            <h2 class="mb-4 text-lg font-semibold">Sales History</h2>--}}
+{{--            <div class="grid grid-cols-1 gap-4 md:grid-cols-5">--}}
+{{--                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">--}}
+{{--                    <div class="text-sm text-gray-500">Draft</div>--}}
+{{--                    <div class="text-2xl font-bold text-yellow-600">{{ $salesHistory['draft'] }}</div>--}}
+{{--                </div>--}}
+{{--                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">--}}
+{{--                    <div class="text-sm text-gray-500">Confirmed</div>--}}
+{{--                    <div class="text-2xl font-bold text-blue-600">{{ $salesHistory['confirmed'] }}</div>--}}
+{{--                </div>--}}
+{{--                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">--}}
+{{--                    <div class="text-sm text-gray-500">Packed</div>--}}
+{{--                    <div class="text-2xl font-bold text-purple-600">{{ $salesHistory['packed'] }}</div>--}}
+{{--                </div>--}}
+{{--                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">--}}
+{{--                    <div class="text-sm text-gray-500">Shipped</div>--}}
+{{--                    <div class="text-2xl font-bold text-green-600">{{ $salesHistory['shipped'] }}</div>--}}
+{{--                </div>--}}
+{{--                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">--}}
+{{--                    <div class="text-sm text-gray-500">Invoiced</div>--}}
+{{--                    <div class="text-2xl font-bold text-indigo-600">{{ $salesHistory['invoiced'] }}</div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
 
         <!-- Monthly Sales Chart -->
         <div class="mb-8">
@@ -231,7 +231,7 @@
             // Initialize Chart
             const ctx = document.getElementById('monthlySalesChart').getContext('2d');
             const monthlySales = @json($monthlySales);
-            
+
             new Chart(ctx, {
                 type: 'line',
                 data: {
