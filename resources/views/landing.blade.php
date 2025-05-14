@@ -110,7 +110,7 @@
                 <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
                     <div class="shrink-0">
                         <Image
-                            src="images/sms.png" alt="SMS Icon"  class="h-18 w-25"/>
+                            src="images/sms.png" alt="SMS Icon"  class="h-20 w-23"/>
                     </div>
                     <div>
                         <h3 class="font-bold text-lg mb-2">Run SMS Promotions</h3>
