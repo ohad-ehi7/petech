@@ -10,6 +10,7 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PurchaseRecordController;
 use Illuminate\Support\Facades\Route;
 
 // Home Routes
@@ -26,7 +27,7 @@ Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.
 Route::middleware('auth')->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-// Product Routes
+    // Product Routes
     Route::get('/product-list', [ProductController::class, 'index'])->name('products.index');
     Route::get('/new-item', [ProductController::class, 'create'])->name('products.create');
     Route::post('/new-item', [ProductController::class, 'store'])->name('products.store');
@@ -36,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/product-overview/{product}', [ProductController::class, 'show'])->name('products.show');
     Route::get('/product-transaction/', [ProductController::class, 'inventoryStatus'])->name('products.transaction');
 
-// Supplier Routes
+    // Supplier Routes
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
     Route::get('/suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');
     Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
@@ -44,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/suppliers/{supplier}', [SupplierController::class, 'update'])->name('suppliers.update');
     Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
 
-// Category Routes
+    // Category Routes
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
@@ -52,23 +53,19 @@ Route::middleware('auth')->group(function () {
     Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-// Sales Routes
+    // Sales Routes
     Route::get('/point-of-sale', [POSController::class, 'index'])->name('pos.index');
-
     Route::get('/sales-transaction', [SaleController::class, 'index'])->name('sales.transaction');
-
     Route::get('/sales-receipt', function () {
         return view('sales-receipt');
     })->name('receipt');
 
-// Settings Routes
+    // Settings Routes
     Route::get('/settings', function () {
         return view('settings');
     })->name('settings');
 
-// Purchase Routes
-
-
+    // Purchase Routes
     Route::get('/suppliers/purchase-product', function () {
         return view('purchase-product');
     })->name('suppliers.purchase.product');
@@ -81,24 +78,25 @@ Route::middleware('auth')->group(function () {
         return view('purchase-invoice');
     })->name('suppliers.purchase.invoice');
 
-// Sales routes
-Route::post('/sales/process', [SaleController::class, 'processSale']);
+    // Sales routes
+    Route::post('/sales/process', [SaleController::class, 'processSale']);
+    Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
+    Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
+    Route::delete('/sales/bulk-delete', [SaleController::class, 'bulkDelete'])->name('sales.bulk-delete');
 
-Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
-Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
-Route::delete('/sales/bulk-delete', [SaleController::class, 'bulkDelete'])->name('sales.bulk-delete');
-
-//Reports Routes
-
+    // Reports Routes
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
-
     Route::get('/inventory-logs', [InventoryLogController::class, 'index'])->name('inventory.logs');
 
-// Transaction Routes
-Route::get('/products/{product}/transactions', [TransactionController::class, 'productTransactions'])->name('products.transactions');
-Route::get('/products/{product}/history', [TransactionController::class, 'productHistory'])->name('products.history');
-Route::get('/transactions/history', [TransactionController::class, 'getTransactionHistory'])->name('transactions.history');
-Route::get('/transactions/summary', [TransactionController::class, 'getTransactionSummary'])->name('transactions.summary');
+    // Transaction Routes
+    Route::get('/products/{product}/transactions', [TransactionController::class, 'productTransactions'])->name('products.transactions');
+    Route::get('/products/{product}/history', [TransactionController::class, 'productHistory'])->name('products.history');
+    Route::get('/transactions/history', [TransactionController::class, 'getTransactionHistory'])->name('transactions.history');
+    Route::get('/transactions/summary', [TransactionController::class, 'getTransactionSummary'])->name('transactions.summary');
 
+    // Purchase Records Routes
+    Route::post('/purchases', [PurchaseRecordController::class, 'store'])->name('purchases.store');
+    Route::get('/products/{product}/purchases', [PurchaseRecordController::class, 'productPurchases'])->name('purchases.product');
+    Route::get('/suppliers/{supplier}/purchases', [PurchaseRecordController::class, 'supplierPurchases'])->name('purchases.supplier');
 });
 

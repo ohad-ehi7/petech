@@ -64,9 +64,12 @@ class CategoryController extends Controller
         try {
             DB::beginTransaction();
 
-            $validator = Validator::make($request->all(), [
-                'CategoryName' => 'required|string|max:255|unique:categories,CategoryName'
-            ]);
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'CategoryName' => 'required|string|max:255|unique:categories,CategoryName'
+                ]
+            );
 
             if ($validator->fails()) {
                 return redirect()->back()
@@ -125,23 +128,26 @@ class CategoryController extends Controller
         try {
             DB::beginTransaction();
 
-            $validator = Validator::make($request->all(), [
-                'CategoryName' => [
-                    'required',
-                    'string',
-                    'max:255',
-                    function ($attribute, $value, $fail) use ($request, $category) {
-                        $exists = Category::where('CategoryName', $value)
-                            ->where('CategoryID', '!=', $category->CategoryID)
-                            ->exists();
-                        
-                        if ($exists) {
-                            $fail('A category with this name already exists.');
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'CategoryName' => [
+                        'required',
+                        'string',
+                        'max:255',
+                        function ($attribute, $value, $fail) use ($request, $category) {
+                            $exists = Category::where('CategoryName', $value)
+                                ->where('CategoryID', '!=', $category->CategoryID)
+                                ->exists();
+                            
+                            if ($exists) {
+                                $fail('A category with this name already exists.');
+                            }
                         }
-                    }
-                ],
-                'Description' => 'nullable|string'
-            ]);
+                    ],
+                    'Description' => 'nullable|string'
+                ]
+            );
 
             if ($validator->fails()) {
                 return redirect()->back()

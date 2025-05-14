@@ -17,8 +17,9 @@ return new class extends Migration
             $table->foreignId('CustomerID')->nullable()->constrained('customers', 'CustomerID')->onDelete('set null');
             $table->decimal('TotalAmount', 10, 2);
             $table->decimal('DiscountAmount', 10, 2)->default(0);
+            $table->decimal('AmountPaid', 10, 2);
             $table->string('PaymentMethod', 50)->nullable();
-            $table->unsignedBigInteger('ClerkID')->nullable(); // Optional FK for users table
+            $table->foreignId('ClerkID')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

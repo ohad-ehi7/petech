@@ -18,6 +18,8 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Supplier;
 use App\Models\InventoryLog;
+use App\Models\PurchaseRecord;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -86,6 +88,8 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        \Log::info('Product creation request received', $request->all());
+
         $validator = Validator::make($request->all(), [
             'ProductName' => [
                 'required',
@@ -119,6 +123,7 @@ class ProductController extends Controller
         ]);
 
         if ($validator->fails()) {
+            \Log::error('Validation failed', ['errors' => $validator->errors()->toArray()]);
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -126,42 +131,61 @@ class ProductController extends Controller
 
         try {
             DB::beginTransaction();
+            \Log::info('Starting product creation transaction');
 
             $data = $request->all();
             $data['IsReturnable'] = $request->has('IsReturnable');
 
             // Handle image upload
             if ($request->hasFile('Product_Image')) {
+                \Log::info('Processing image upload');
                 $imagePath = $request->file('Product_Image')->store('products', 'public');
-                \Log::info('Storing image at path: ' . $imagePath);
-                \Log::info('Full storage path: ' . storage_path('app/public/' . $imagePath));
+                \Log::info('Image stored at path: ' . $imagePath);
                 $data['Product_Image'] = $imagePath;
             }
 
             // Create product
+            \Log::info('Creating product with data', $data);
             $product = Product::create($data);
+            \Log::info('Product created successfully', ['product_id' => $product->ProductID]);
 
             // Create initial inventory record
+            \Log::info('Creating inventory record');
             $product->inventory()->create([
                 'QuantityOnHand' => $request->OpeningStock ?? 0,
                 'ReorderLevel' => $request->ReorderLevel ?? 0,
-                'LastUpdated' => now(),
-                'Status' => 'active',
+                'LastUpdated' => now()
             ]);
 
-            // Create inventory log for initial stock
-            if ($request->OpeningStock > 0) {
-                InventoryLog::create([
-                    'ProductID' => $product->ProductID,
-                    'type' => 'stock_in',
-                    'quantity' => $request->OpeningStock,
-                    'notes' => 'Initial stock',
-                    'created_by' => Auth::id()
-                ]);
-            }
+            // Create purchase record for initial stock
+            \Log::info('Creating initial stock purchase record');
+            $purchase = PurchaseRecord::create([
+                'SupplierID' => $request->SupplierID,
+                'ProductID' => $product->ProductID,
+                'Quantity' => $request->OpeningStock,
+                'UnitPrice' => $request->CostPrice,
+                'TotalAmount' => $request->OpeningStock * $request->CostPrice,
+                'ReferenceNumber' => 'INIT-' . str_pad($product->ProductID, 5, '0', STR_PAD_LEFT) . '-' . date('YmdHis'),
+                'Notes' => 'Initial stock purchase'
+            ]);
+
+            // Create transaction record
+            \Log::info('Creating initial stock transaction record');
+            Transaction::create([
+                'ProductID' => $product->ProductID,
+                'TransactionType' => 'OPENING_STOCK',
+                'TransactionDate' => now(),
+                'QuantityChange' => $request->OpeningStock,
+                'UnitPrice' => $request->CostPrice,
+                'TotalAmount' => $request->OpeningStock * $request->CostPrice,
+                'ReferenceType' => 'purchase',
+                'ReferenceID' => $purchase->PurchaseID,
+                'Notes' => $request->SupplierID ? "Initial stock from supplier" : 'Initial stock recorded'
+            ]);
 
             // Handle supplier relationship if provided
             if ($request->has('SupplierID')) {
+                \Log::info('Creating supplier relationship');
                 $product->productSuppliers()->create([
                     'SupplierID' => $request->SupplierID,
                     'PurchasePrice' => $request->CostPrice // Using CostPrice as PurchasePrice
@@ -169,11 +193,15 @@ class ProductController extends Controller
             }
 
             DB::commit();
+            \Log::info('Product creation completed successfully');
             return redirect()->route('products.index')
                 ->with('success', 'Product created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error creating product: ' . $e->getMessage());
+            \Log::error('Error creating product: ' . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString()
+            ]);
             return redirect()->back()
                 ->with('error', 'Error creating product: ' . $e->getMessage())
                 ->withInput();
@@ -310,6 +338,76 @@ class ProductController extends Controller
                     'SupplierID' => $request->SupplierID,
                     'PurchasePrice' => $request->CostPrice
                 ]);
+            }
+
+            // If stock has changed, create a purchase record and transaction
+            $currentStock = $product->inventory->QuantityOnHand;
+            $newStock = $request->stock_adjustment ? ($currentStock + $request->stock_adjustment) : $currentStock;
+            $stockDifference = $newStock - $currentStock;
+            
+            \Log::info('Stock calculation details:', [
+                'current_stock' => $currentStock,
+                'new_stock' => $newStock,
+                'stock_difference' => $stockDifference,
+                'stock_adjustment' => $request->stock_adjustment,
+                'request_opening_stock' => $request->OpeningStock
+            ]);
+
+            // Create purchase record for stock update if there's a difference
+            if ($stockDifference != 0) {
+                try {
+                    // Create purchase record for stock update
+                    \Log::info('Creating stock purchase record with data:', [
+                        'SupplierID' => $request->SupplierID,
+                        'ProductID' => $product->ProductID,
+                        'Quantity' => abs($stockDifference),
+                        'UnitPrice' => $request->CostPrice,
+                        'TotalAmount' => abs($stockDifference) * $request->CostPrice
+                    ]);
+
+                    $purchase = new PurchaseRecord();
+                    $purchase->SupplierID = $request->SupplierID;
+                    $purchase->ProductID = $product->ProductID;
+                    $purchase->Quantity = abs($stockDifference);
+                    $purchase->UnitPrice = $request->CostPrice;
+                    $purchase->TotalAmount = abs($stockDifference) * $request->CostPrice;
+                    $purchase->ReferenceNumber = 'ADJ-' . str_pad($product->ProductID, 5, '0', STR_PAD_LEFT) . '-' . date('YmdHis');
+                    $purchase->Notes = 'Stock adjustment during product update';
+                    $purchase->save();
+
+                    \Log::info('Purchase record created:', ['purchase_id' => $purchase->PurchaseID]);
+
+                    // Create transaction record
+                    Transaction::create([
+                        'ProductID' => $product->ProductID,
+                        'TransactionType' => 'STOCK_PURCHASE',
+                        'QuantityChange' => $stockDifference,
+                        'UnitPrice' => $request->CostPrice,
+                        'TotalAmount' => abs($stockDifference) * $request->CostPrice,
+                        'ReferenceType' => 'purchase',
+                        'ReferenceID' => $purchase->PurchaseID,
+                        'Notes' => 'Stock adjustment during product update'
+                    ]);
+
+                    // Update inventory quantity
+                    $product->inventory()->update([
+                        'QuantityOnHand' => $newStock
+                    ]);
+
+                    // Create inventory log
+                    InventoryLog::create([
+                        'ProductID' => $product->ProductID,
+                        'type' => $stockDifference > 0 ? 'stock_in' : 'stock_out',
+                        'quantity' => abs($stockDifference),
+                        'notes' => 'Stock adjustment during product update',
+                        'created_by' => Auth::id()
+                    ]);
+                } catch (\Exception $e) {
+                    \Log::error('Error creating purchase record: ' . $e->getMessage());
+                    throw $e;
+                }
+            } else {
+                \Log::info('No stock difference detected, skipping purchase record creation');
             }
 
             DB::commit();

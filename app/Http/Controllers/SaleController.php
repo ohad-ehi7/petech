@@ -125,7 +125,9 @@ class SaleController extends Controller
                     $query->whereDate('SaleDate', $now->toDateString());
                     break;
                 case 'week':
-                    $query->whereBetween('SaleDate', [$now->startOfWeek(), $now->endOfWeek()]);
+                    $startOfWeek = $now->copy()->startOfWeek();
+                    $endOfWeek = $now->copy()->endOfWeek();
+                    $query->whereBetween('SaleDate', [$startOfWeek, $endOfWeek]);
                     break;
                 case 'month':
                     $query->whereMonth('SaleDate', $now->month)

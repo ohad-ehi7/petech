@@ -34,8 +34,16 @@ class Transaction extends Model
     {
         return $this->belongsTo(Product::class, 'ProductID', 'ProductID');
     }
-    public function sale(): BelongsTo
+    public function sale()
     {
         return $this->belongsTo(Sale::class, 'ReferenceID', 'SaleID');
+    }
+
+    /**
+     * Get the purchase record associated with this transaction.
+     */
+    public function purchase()
+    {
+        return $this->belongsTo(PurchaseRecord::class, 'ReferenceID', 'PurchaseID');
     }
 }

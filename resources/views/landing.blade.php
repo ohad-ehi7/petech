@@ -26,12 +26,12 @@
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 space-y-6">
                     <div class="flex items-center gap-3">
-                        <Image
-                            src="https://placehold.co/60x60"
+                        <img
+                            src="images/profile-icon.png"
                             alt="Changchang Logo"
                             width={60}
                             height={60}
-                            class="rounded-full"
+                            class="rounded-full w-18 h-18"
                         />
                         <h1 class="text-2xl md:text-3xl font-bold text-[#1f509a]">Changchang Store IMS/SMS</h1>
                     </div>
@@ -54,7 +54,7 @@
 
                 <div class="md:w-1/2 mt-8 md:mt-0">
                     <Image
-                        src="https://placehold.co/500x400"
+                        src="{{asset('images/28ea334e-8883-4593-be26-cedfcec23a0b-removebg-preview.png')}}"
                         alt="POS System"
                         width={500}
                         height={400}
@@ -79,7 +79,7 @@
             <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                 <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
                     <div class="shrink-0">
-                        <Image src="https://placehold.co/80x80" alt="POS Icon" width={80} height={80} />
+                        <Image src="{{asset('images/cloud-base.png')}}" alt="POS Icon" class="h-20 w-20" />
                     </div>
                     <div>
                         <h3 class="font-bold text-lg mb-2">Run your business from anywhere</h3>
@@ -89,7 +89,7 @@
 
                 <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
                     <div class="shrink-0">
-                        <Image src="https://placehold.co/80x80" alt="Inventory Icon" width={80} height={80} />
+                        <Image src="{{asset('images/inventory.png')}}" alt="POS Icon" class="h-20 w-20" />
                     </div>
                     <div>
                         <h3 class="font-bold text-lg mb-2">Track inventory without manual work</h3>
@@ -99,7 +99,7 @@
 
                 <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
                     <div class="shrink-0">
-                        <Image src="https://placehold.co/80x80" alt="Reports Icon" width={80} height={80} />
+                        <Image src="{{asset('images/Automate Sales.png')}}" alt="POS Icon" class="h-20 w-20" />
                     </div>
                     <div>
                         <h3 class="font-bold text-lg mb-2">Automate sales reporting</h3>
@@ -109,8 +109,7 @@
 
                 <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
                     <div class="shrink-0">
-                        <Image
-                            src="https://placehold.co/80x80" alt="SMS Icon" width={80} height={80} />
+                        <Image src="{{asset('images/sms.png')}}" alt="POS Icon" class="h-20 w-20" />
                     </div>
                     <div>
                         <h3 class="font-bold text-lg mb-2">Run SMS Promotions</h3>
@@ -141,13 +140,7 @@
                         <br />
                         Store IMS/SMS
                     </h2>
-                    <Image
-                        src="https://placehold.co/400x400"
-                        alt="POS System"
-                        width={400}
-                        height={400}
-                        class="object-contain"
-                    />
+                    <Image src="{{asset('images/1e588978-4f86-49b0-b72e-d3a9cfd9ff5f-removebg-preview.png')}}" alt="POS Icon" class="h-150 w-300" />
                 </div>
 
                 <div class="md:w-1/2">

@@ -38,15 +38,23 @@
                                 <label class="block text-sm font-medium mb-2">Unit*</label>
                                 <select name="Unit" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('Unit') border-red-500 @enderror" required>
                                     <option value="">Select or type to add</option>
-                                    <option value="piece" {{ old('Unit', $product->Unit) == 'piece' ? 'selected' : '' }}>Piece</option>
-                                    <option value="box" {{ old('Unit', $product->Unit) == 'box' ? 'selected' : '' }}>Box</option>
-                                    <option value="kg" {{ old('Unit', $product->Unit) == 'kg' ? 'selected' : '' }}>Kilogram</option>
-                                    <option value="g" {{ old('Unit', $product->Unit) == 'g' ? 'selected' : '' }}>Gram</option>
-                                    <option value="L" {{ old('Unit', $product->Unit) == 'L' ? 'selected' : '' }}>Liter</option>
-                                    <option value="mL" {{ old('Unit', $product->Unit) == 'mL' ? 'selected' : '' }}>Milliliter</option>
+                                    <option value="Piece" {{ old('Unit', $product->Unit) == 'Piece' ? 'selected' : '' }}>Piece</option>
+                                    <option value="Pack" {{ old('Unit', $product->Unit) == 'Pack' ? 'selected' : '' }}>Pack</option>
+                                    <option value="Bottle" {{ old('Unit', $product->Unit) == 'Bottle' ? 'selected' : '' }}>Bottle</option>
+                                    <option value="Can" {{ old('Unit', $product->Unit) == 'Can' ? 'selected' : '' }}>Can</option>
+                                    <option value="Box" {{ old('Unit', $product->Unit) == 'Box' ? 'selected' : '' }}>Box</option>
+                                    <option value="Sachet" {{ old('Unit', $product->Unit) == 'Sachet' ? 'selected' : '' }}>Sachet</option>
+                                    <option value="Bar" {{ old('Unit', $product->Unit) == 'Bar' ? 'selected' : '' }}>Bar</option>
+                                    <option value="Jar" {{ old('Unit', $product->Unit) == 'Jar' ? 'selected' : '' }}>Jar</option>
+                                    <option value="Tube" {{ old('Unit', $product->Unit) == 'Tube' ? 'selected' : '' }}>Tube</option>
+                                    <option value="Tablet" {{ old('Unit', $product->Unit) == 'Tablet' ? 'selected' : '' }}>Tablet</option>
+                                    <option value="Set" {{ old('Unit', $product->Unit) == 'Set' ? 'selected' : '' }}>Set</option>
+                                    <option value="Bundle" {{ old('Unit', $product->Unit) == 'Bundle' ? 'selected' : '' }}>Bundle</option>
+                                    <option value="L" {{ old('Unit', $product->Unit) == 'L' ? 'selected' : '' }}>L</option>
+                                    <option value="Kg" {{ old('Unit', $product->Unit) == 'Kg' ? 'selected' : '' }}>Kg</option>
                                 </select>
                                 @error('Unit')
-                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                             <!-- Returnable Item -->

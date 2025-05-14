@@ -29,12 +29,20 @@
                                 <label class="block text-sm font-medium mb-2">Unit*</label>
                                 <select name="Unit" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('Unit') border-red-500 @enderror" required>
                                     <option value="">Select or type to add</option>
-                                    <option value="piece" {{ old('Unit') == 'piece' ? 'selected' : '' }}>Piece</option>
-                                    <option value="box" {{ old('Unit') == 'box' ? 'selected' : '' }}>Box</option>
-                                    <option value="kg" {{ old('Unit') == 'kg' ? 'selected' : '' }}>Kilogram</option>
-                                    <option value="g" {{ old('Unit') == 'g' ? 'selected' : '' }}>Gram</option>
-                                    <option value="L" {{ old('Unit') == 'L' ? 'selected' : '' }}>Liter</option>
-                                    <option value="mL" {{ old('Unit') == 'mL' ? 'selected' : '' }}>Milliliter</option>
+                                    <option value="Piece" {{ old('Unit') == 'Piece' ? 'selected' : '' }}>Piece</option>
+                                    <option value="Pack" {{ old('Unit') == 'Pack' ? 'selected' : '' }}>Pack</option>
+                                    <option value="Bottle" {{ old('Unit') == 'Bottle' ? 'selected' : '' }}>Bottle</option>
+                                    <option value="Can" {{ old('Unit') == 'Can' ? 'selected' : '' }}>Can</option>
+                                    <option value="Box" {{ old('Unit') == 'Box' ? 'selected' : '' }}>Box</option>
+                                    <option value="Sachet" {{ old('Unit') == 'Sachet' ? 'selected' : '' }}>Sachet</option>
+                                    <option value="Bar" {{ old('Unit') == 'Bar' ? 'selected' : '' }}>Bar</option>
+                                    <option value="Jar" {{ old('Unit') == 'Jar' ? 'selected' : '' }}>Jar</option>
+                                    <option value="Tube" {{ old('Unit') == 'Tube' ? 'selected' : '' }}>Tube</option>
+                                    <option value="Tablet" {{ old('Unit') == 'Tablet' ? 'selected' : '' }}>Tablet</option>
+                                    <option value="Set" {{ old('Unit') == 'Set' ? 'selected' : '' }}>Set</option>
+                                    <option value="Bundle" {{ old('Unit') == 'Bundle' ? 'selected' : '' }}>Bundle</option>
+                                    <option value="L" {{ old('Unit') == 'L' ? 'selected' : '' }}>L</option>
+                                    <option value="Kg" {{ old('Unit') == 'Kg' ? 'selected' : '' }}>Kg</option>
                                 </select>
                                 @error('Unit')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -235,5 +243,45 @@ function previewImage(input) {
         placeholder.classList.remove('hidden');
     }
 }
+
+// Add form submission handling
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.innerHTML;
+
+    form.addEventListener('submit', function(e) {
+        // Show loading state
+        submitButton.disabled = true;
+        submitButton.innerHTML = `
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Saving...
+        `;
+
+        // Check for validation errors
+        const requiredFields = form.querySelectorAll('[required]');
+        let hasErrors = false;
+
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('border-red-500');
+                hasErrors = true;
+            } else {
+                field.classList.remove('border-red-500');
+            }
+        });
+
+        if (hasErrors) {
+            e.preventDefault();
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonText;
+            alert('Please fill in all required fields');
+            return;
+        }
+    });
+});
 </script>
 </x-header>

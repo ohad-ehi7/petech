@@ -94,11 +94,6 @@
                         <option value="amount_asc">Amount (Low to High)</option>
                     </select>
                 </div>
-                <div class="ml-auto">
-                    <button id="exportBtn" class="bg-blue-600 text-white px-4 py-1 rounded text-sm hover:bg-blue-700">
-                        Export
-                    </button>
-                </div>
             </div>
 
             <!-- Table -->
@@ -136,13 +131,23 @@
                     </td>
                     <td class="px-4 py-2">₱{{ number_format($transaction->UnitPrice, 2) }}</td>
                     <td class="px-4 py-2">₱{{ number_format($transaction->TotalAmount, 2) }}</td>
-                    <td class="px-4 py-2">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         @if($transaction->TransactionType === 'SALE')
-                            <a href="{{ route('sales.show', $transaction->ReferenceID) }}" class="text-blue-600 hover:underline">
-                                SR-{{ str_pad($transaction->ReferenceID, 5, '0', STR_PAD_LEFT) }}
-                            </a>
+                            @if($transaction->sale)
+                                <a href="{{ route('sales.show', $transaction->sale->SaleID) }}" class="text-blue-600 hover:underline">
+                                    SR-{{ str_pad($transaction->sale->SaleID, 5, '0', STR_PAD_LEFT) }}
+                                </a>
+                            @else
+                                N/A
+                            @endif
+                        @elseif($transaction->TransactionType === 'OPENING_STOCK' || $transaction->TransactionType === 'STOCK_PURCHASE')
+                            @if($transaction->purchase)
+                                {{ $transaction->purchase->supplier->SupplierName ?? 'N/A' }}
+                            @else
+                                {{ $transaction->Notes ?? 'N/A' }}
+                            @endif
                         @else
-                            {{ $transaction->ReferenceID }}
+                            {{ $transaction->Notes ?? 'N/A' }}
                         @endif
                     </td>
                     </tr>
@@ -301,7 +306,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const sortBy = document.getElementById('sortBy');
-    const exportBtn = document.getElementById('exportBtn');
     const productSearch = document.getElementById('productSearch');
     const transactionSearch = document.getElementById('transactionSearch');
     const modal = document.getElementById('transactionModal');
@@ -401,13 +405,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 row.style.display = 'none';
             }
         });
-    });
-
-    // Export functionality
-    exportBtn.addEventListener('click', function() {
-        const params = new URLSearchParams(window.location.search);
-        params.set('sort', sortBy.value);
-        window.location.href = `${window.location.pathname}/export?${params.toString()}`;
     });
 
     // Modal functionality

@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id('TransactionID');
             $table->foreignId('ProductID')->constrained('products', 'ProductID')->onDelete('cascade');
-            $table->string('TransactionType');
+            $table->string('TransactionType'); // SALE, RETURN, STOCK_UPDATE, PRODUCT_CREATE, PRODUCT_UPDATE
             $table->timestamp('TransactionDate')->useCurrent();
             $table->integer('QuantityChange');
             $table->decimal('UnitPrice', 10, 2);
             $table->decimal('TotalAmount', 10, 2);
-            $table->foreignId('ReferenceID')->nullable()->constrained('sales', 'SaleID'); // Assuming primary reference is to sales
+            $table->string('ReferenceType')->nullable(); // 'sale', 'product_update', 'product_create', etc.
+            $table->unsignedBigInteger('ReferenceID')->nullable(); // Can reference different tables based on ReferenceType
+            $table->text('Notes')->nullable(); // Additional information about the transaction
             $table->timestamps();
         });
     }

@@ -22,43 +22,12 @@ class TransactionController extends Controller
         $product = Product::findOrFail($productId);
         $products = Product::with(['inventory'])->get();
         
-        // Get transactions
-        $query = Transaction::where('ProductID', $productId);
+        // Get transactions with all necessary relationships
+        $query = Transaction::where('ProductID', $productId)
+            ->with(['sale.customer', 'sale.clerk', 'product.suppliers', 'purchase.supplier'])
+            ->orderBy('TransactionDate', 'desc');
+            
         $transactions = $query->get();
-
-        // Add initial stock as a transaction if exists
-        if ($product->OpeningStock > 0) {
-            $transactions->prepend((object)[
-                'TransactionID' => 'INIT-' . str_pad($product->ProductID, 5, '0', STR_PAD_LEFT),
-                'ProductID' => $product->ProductID,
-                'TransactionType' => 'OPENING_STOCK',
-                'TransactionDate' => $product->created_at,
-                'QuantityChange' => $product->OpeningStock,
-                'UnitPrice' => $product->CostPrice,
-                'TotalAmount' => $product->OpeningStock * $product->CostPrice,
-                'ReferenceID' => null
-            ]);
-        }
-
-        // Add stock updates from inventory logs
-        $latestStockUpdate = DB::table('inventory_logs')
-            ->where('ProductID', $productId)
-            ->where('notes', 'like', 'Stock adjustment during product update%')
-            ->latest()
-            ->first();
-
-        if ($latestStockUpdate) {
-            $transactions->prepend((object)[
-                'TransactionID' => 'ADJ-' . str_pad($product->ProductID, 5, '0', STR_PAD_LEFT),
-                'ProductID' => $product->ProductID,
-                'TransactionType' => 'STOCK_UPDATE',
-                'TransactionDate' => Carbon::parse($latestStockUpdate->created_at),
-                'QuantityChange' => $latestStockUpdate->type === 'stock_in' ? $latestStockUpdate->quantity : -$latestStockUpdate->quantity,
-                'UnitPrice' => $product->CostPrice,
-                'TotalAmount' => $latestStockUpdate->quantity * $product->CostPrice,
-                'ReferenceID' => null
-            ]);
-        }
 
         // Apply sorting to the entire collection
         $sort = $request->get('sort', 'date_desc');
@@ -93,12 +62,13 @@ class TransactionController extends Controller
         
         // Add transactions to history
         $transactions->each(function ($transaction) use ($history) {
-            $description = 'Transaction recorded';
-            if ($transaction->TransactionType === 'OPENING_STOCK') {
-                $description = 'Opening stock recorded';
-            } else if ($transaction->TransactionType === 'STOCK_UPDATE') {
-                $description = 'Stock adjustment recorded';
-            }
+            $description = match($transaction->TransactionType) {
+                'OPENING_STOCK' => 'Opening stock recorded',
+                'STOCK_PURCHASE' => 'Stock purchase recorded',
+                'SALE' => 'Sale recorded',
+                'RETURN' => 'Return recorded',
+                default => 'Transaction recorded'
+            };
             
             $history->push((object)[
                 'EventType' => 'STOCK_ADJUSTMENT',
