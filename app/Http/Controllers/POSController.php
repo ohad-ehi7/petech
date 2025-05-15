@@ -16,7 +16,11 @@ class POSController extends Controller
     public function index()
     {
         $categories = Category::all();
-        $products = Product::with(['category', 'inventory'])->get();
+        $products = Product::with(['category', 'inventory'])
+            ->whereHas('inventory', function($query) {
+                $query->where('QuantityOnHand', '>', 0);
+            })
+            ->get();
 
         return view('sales.point-of-sale', compact('categories', 'products'));
     }
