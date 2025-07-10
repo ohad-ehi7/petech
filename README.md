@@ -2,6 +2,11 @@
 
 A comprehensive inventory and sales management system built with Laravel, designed to streamline business operations for small to medium-sized enterprises.
 
+## Walkthrough Video
+
+[Watch on YouTube](https://www.youtube.com/watch?v=2PG782-CWak)
+
+
 ## Features
 
 ### Inventory Management
