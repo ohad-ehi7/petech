@@ -1,3 +1,6 @@
+@php
+    \Log::info('Rendering landing.blade.php', ['user' => auth()->user()]);
+@endphp
 <!doctype html>
 <html lang="en">
 <head>
@@ -47,7 +50,9 @@
                         </p>
 
                         <button class="bg-[#1f509a] cursor-pointer hover:bg-gray-700 text-white font-medium py-3 px-8 rounded-md transition-colors">
-                            Start Managing!
+                            <a href="#login-form">
+                                Start Managing!
+                            </a>
                         </button>
                     </div>
                 </div>
@@ -143,7 +148,7 @@
                     <Image src="{{asset('images/1e588978-4f86-49b0-b72e-d3a9cfd9ff5f-removebg-preview.png')}}" alt="POS Icon" class="h-150 w-300" />
                 </div>
 
-                <div class="md:w-1/2">
+                <div id="login-form" class="md:w-1/2">
                     <div class="bg-white rounded-lg p-8 shadow-lg max-w-md mx-auto">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-xl font-bold">Login to your account</h3>
