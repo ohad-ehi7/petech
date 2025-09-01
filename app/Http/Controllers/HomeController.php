@@ -2,63 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
+
     public function index(Request $request)
     {
-        // Get today's date
+        $user = Auth::user();
+
         $today = Carbon::today();
-        
-        // Get sales data for today
-        $todaySales = DB::table('sales')
+        $dateRange = $request->input('date_range', 'this_month');
+        $startDate = $this->getStartDate($dateRange);
+        $endDate = $this->getEndDate($dateRange);
+
+        // Si caissier, filtrer par ClerkID
+        $salesQuery = Sale::query();
+        if ($user->RoleID === 3) { // 3 = Caissier
+            $salesQuery->where('ClerkID', $user->id);
+        }
+
+        // Today sales
+        $todaySales = (clone $salesQuery)
             ->whereDate('SaleDate', $today)
-            ->select(DB::raw('ROUND(SUM(TotalAmount)) as total'))
-            ->value('total') ?? 0;
-            
-        // Get items sold today
+            ->sum('TotalAmount');
+
+        // Items sold today
         $itemsSoldToday = DB::table('sales_items')
             ->join('sales', 'sales_items.SaleID', '=', 'sales.SaleID')
+            ->when($user->RoleID === 3, function ($q) use ($user) {
+                $q->where('sales.ClerkID', $user->id);
+            })
             ->whereDate('sales.SaleDate', $today)
             ->sum('sales_items.Quantity');
-            
-        // Get number of transactions today
-        $transactionsToday = Sale::whereDate('SaleDate', $today)
-            ->count();
-            
-        // Get void transactions today (since we don't have status, this will be 0)
-        $voidTransactionsToday = 0;
-            
-        // Get inventory summary
+
+        // Transactions today
+        $transactionsToday = (clone $salesQuery)->whereDate('SaleDate', $today)->count();
+
+        $voidTransactionsToday = 0; // à adapter si tu as un statut
+
+        // Inventory summary reste identique
         $inventorySummary = [
             'quantity_in_hand' => Inventory::sum('QuantityOnHand'),
-            'quantity_to_receive' => 0, // This would come from purchase orders
+            'quantity_to_receive' => 0,
             'low_stock_items' => DB::table('products')
                 ->join('inventories', 'products.ProductID', '=', 'inventories.ProductID')
                 ->whereRaw('inventories.QuantityOnHand <= (products.OpeningStock/2 - 1)')
                 ->count(),
             'total_items' => Product::count(),
-            'active_items' => Product::whereHas('inventory', function($query) {
-                $query->where('QuantityOnHand', '>', 0);
-            })->count()
+            'active_items' => Product::whereHas('inventory', fn($q) => $q->where('QuantityOnHand', '>', 0))->count(),
         ];
-        
-        // Get date range for filtering
-        $dateRange = $request->input('date_range', 'this_month');
-        $startDate = $this->getStartDate($dateRange);
-        $endDate = $this->getEndDate($dateRange);
-        
-        // Get top selling items based on date range
+
+        // Top selling items
         $topSellingItems = DB::table('sales_items')
             ->join('products', 'sales_items.ProductID', '=', 'products.ProductID')
             ->join('sales', 'sales_items.SaleID', '=', 'sales.SaleID')
             ->join('categories', 'products.CategoryID', '=', 'categories.CategoryID')
+            ->when($user->RoleID === 3, fn($q) => $q->where('sales.ClerkID', $user->id))
             ->whereBetween('sales.SaleDate', [$startDate, $endDate])
             ->select(
                 'products.ProductName',
@@ -70,37 +77,26 @@ class HomeController extends Controller
             ->orderBy('total_quantity', 'desc')
             ->limit(5)
             ->get();
-            
-        // Get sales history by status
+
+        // Sales history
         $salesHistory = [
-            'draft' => 0, // Since we don't have draft status
-            'confirmed' => Sale::whereBetween('SaleDate', [$startDate, $endDate])
-                ->where('TotalAmount', '>', 0)
-                ->count(),
-            'packed' => 0, // Since we don't have packed status
-            'shipped' => 0, // Since we don't have shipped status
-            'invoiced' => Sale::whereBetween('SaleDate', [$startDate, $endDate])
-                ->where('TotalAmount', '>', 0)
-                ->count()
+            'draft' => 0,
+            'confirmed' => (clone $salesQuery)->whereBetween('SaleDate', [$startDate, $endDate])->where('TotalAmount', '>', 0)->count(),
+            'packed' => 0,
+            'shipped' => 0,
+            'invoiced' => (clone $salesQuery)->whereBetween('SaleDate', [$startDate, $endDate])->where('TotalAmount', '>', 0)->count()
         ];
-        
-        // Get monthly sales data for the chart
-        $monthlySales = Sale::whereBetween('SaleDate', [$startDate, $endDate])
-            ->select(
-                DB::raw('DATE(SaleDate) as date'),
-                DB::raw('CAST(SUM(TotalAmount) AS DECIMAL(10,2)) as total')
-            )
+
+        // Monthly sales chart
+        $monthlySales = (clone $salesQuery)->whereBetween('SaleDate', [$startDate, $endDate])
+            ->select(DB::raw('DATE(SaleDate) as date'), DB::raw('CAST(SUM(TotalAmount) AS DECIMAL(10,2)) as total'))
             ->groupBy('date')
             ->orderBy('date')
             ->get();
-            
-        // Get total sales for the period
-        $monthlyTotal = DB::table('sales')
-            ->whereBetween('SaleDate', [$startDate, $endDate])
-            ->select(DB::raw('CAST(SUM(TotalAmount) AS DECIMAL(10,2)) as total'))
-            ->value('total') ?? 0;
 
-        // Get all products with their inventory
+        $monthlyTotal = (clone $salesQuery)->whereBetween('SaleDate', [$startDate, $endDate])
+            ->sum('TotalAmount');
+
         $products = Product::with('inventory')->get();
 
         return view('home', compact(
@@ -120,7 +116,7 @@ class HomeController extends Controller
 
     private function getStartDate($dateRange)
     {
-        return match($dateRange) {
+        return match ($dateRange) {
             'today' => Carbon::today(),
             'yesterday' => Carbon::yesterday(),
             'this_week' => Carbon::now()->startOfWeek(),
@@ -135,7 +131,7 @@ class HomeController extends Controller
 
     private function getEndDate($dateRange)
     {
-        return match($dateRange) {
+        return match ($dateRange) {
             'today' => Carbon::today()->endOfDay(),
             'yesterday' => Carbon::yesterday()->endOfDay(),
             'this_week' => Carbon::now()->endOfWeek(),
@@ -147,4 +143,4 @@ class HomeController extends Controller
             default => Carbon::now()->endOfMonth(),
         };
     }
-} 
+}

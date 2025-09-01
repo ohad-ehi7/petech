@@ -17,14 +17,17 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Supplier;
-use App\Models\InventoryLog;
-use App\Models\PurchaseRecord;
 use App\Models\Transaction;
+use App\Models\InventoryLog;
 use Illuminate\Http\Request;
+use App\Models\PurchaseRecord;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\FacadesLog;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class ProductController
@@ -88,7 +91,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        \Log::info('Product creation request received', $request->all());
+        Log::info('Product creation request received', $request->all());
 
         $validator = Validator::make($request->all(), [
             'ProductName' => [
@@ -100,7 +103,7 @@ class ProductController extends Controller
                     $exists = Product::where('ProductName', $value)
                         ->where('CategoryID', $request->CategoryID)
                         ->exists();
-                    
+
                     if ($exists) {
                         $fail('A product with this name already exists in the selected category.');
                     }
@@ -123,7 +126,7 @@ class ProductController extends Controller
         ]);
 
         if ($validator->fails()) {
-            \Log::error('Validation failed', ['errors' => $validator->errors()->toArray()]);
+            Log::error('Validation failed', ['errors' => $validator->errors()->toArray()]);
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -131,26 +134,26 @@ class ProductController extends Controller
 
         try {
             DB::beginTransaction();
-            \Log::info('Starting product creation transaction');
+            Log::info('Starting product creation transaction');
 
             $data = $request->all();
             $data['IsReturnable'] = $request->has('IsReturnable');
 
             // Handle image upload
             if ($request->hasFile('Product_Image')) {
-                \Log::info('Processing image upload');
+                Log::info('Processing image upload');
                 $imagePath = $request->file('Product_Image')->store('products', 'public');
-                \Log::info('Image stored at path: ' . $imagePath);
+                Log::info('Image stored at path: ' . $imagePath);
                 $data['Product_Image'] = $imagePath;
             }
 
             // Create product
-            \Log::info('Creating product with data', $data);
+            Log::info('Creating product with data', $data);
             $product = Product::create($data);
-            \Log::info('Product created successfully', ['product_id' => $product->ProductID]);
+            Log::info('Product created successfully', ['product_id' => $product->ProductID]);
 
             // Create initial inventory record
-            \Log::info('Creating inventory record');
+            Log::info('Creating inventory record');
             $product->inventory()->create([
                 'QuantityOnHand' => $request->OpeningStock ?? 0,
                 'ReorderLevel' => $request->ReorderLevel ?? 0,
@@ -158,7 +161,7 @@ class ProductController extends Controller
             ]);
 
             // Create purchase record for initial stock
-            \Log::info('Creating initial stock purchase record');
+            Log::info('Creating initial stock purchase record');
             $purchase = PurchaseRecord::create([
                 'SupplierID' => $request->SupplierID,
                 'ProductID' => $product->ProductID,
@@ -170,7 +173,7 @@ class ProductController extends Controller
             ]);
 
             // Create transaction record
-            \Log::info('Creating initial stock transaction record');
+            Log::info('Creating initial stock transaction record');
             Transaction::create([
                 'ProductID' => $product->ProductID,
                 'TransactionType' => 'OPENING_STOCK',
@@ -185,7 +188,7 @@ class ProductController extends Controller
 
             // Handle supplier relationship if provided
             if ($request->has('SupplierID')) {
-                \Log::info('Creating supplier relationship');
+                Log::info('Creating supplier relationship');
                 $product->productSuppliers()->create([
                     'SupplierID' => $request->SupplierID,
                     'PurchasePrice' => $request->CostPrice // Using CostPrice as PurchasePrice
@@ -193,12 +196,12 @@ class ProductController extends Controller
             }
 
             DB::commit();
-            \Log::info('Product creation completed successfully');
+            Log::info('Product creation completed successfully');
             return redirect()->route('products.index')
                 ->with('success', 'Product created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error creating product: ' . $e->getMessage(), [
+            Log::error('Error creating product: ' . $e->getMessage(), [
                 'exception' => $e,
                 'trace' => $e->getTraceAsString()
             ]);
@@ -245,8 +248,8 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        \Log::info('Update method called for product: ' . $product->ProductID);
-        \Log::info('Request data:', $request->all());
+        Log::info('Update method called for product: ' . $product->ProductID);
+        Log::info('Request data:', $request->all());
 
         $validator = Validator::make($request->all(), [
             'ProductName' => [
@@ -259,7 +262,7 @@ class ProductController extends Controller
                         ->where('CategoryID', $request->CategoryID)
                         ->where('ProductID', '!=', $product->ProductID)
                         ->exists();
-                    
+
                     if ($exists) {
                         $fail('A product with this name already exists in the selected category.');
                     }
@@ -281,7 +284,7 @@ class ProductController extends Controller
         ]);
 
         if ($validator->fails()) {
-            \Log::error('Validation failed:', $validator->errors()->toArray());
+            Log::error('Validation failed:', $validator->errors()->toArray());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -344,8 +347,8 @@ class ProductController extends Controller
             $currentStock = $product->inventory->QuantityOnHand;
             $newStock = $request->stock_adjustment ? ($currentStock + $request->stock_adjustment) : $currentStock;
             $stockDifference = $newStock - $currentStock;
-            
-            \Log::info('Stock calculation details:', [
+
+            Log::info('Stock calculation details:', [
                 'current_stock' => $currentStock,
                 'new_stock' => $newStock,
                 'stock_difference' => $stockDifference,
@@ -357,7 +360,7 @@ class ProductController extends Controller
             if ($stockDifference != 0) {
                 try {
                     // Create purchase record for stock update
-                    \Log::info('Creating stock purchase record with data:', [
+                    Log::info('Creating stock purchase record with data:', [
                         'SupplierID' => $request->SupplierID,
                         'ProductID' => $product->ProductID,
                         'Quantity' => abs($stockDifference),
@@ -375,7 +378,7 @@ class ProductController extends Controller
                     $purchase->Notes = 'Stock adjustment during product update';
                     $purchase->save();
 
-                    \Log::info('Purchase record created:', ['purchase_id' => $purchase->PurchaseID]);
+                    Log::info('Purchase record created:', ['purchase_id' => $purchase->PurchaseID]);
 
                     // Create transaction record
                     Transaction::create([
@@ -403,20 +406,20 @@ class ProductController extends Controller
                         'created_by' => Auth::id()
                     ]);
                 } catch (\Exception $e) {
-                    \Log::error('Error creating purchase record: ' . $e->getMessage());
+                    Log::error('Error creating purchase record: ' . $e->getMessage());
                     throw $e;
                 }
             } else {
-                \Log::info('No stock difference detected, skipping purchase record creation');
+                Log::info('No stock difference detected, skipping purchase record creation');
             }
 
             DB::commit();
-            \Log::info('Product updated successfully');
+            Log::info('Product updated successfully');
             return redirect()->route('products.index')
                 ->with('success', 'Product updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error updating product: ' . $e->getMessage());
+            Log::error('Error updating product: ' . $e->getMessage());
             return redirect()->back()
                 ->with('error', 'Error updating product: ' . $e->getMessage())
                 ->withInput();
@@ -454,7 +457,7 @@ class ProductController extends Controller
                 ->with('success', 'Product deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error deleting product: ' . $e->getMessage());
+            Log::error('Error deleting product: ' . $e->getMessage());
             return redirect()->back()
                 ->with('error', 'Error deleting product: ' . $e->getMessage());
         }

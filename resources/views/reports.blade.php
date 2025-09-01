@@ -1,24 +1,34 @@
-<x-header :title="'Reports'">
+<x-header :title="$isCashier ? 'My Sales Report' : 'Reports'">
 
     <div class="p-6">
+        <h1 class="text-2xl font-bold mb-4">
+            {{ $isCashier ? 'Rapport de vos ventes personnelles' : 'Rapport global des ventes' }}
+        </h1>
+
+        @if($isCashier)
+            <div class="mb-4 p-3 bg-blue-100 text-blue-800 rounded">
+                Vous voyez uniquement vos ventes du jour (Clerk: {{ Auth::user()->name }}).
+            </div>
+        @endif
+
         <!-- Sales Activity Section -->
         <div class="mb-8">
-            <h2 class="mb-4 text-lg font-semibold">Sales Activity</h2>
+            <h2 class="mb-4 text-lg font-semibold">Activité des ventes</h2>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
                 <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Today's Sales</div>
-                    <div class="text-2xl font-bold text-blue-600">₱{{ number_format($todaySales, 2) }}</div>
+                    <div class="text-sm text-gray-500">Ventes aujourd'hui</div>
+                    <div class="text-2xl font-bold text-blue-600">HTG{{ number_format($todaySales, 2) }}</div>
                 </div>
                 <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Items Sold Today</div>
+                    <div class="text-sm text-gray-500">Articles vendus aujourd'hui</div>
                     <div class="text-2xl font-bold text-green-600">{{ $itemsSoldToday }}</div>
                 </div>
                 <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Transactions Today</div>
+                    <div class="text-sm text-gray-500">Transactions aujourd'hui</div>
                     <div class="text-2xl font-bold text-purple-600">{{ $transactionsToday }}</div>
                 </div>
                 <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Void Transactions</div>
+                    <div class="text-sm text-gray-500">Transactions annulées</div>
                     <div class="text-2xl font-bold text-red-600">{{ $voidTransactionsToday }}</div>
                 </div>
             </div>
@@ -26,26 +36,26 @@
 
         <!-- Inventory Summary Section -->
         <div class="mb-8">
-            <h2 class="mb-4 text-lg font-semibold">Inventory Summary</h2>
+            <h2 class="mb-4 text-lg font-semibold">Résumé de l'inventaire</h2>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-5">
                 <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Quantity in Hand</div>
+                    <div class="text-sm text-gray-500">Quantité en stock</div>
                     <div class="text-2xl font-bold text-blue-600">{{ $inventorySummary['quantity_in_hand'] }}</div>
                 </div>
                 <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Quantity to Receive</div>
+                    <div class="text-sm text-gray-500">Quantité à recevoir</div>
                     <div class="text-2xl font-bold text-yellow-600">{{ $inventorySummary['quantity_to_receive'] }}</div>
                 </div>
                 <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Low Stock Items</div>
+                    <div class="text-sm text-gray-500">Articles en rupture</div>
                     <div class="text-2xl font-bold text-red-600">{{ $inventorySummary['low_stock_items'] }}</div>
                 </div>
                 <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Total Items</div>
+                    <div class="text-sm text-gray-500">Total des articles</div>
                     <div class="text-2xl font-bold text-green-600">{{ $inventorySummary['total_items'] }}</div>
                 </div>
                 <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
-                    <div class="text-sm text-gray-500">Active Items</div>
+                    <div class="text-sm text-gray-500">Articles actifs</div>
                     <div class="text-2xl font-bold text-purple-600">{{ $inventorySummary['active_items'] }}</div>
                 </div>
             </div>
@@ -53,17 +63,17 @@
 
         <!-- Item Details Section -->
         <div class="mb-8">
-            <h2 class="mb-4 text-lg font-semibold">Item Details</h2>
+            <h2 class="mb-4 text-lg font-semibold">Détails des articles</h2>
             <div class="p-4 bg-white rounded-lg shadow">
-                <h3 class="mb-4 text-md font-medium">Top Selling Items This Month</h3>
+                <h3 class="mb-4 text-md font-medium">Articles les plus vendus ce mois</h3>
                 <div class="overflow-x-auto">
                     <table id="topSellingItemsTable" class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Product Name</th>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Quantity Sold</th>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Total Sales</th>
-                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Category</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Produit</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Quantité vendue</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Total ventes</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Catégorie</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -71,7 +81,7 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $item->ProductName }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $item->total_quantity }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">₱{{ number_format($item->total_sales ?? 0, 2) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">HTG{{ number_format($item->total_sales ?? 0, 2) }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $item->CategoryName ?? 'N/A' }}</td>
                             </tr>
                             @endforeach
@@ -81,40 +91,13 @@
             </div>
         </div>
 
-{{--        <!-- Sales History Section -->--}}
-{{--        <div class="mb-8">--}}
-{{--            <h2 class="mb-4 text-lg font-semibold">Sales History</h2>--}}
-{{--            <div class="grid grid-cols-1 gap-4 md:grid-cols-5">--}}
-{{--                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">--}}
-{{--                    <div class="text-sm text-gray-500">Draft</div>--}}
-{{--                    <div class="text-2xl font-bold text-yellow-600">{{ $salesHistory['draft'] }}</div>--}}
-{{--                </div>--}}
-{{--                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">--}}
-{{--                    <div class="text-sm text-gray-500">Confirmed</div>--}}
-{{--                    <div class="text-2xl font-bold text-blue-600">{{ $salesHistory['confirmed'] }}</div>--}}
-{{--                </div>--}}
-{{--                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">--}}
-{{--                    <div class="text-sm text-gray-500">Packed</div>--}}
-{{--                    <div class="text-2xl font-bold text-purple-600">{{ $salesHistory['packed'] }}</div>--}}
-{{--                </div>--}}
-{{--                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">--}}
-{{--                    <div class="text-sm text-gray-500">Shipped</div>--}}
-{{--                    <div class="text-2xl font-bold text-green-600">{{ $salesHistory['shipped'] }}</div>--}}
-{{--                </div>--}}
-{{--                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200">--}}
-{{--                    <div class="text-sm text-gray-500">Invoiced</div>--}}
-{{--                    <div class="text-2xl font-bold text-indigo-600">{{ $salesHistory['invoiced'] }}</div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-
         <!-- Monthly Sales Chart -->
         <div class="mb-8">
-            <h2 class="mb-4 text-lg font-semibold">Monthly Sales</h2>
+            <h2 class="mb-4 text-lg font-semibold">Ventes mensuelles</h2>
             <div class="p-4 bg-white rounded-lg shadow">
                 <div class="mb-4">
-                    <div class="text-sm text-gray-500">Total Sales This Month</div>
-                    <div class="text-2xl font-bold text-blue-600">₱{{ number_format($monthlyTotal, 2) }}</div>
+                    <div class="text-sm text-gray-500">Total ventes ce mois</div>
+                    <div class="text-2xl font-bold text-blue-600">HTG{{ number_format($monthlyTotal, 2) }}</div>
                 </div>
                 <div class="h-64">
                     <canvas id="monthlySalesChart"></canvas>
@@ -123,112 +106,41 @@
         </div>
     </div>
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .dt-buttons {
-            margin-bottom: 1rem;
-        }
-        .dt-button {
-            background-color: #4F46E5 !important;
-            color: white !important;
-            border: none !important;
-            padding: 0.5rem 1rem !important;
-            border-radius: 0.375rem !important;
-            font-size: 0.875rem !important;
-            font-weight: 500 !important;
-            margin-right: 0.5rem !important;
-            transition: all 0.2s !important;
-        }
-        .dt-button:hover {
-            background-color: #4338CA !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-        }
-        .dt-button:active {
-            transform: translateY(0) !important;
-        }
-        .dataTables_filter input {
-            border: 1px solid #E5E7EB !important;
-            border-radius: 0.375rem !important;
-            padding: 0.5rem !important;
-            margin-left: 0.5rem !important;
-        }
-        .dataTables_length select {
-            border: 1px solid #E5E7EB !important;
-            border-radius: 0.375rem !important;
-            padding: 0.5rem !important;
-            margin: 0 0.5rem !important;
-        }
-        .dataTables_info {
-            color: #6B7280 !important;
-            font-size: 0.875rem !important;
-        }
-        .paginate_button {
-            border: 1px solid #E5E7EB !important;
-            border-radius: 0.375rem !important;
-            padding: 0.5rem 1rem !important;
-            margin: 0 0.25rem !important;
-            color: #4B5563 !important;
-        }
-        .paginate_button.current {
-            background-color: #4F46E5 !important;
-            color: white !important;
-            border-color: #4F46E5 !important;
-        }
-        .paginate_button:hover:not(.current) {
-            background-color: #F3F4F6 !important;
-            color: #1F2937 !important;
-        }
-    </style>
+      <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- DataTables CSS & JS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"></script>
+<script src="{{ asset('assets/js/chart.js') }}"></script>
+
+
     <script>
         $(document).ready(function() {
-            // Initialize DataTable
+            // DataTable
             $('#topSellingItemsTable').DataTable({
                 dom: '<"flex flex-wrap items-center justify-between"<"flex items-center"B><"flex items-center"lf>>rtip',
-                buttons: [
-                    {
-                        extend: 'copy',
-                        text: '<i class="fas fa-copy"></i> Copy',
-                        className: 'dt-button'
-                    },
-                    {
-                        extend: 'csv',
-                        text: '<i class="fas fa-file-csv"></i> CSV',
-                        className: 'dt-button'
-                    },
-                    {
-                        extend: 'excel',
-                        text: '<i class="fas fa-file-excel"></i> Excel',
-                        className: 'dt-button'
-                    },
-                    {
-                        extend: 'pdf',
-                        text: '<i class="fas fa-file-pdf"></i> PDF',
-                        className: 'dt-button'
-                    },
-                    {
-                        extend: 'print',
-                        text: '<i class="fas fa-print"></i> Print',
-                        className: 'dt-button'
-                    }
-                ],
-                order: [[1, 'desc']], // Sort by quantity sold by default
-                pageLength: 10,
+                buttons: ['copy','csv','excel','pdf','print'],
+                order: [[1, 'desc']],
+                pageLength: 25,
                 language: {
-                    search: "Search items:",
-                    lengthMenu: "Show _MENU_ items per page",
-                    info: "Showing _START_ to _END_ of _TOTAL_ items"
+                    search: "Rechercher :",
+                    lengthMenu: "Afficher _MENU_ articles par page",
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ articles"
                 }
             });
 
-            // Initialize Chart
+            // Chart
             const ctx = document.getElementById('monthlySalesChart').getContext('2d');
             const monthlySales = @json($monthlySales);
 
@@ -237,7 +149,7 @@
                 data: {
                     labels: monthlySales.map(item => item.date),
                     datasets: [{
-                        label: 'Daily Sales',
+                        label: 'Ventes quotidiennes',
                         data: monthlySales.map(item => item.total),
                         borderColor: 'rgb(59, 130, 246)',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -249,20 +161,15 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Daily Sales Trend'
-                        }
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Tendance quotidienne des ventes' }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
-                                    return '₱' + value;
+                                    return 'HTG' + value;
                                 }
                             }
                         }
@@ -271,4 +178,5 @@
             });
         });
     </script>
+
 </x-header>

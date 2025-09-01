@@ -37,10 +37,16 @@ class SaleController extends Controller
             DB::beginTransaction();
 
             // Create or find customer
+            // $customer = Customer::firstOrCreate(
+            //     ['CustomerCode' => $request->customer_name],
+            //     ['CustomerCode' => $request->customer_name]
+            // );
+            // Create or find customer using fullname
             $customer = Customer::firstOrCreate(
-                ['CustomerCode' => $request->customer_name],
-                ['CustomerCode' => $request->customer_name]
+                ['fullname' => $request->customer_name],
+                ['fullname' => $request->customer_name]
             );
+
 
             // Create the sale record
             $sale = Sale::create([
@@ -97,7 +103,6 @@ class SaleController extends Controller
                 'message' => 'Sale processed successfully',
                 'sale_id' => $sale->SaleID
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error processing sale: ' . $e->getMessage());
@@ -113,49 +118,117 @@ class SaleController extends Controller
      *
      * @return \Illuminate\View\View
      */
+    // public function index(Request $request)
+    // {
+    //     $query = Sale::with(['customer', 'salesItems', 'clerk']);
+
+    //     // Apply period filter if specified
+    //     if ($request->has('period')) {
+    //         $now = now();
+    //         switch ($request->period) {
+    //             case 'today':
+    //                 $query->whereDate('SaleDate', $now->toDateString());
+    //                 break;
+    //             case 'week':
+    //                 $startOfWeek = $now->copy()->startOfWeek();
+    //                 $endOfWeek = $now->copy()->endOfWeek();
+    //                 $query->whereBetween('SaleDate', [$startOfWeek, $endOfWeek]);
+    //                 break;
+    //             case 'month':
+    //                 $query->whereMonth('SaleDate', $now->month)
+    //                     ->whereYear('SaleDate', $now->year);
+    //                 break;
+    //             case 'quarter':
+    //                 $query->whereBetween('SaleDate', [
+    //                     $now->startOfQuarter(),
+    //                     $now->endOfQuarter()
+    //                 ]);
+    //                 break;
+    //             case 'year':
+    //                 $query->whereYear('SaleDate', $now->year);
+    //                 break;
+    //             case 'paid':
+    //                 $query->where('Status', 'Paid');
+    //                 break;
+    //             case 'void':
+    //                 $query->where('Status', 'Void');
+    //                 break;
+    //         }
+    //     }
+
+    //     $sales = $query->orderBy('SaleDate', 'desc')->get();
+
+    //     return view('transaction.sales-transaction', compact('sales'));
+    // }
     public function index(Request $request)
-    {
-        $query = Sale::with(['customer', 'salesItems', 'clerk']);
+{
+    $user = auth()->user();
 
-        // Apply period filter if specified
-        if ($request->has('period')) {
-            $now = now();
-            switch ($request->period) {
-                case 'today':
-                    $query->whereDate('SaleDate', $now->toDateString());
-                    break;
-                case 'week':
-                    $startOfWeek = $now->copy()->startOfWeek();
-                    $endOfWeek = $now->copy()->endOfWeek();
-                    $query->whereBetween('SaleDate', [$startOfWeek, $endOfWeek]);
-                    break;
-                case 'month':
-                    $query->whereMonth('SaleDate', $now->month)
-                          ->whereYear('SaleDate', $now->year);
-                    break;
-                case 'quarter':
-                    $query->whereBetween('SaleDate', [
-                        $now->startOfQuarter(),
-                        $now->endOfQuarter()
-                    ]);
-                    break;
-                case 'year':
-                    $query->whereYear('SaleDate', $now->year);
-                    break;
-                case 'paid':
-                    $query->where('Status', 'Paid');
-                    break;
-                case 'void':
-                    $query->where('Status', 'Void');
-                    break;
-            }
-        }
+    $query = Sale::with(['customer', 'salesItems', 'clerk']);
 
-        $sales = $query->orderBy('SaleDate', 'desc')->get();
-
-        return view('transaction.sales-transaction', compact('sales'));
+    // Si l'utilisateur est un cashier, ne voir que ses ventes
+    if ($user->role->name === 'casher') {
+        $query->where('ClerkID', $user->id);
     }
 
+    // Filtrage par période prédéfinie
+    if ($request->has('period')) {
+        $now = now();
+        switch ($request->period) {
+            case 'today':
+                $query->whereDate('SaleDate', $now->toDateString());
+                break;
+            case 'yesterday':
+                $query->whereDate('SaleDate', $now->copy()->subDay()->toDateString());
+                break;
+            case 'day_before_yesterday':
+                $query->whereDate('SaleDate', $now->copy()->subDays(2)->toDateString());
+                break;
+            case 'week':
+                $query->whereBetween('SaleDate', [$now->startOfWeek(), $now->endOfWeek()]);
+                break;
+            case 'month':
+                $query->whereMonth('SaleDate', $now->month)->whereYear('SaleDate', $now->year);
+                break;
+            case 'last_month':
+                $query->whereMonth('SaleDate', $now->copy()->subMonth()->month)
+                      ->whereYear('SaleDate', $now->copy()->subMonth()->year);
+                break;
+            case 'quarter':
+                $query->whereBetween('SaleDate', [$now->startOfQuarter(), $now->endOfQuarter()]);
+                break;
+            case 'year':
+                $query->whereYear('SaleDate', $now->year);
+                break;
+            case 'last_year':
+                $query->whereYear('SaleDate', $now->copy()->subYear()->year);
+                break;
+            case 'paid':
+                $query->where('Status', 'Paid');
+                break;
+            case 'void':
+                $query->where('Status', 'Void');
+                break;
+        }
+    }
+
+    // Filtrage par date spécifique
+    if ($request->has('date')) {
+        $query->whereDate('SaleDate', $request->date);
+    }
+
+    // Filtrage par plage de dates personnalisée (gardé pour compatibilité)
+    if ($request->has('start_date') && $request->has('end_date')) {
+        $query->whereBetween('SaleDate', [
+            $request->start_date,
+            \Carbon\Carbon::parse($request->end_date)->endOfDay()
+        ]);
+    }
+
+    $sales = $query->orderBy('SaleDate', 'desc')->get();
+
+    return view('transaction.sales-transaction', compact('sales', 'user'));
+}
     public function show(Sale $sale)
     {
         $sale->load(['customer', 'salesItems.product', 'clerk']);
@@ -171,7 +244,7 @@ class SaleController extends Controller
     public function bulkDelete(Request $request)
     {
         try {
-            \Log::info('Bulk delete request received', ['saleIds' => $request->saleIds]);
+            Log::info('Bulk delete request received', ['saleIds' => $request->saleIds]);
 
             $validator = Validator::make($request->all(), [
                 'saleIds' => 'required|array',
@@ -179,7 +252,7 @@ class SaleController extends Controller
             ]);
 
             if ($validator->fails()) {
-                \Log::error('Validation failed', ['errors' => $validator->errors()]);
+                Log::error('Validation failed', ['errors' => $validator->errors()]);
                 return response()->json(['message' => 'Invalid sale IDs provided'], 422);
             }
 
@@ -188,17 +261,17 @@ class SaleController extends Controller
             $sales = Sale::with(['salesItems', 'transactions'])->whereIn('SaleID', $request->saleIds)->get();
 
             foreach ($sales as $sale) {
-                \Log::info('Processing sale for deletion', ['saleId' => $sale->SaleID]);
+                Log::info('Processing sale for deletion', ['saleId' => $sale->SaleID]);
 
                 // First delete related transactions
                 if ($sale->transactions) {
-                    \Log::info('Deleting related transactions', ['saleId' => $sale->SaleID]);
+                    Log::info('Deleting related transactions', ['saleId' => $sale->SaleID]);
                     $sale->transactions()->delete();
                 }
 
                 // Restore inventory quantities
                 foreach ($sale->salesItems as $item) {
-                    \Log::info('Restoring inventory quantity', [
+                    Log::info('Restoring inventory quantity', [
                         'saleId' => $sale->SaleID,
                         'itemId' => $item->ItemID,
                         'quantity' => $item->Quantity
@@ -219,13 +292,12 @@ class SaleController extends Controller
             }
 
             DB::commit();
-            \Log::info('Bulk delete completed successfully');
+            Log::info('Bulk delete completed successfully');
 
             return response()->json(['message' => 'Sales deleted successfully']);
-
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error in bulk delete', [
+            Log::error('Error in bulk delete', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -250,7 +322,7 @@ class SaleController extends Controller
 
             foreach ($request->items as $item) {
                 $product = Product::findOrFail($item['ProductID']);
-                
+
                 // Create sale item
                 $sale->salesItems()->create([
                     'ProductID' => $item['ProductID'],
@@ -315,7 +387,7 @@ class SaleController extends Controller
             // Create new sale items
             foreach ($request->items as $item) {
                 $product = Product::findOrFail($item['ProductID']);
-                
+
                 // Create sale item
                 $sale->salesItems()->create([
                     'ProductID' => $item['ProductID'],

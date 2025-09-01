@@ -12,10 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('customers', function (Blueprint $table) {
-            $table->id('CustomerID');
-            $table->string('CustomerCode')->unique();
-            $table->timestamps();
-        });
+    $table->id('CustomerID');
+    $table->string('fullname');
+    $table->string('nif_cin')->nullable(); // CIN/NIF mieux en string car ça peut contenir des lettres
+    $table->string('phone')->nullable();   // Téléphone : string car peut contenir +509, tirets, etc.
+    $table->string('address')->nullable();
+    $table->timestamps();
+});
+
     }
 
     /**

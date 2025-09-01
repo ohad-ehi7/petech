@@ -139,7 +139,7 @@ class CategoryController extends Controller
                             $exists = Category::where('CategoryName', $value)
                                 ->where('CategoryID', '!=', $category->CategoryID)
                                 ->exists();
-                            
+
                             if ($exists) {
                                 $fail('A category with this name already exists.');
                             }
@@ -175,25 +175,47 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
+    // public function destroy(Category $category)
+    // {
+    //     try {
+    //         DB::beginTransaction();
+
+    //         // Check if category has products
+    //         if ($category->products()->exists()) {
+    //             throw new \Exception('Cannot delete category with associated products.');
+    //         }
+
+    //         $category->delete();
+
+    //         DB::commit();
+    //         return redirect()->route('categories.index')
+    //             ->with('success', 'Category deleted successfully.');
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return redirect()->back()
+    //             ->with('error', 'Error deleting category: ' . $e->getMessage());
+    //     }
+    // }
+
     public function destroy(Category $category)
-    {
-        try {
-            DB::beginTransaction();
+{
+    try {
+        DB::beginTransaction();
 
-            // Check if category has products
-            if ($category->products()->exists()) {
-                throw new \Exception('Cannot delete category with associated products.');
-            }
-
-            $category->delete();
-
-            DB::commit();
-            return redirect()->route('categories.index')
-                ->with('success', 'Category deleted successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Error deleting category: ' . $e->getMessage());
+        if ($category->products()->exists()) {
+            throw new \Exception('Impossible de supprimer une catégorie qui contient des produits.');
         }
+
+        $category->delete();
+
+        DB::commit();
+        return redirect()->route('categories.index')
+            ->with('success', 'Catégorie supprimée avec succès.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()
+            ->with('error', 'Erreur lors de la suppression : ' . $e->getMessage());
     }
+}
+
 }

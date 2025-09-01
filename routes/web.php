@@ -1,17 +1,19 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\InventoryLogController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\POSController;
-use App\Http\Controllers\SaleController;
-use App\Http\Controllers\ReportsController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\PurchaseRecordController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\POSController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\InventoryLogController;
+use App\Http\Controllers\PurchaseRecordController;
 
 // Home Routes
 Route::get('/', function () {
@@ -24,8 +26,17 @@ Route::post('/landing', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 
-Route::middleware('auth')->group(function () {
+// Route::middleware('auth')->group(function () {
+Route::group(['middleware' => 'admin'], function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    // User Routes
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
     // Product Routes
     Route::get('/product-list', [ProductController::class, 'index'])->name('products.index');
@@ -36,6 +47,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/product-overview/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     Route::get('/product-overview/{product}', [ProductController::class, 'show'])->name('products.show');
     Route::get('/product-transaction/', [ProductController::class, 'inventoryStatus'])->name('products.transaction');
+
+    // Customer Routes
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/customers/create', [CustomerController::class, 'create'])->name('customers.create');
+    Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
+    Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+    Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
+    Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+    Route::get('customers/random-customer', [CustomerController::class, 'randomFullname'])->name('customers.random');
+
 
     // Supplier Routes
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
@@ -99,4 +120,3 @@ Route::middleware('auth')->group(function () {
     Route::get('/products/{product}/purchases', [PurchaseRecordController::class, 'productPurchases'])->name('purchases.product');
     Route::get('/suppliers/{supplier}/purchases', [PurchaseRecordController::class, 'supplierPurchases'])->name('purchases.supplier');
 });
-

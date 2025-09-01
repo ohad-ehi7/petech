@@ -34,7 +34,7 @@
 <aside id="sidebar-multi-level-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 " aria-label="Sidebar">
 
 <div class="w-full">
-  <img src="{{ asset('images/sidebar.png') }}" alt="ulo" class="w-full h-auto block object-cover">
+  <img src="{{ asset('images/pe.png') }}" alt="ulo" class="w-full h-auto block object-cover">
 </div>
    <div class="h-full px-3 py-4 overflow-y-auto bg-[#1F509A] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
@@ -47,7 +47,7 @@
                 </span>
         </x-nav-link>
       </li>
-
+@if (Auth::check() && Auth::user()->RoleID == 1)
        <li>
             <button type="button" class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]" aria-controls="dropdown-inventory" data-collapse-toggle="dropdown-inventory">
                   <span class="flex-1 text-left rtl:text-right whitespace-nowrap ">
@@ -91,10 +91,11 @@
 
             </ul>
          </li>
+            @endif
 
 
          <li>
-            <button id="sales" type="button"
+            <button id="salesBtn" type="button"
               class="group flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-[#3A7CE0]"
               aria-controls="sales-dropdown"
               data-collapse-toggle="sales-dropdown">
@@ -108,7 +109,7 @@
               </svg>
             </button>
 
-            <ul id="sales-dropdown" class="{{ request()->is('point-of-sale*') || request()->is('sales-transaction*') ? '' : 'hidden' }} py-2 space-y-2">
+            <ul id="salesDropdown" class="{{ request()->is('point-of-sale*') || request()->is('sales-transaction*') ? '' : 'hidden' }} py-2 space-y-2">
               <li>
 
                   <x-nav-link href="{{ route('pos.index') }}" :active="request()->is('point-of-sale')" :menu_item="true" >POS</x-nav-link>
@@ -121,6 +122,23 @@
           </li>
 
 
+@if (Auth::check() && Auth::user()->RoleID == 1)
+<li>
+   <x-nav-link href="{{ route('users.index') }}" :active="request()->is('user')" :menu_item="false" >
+      <span class="flex-1 whitespace-nowrap">
+         <i class="fa fa-user text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
+         User
+      </span>
+   </x-nav-link>
+</li>
+<li>
+   <x-nav-link href="{{ route('customers.index') }}" :active="request()->is('customer')" :menu_item="false" >
+      <span class="flex-1 whitespace-nowrap">
+         <i class="fa-solid fa-handshake text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
+         Customer
+      </span>
+   </x-nav-link>
+</li>
 
 
          <li>
@@ -130,14 +148,7 @@
                Supplier</span>
             </x-nav-link>
          </li>
-         <li>
 
-             <x-nav-link href="{{ route('reports') }}" :active="request()->is('reports')" :menu_item="false" >
-               <span class="flex-1 whitespace-nowrap">
-               <i class="fa-solid fa-chart-line text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
-               Reports</span>
-             </x-nav-link>
-         </li>
          <li>
              <x-nav-link href="{{ route('inventory.logs') }}" :active="request()->is('inventory-logs')" :menu_item="false" >
                <span class="flex-1 whitespace-nowrap">
@@ -145,8 +156,17 @@
                Inventory Logs</span>
              </x-nav-link>
          </li>
-         <li>
 
+         @endif
+         <li>
+<li>
+
+             <x-nav-link href="{{ route('reports') }}" :active="request()->is('reports')" :menu_item="false" >
+               <span class="flex-1 whitespace-nowrap">
+               <i class="fa-solid fa-chart-line text-gray-400 group-hover:text-white mr-4 transition-colors duration-200"></i>
+               Reports</span>
+             </x-nav-link>
+         </li>
         </li>
 
 
@@ -161,7 +181,7 @@
     <!-- Search Form -->
     <form action="{{ route('products.index') }}" method="GET" class="max-w-md w-full">
       <label for="default-search" class="text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-      <div class="relative">
+      {{-- <div class="relative">
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
@@ -174,7 +194,7 @@
                class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                placeholder="Search Products..."
                required />
-      </div>
+      </div> --}}
     </form>
 
     <!-- Icon Buttons -->
@@ -197,7 +217,7 @@
       </li>
 
       <!-- Add Item Button -->
-
+   @if (Auth::check() && Auth::user()->RoleID == 1)
       <li>
         <a href="{{ route('products.create') }}">
               <button type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -205,110 +225,14 @@
               </button>
           </a>
       </li>
+      @endif
 
-      <!-- Notification Button -->
-      <!-- <li class="relative">
-        <button type="button"
-                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700 group transition-all duration-200"
-                onclick="toggleNotifications()">
-          <i class="fa-solid fa-bell text-black dark:text-black group-hover:text-black dark:group-hover:text-black transition-transform duration-200 group-hover:rotate-12"></i>
-          <span class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white transform bg-red-500 rounded-full animate-pulse">3</span>
-        </button>
 
-        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-xl border border-gray-200 z-50 transform transition-all duration-200 ease-in-out">
-          <div class="p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl">
-            <div class="flex justify-between items-center">
-              <h3 class="text-base font-semibold text-gray-900">Notifications</h3>
-              <button class="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200">Mark all as read</button>
-            </div>
-          </div>
-
-          <div class="max-h-[480px] overflow-y-auto custom-scrollbar">
-            <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
-              <div class="flex items-start space-x-4">
-                <div class="flex-shrink-0">
-                  <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-blue-100 shadow-sm">
-                    <i class="fa-solid fa-cart-shopping text-blue-600 text-lg"></i>
-                  </span>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <p class="text-sm font-semibold text-gray-900">New Sale</p>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">New</span>
-                  </div>
-                  <p class="text-sm text-gray-600 mt-1">Ken Sevellino made a purchase of Php 172.60</p>
-                  <p class="text-xs text-gray-400 mt-2 flex items-center">
-                    <i class="fa-regular fa-clock mr-1"></i>
-                    2 minutes ago
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
-              <div class="flex items-start space-x-4">
-                <div class="flex-shrink-0">
-                  <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-yellow-100 shadow-sm">
-                    <i class="fa-solid fa-exclamation-triangle text-yellow-600 text-lg"></i>
-                  </span>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <p class="text-sm font-semibold text-gray-900">Low Stock Alert</p>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full">Warning</span>
-                  </div>
-                  <p class="text-sm text-gray-600 mt-1">Bearbrand Milk is running low on stock</p>
-                  <p class="text-xs text-gray-400 mt-2 flex items-center">
-                    <i class="fa-regular fa-clock mr-1"></i>
-                    1 hour ago
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
-              <div class="flex items-start space-x-4">
-                <div class="flex-shrink-0">
-                  <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-green-100 shadow-sm">
-                    <i class="fa-solid fa-check text-green-600 text-lg"></i>
-                  </span>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <p class="text-sm font-semibold text-gray-900">Payment Received</p>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">Completed</span>
-                  </div>
-                  <p class="text-sm text-gray-600 mt-1">Payment of Php 500.00 has been received</p>
-                  <p class="text-xs text-gray-400 mt-2 flex items-center">
-                    <i class="fa-regular fa-clock mr-1"></i>
-                    2 hours ago
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="p-4 border-t border-gray-200 bg-gray-50 rounded-b-xl">
-            <a href="#" class="text-sm text-center text-blue-600 hover:text-blue-800 font-medium block transition-colors duration-200">
-              View all notifications
-              <i class="fa-solid fa-arrow-right ml-2"></i>
-            </a>
-          </div>
-        </div>
-      </li> -->
-
-      <!-- <li>
-        <a href="{{ route('settings') }}">
-          <button id="settings" type="button" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-            <i class="fa-solid fa-cogs text-black dark:text-black group-hover:text-gray-900 dark:group-hover:text-white"></i>
-          </button>
-        </a>
-      </li> -->
 
            <!-- User Profile Button -->
       <li class="relative">
-        <button id="userProfile" type="button" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
-          <img src="{{ asset('images/profile-icon.png') }}" alt="User  Profile" class="w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600 transition duration-150 ease-in-out transform hover:scale-105">
+        <button id="userProfileBtn" type="button" class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img src="{{ asset('images/petech.png') }}" alt="User  Profile" class="w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600 transition duration-150 ease-in-out transform hover:scale-105">
         </button>
         <!-- Dropdown Menu -->
         <div id="userProfileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 z-50">
@@ -340,94 +264,178 @@
 
 
 <script>
-        // JavaScript to toggle the sidebar
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.getElementById('sidebar-multi-level-sidebar');
-        const mainContent = document.getElementById('mainContent');
+        // // JavaScript to toggle the sidebar
+        // const sidebarToggle = document.getElementById('sidebarToggle');
+        // const sidebar = document.getElementById('sidebar-multi-level-sidebar');
+        // const mainContent = document.getElementById('mainContent');
 
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-            mainContent.classList.toggle('ml-64');
-            mainContent.classList.toggle('ml-0');
+        // sidebarToggle.addEventListener('click', () => {
+        //     sidebar.classList.toggle('-translate-x-full');
+        //     mainContent.classList.toggle('ml-64');
+        //     mainContent.classList.toggle('ml-0');
+        // });
+
+        //  // Optional: Close the sidebar when clicking outside of it
+        //  document.addEventListener('click', (event) => {
+        //     if (!sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
+        //         sidebar.classList.add('-translate-x-full');
+        //         mainContent.classList.remove('ml-0');
+        //         mainContent.classList.add('ml-64');
+        //     }
+        // });
+
+        //   document.addEventListener('DOMContentLoaded', () => {
+        //   const toggleBtns = document.querySelectorAll('[data-collapse-toggle]');
+
+        //   toggleBtns.forEach(btn => {
+        //     btn.addEventListener('click', () => {
+        //       const dropdownId = btn.getAttribute('aria-controls');
+        //       const dropdown = document.getElementById(dropdownId);
+        //       const arrow = btn.querySelector('svg');
+
+        //       if (dropdown) {
+        //         dropdown.classList.toggle('hidden');
+        //         if (arrow) {
+        //             arrow.classList.toggle('rotate-180');
+        //         }
+        //       }
+        //     });
+        //   });
+        // });
+
+
+
+
+        //     document.getElementById('dropdownToggle').addEventListener('click', function (e) {
+        //     e.preventDefault(); // prevent page jump
+        //     const submenu = document.getElementById('dropdown-submenu');
+        //     submenu.classList.toggle('hidden');
+        //   });
+
+        //   document.addEventListener('DOMContentLoaded', () => {
+        //   const toggleBtn = document.getElementById('salesDropdownToggle');
+        //   const dropdown = document.getElementById('sales-dropdown');
+
+        //   toggleBtn.addEventListener('click', () => {
+        //     dropdown.classList.toggle('hidden');
+        //   });
+        // });
+
+        // // User Profile Dropdown Toggle
+        // document.getElementById('userProfile').addEventListener('click', function(e) {
+        //   e.stopPropagation();
+        //   const dropdown = document.getElementById('userProfileDropdown');
+        //   dropdown.classList.toggle('hidden');
+        // });
+
+        // // Close dropdown when clicking outside
+        // document.addEventListener('click', function(e) {
+        //   const dropdown = document.getElementById('userProfileDropdown');
+        //   const userProfile = document.getElementById('userProfile');
+
+        //   if (!userProfile.contains(e.target) && !dropdown.contains(e.target)) {
+        //     dropdown.classList.add('hidden');
+        //   }
+        // });
+
+        // function toggleNotifications() {
+        //   const dropdown = document.getElementById('notificationDropdown');
+        //   dropdown.classList.toggle('hidden');
+        // }
+
+        // // Close dropdown when clicking outside
+        // document.addEventListener('click', function(event) {
+        //   const dropdown = document.getElementById('notificationDropdown');
+        //   const button = event.target.closest('button');
+
+        //   if (!button && !dropdown.contains(event.target)) {
+        //     dropdown.classList.add('hidden');
+        //   }
+        // });
+        document.addEventListener('DOMContentLoaded', () => {
+
+    // =============================
+    // SIDEBAR TOGGLE
+    // =============================
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar-multi-level-sidebar');
+    const mainContent = document.getElementById('mainContent');
+
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        mainContent.classList.toggle('ml-64');
+        mainContent.classList.toggle('ml-0');
+    });
+
+    // Optional: Close sidebar when clicking outside
+    document.addEventListener('click', (event) => {
+        if (!sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
+            sidebar.classList.add('-translate-x-full');
+            mainContent.classList.remove('ml-0');
+            mainContent.classList.add('ml-64');
+        }
+    });
+
+    // =============================
+    // GENERIC DROPDOWN FUNCTION
+    // =============================
+    function setupDropdown(buttonId, dropdownId) {
+        const btn = document.getElementById(buttonId);
+        const dropdown = document.getElementById(dropdownId);
+
+        if (!btn || !dropdown) return;
+
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('hidden');
         });
 
-         // Optional: Close the sidebar when clicking outside of it
-         document.addEventListener('click', (event) => {
-            if (!sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
-                sidebar.classList.add('-translate-x-full');
-                mainContent.classList.remove('ml-0');
-                mainContent.classList.add('ml-64');
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
             }
         });
+    }
 
-          document.addEventListener('DOMContentLoaded', () => {
-          const toggleBtns = document.querySelectorAll('[data-collapse-toggle]');
+    // =============================
+    // Setup all main dropdowns
+    // =============================
+    setupDropdown('userProfileBtn', 'userProfileDropdown');
+    setupDropdown('inventoryBtn', 'inventoryDropdown');
+    setupDropdown('salesBtn', 'salesDropdown');
+    setupDropdown('notificationBtn', 'notificationDropdown'); // si tu as notifications
 
-          toggleBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-              const dropdownId = btn.getAttribute('aria-controls');
-              const dropdown = document.getElementById(dropdownId);
-              const arrow = btn.querySelector('svg');
+    // =============================
+    // COLLAPSIBLE SUBMENUS
+    // =============================
+    const collapseBtns = document.querySelectorAll('[data-collapse-toggle]');
+    collapseBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('aria-controls');
+            const target = document.getElementById(targetId);
+            const arrow = btn.querySelector('svg');
 
-              if (dropdown) {
-                dropdown.classList.toggle('hidden');
-                if (arrow) {
-                    arrow.classList.toggle('rotate-180');
-                }
-              }
-            });
-          });
+            if (target) {
+                target.classList.toggle('hidden');
+                if (arrow) arrow.classList.toggle('rotate-180');
+            }
         });
+    });
 
-
-
-
-            document.getElementById('dropdownToggle').addEventListener('click', function (e) {
-            e.preventDefault(); // prevent page jump
+    // =============================
+    // Submenu inside Inventory (example: Product List)
+    // =============================
+    const inventorySubmenuToggle = document.getElementById('dropdownToggle'); // bouton + dans Product List
+    if (inventorySubmenuToggle) {
+        inventorySubmenuToggle.addEventListener('click', (e) => {
+            e.preventDefault();
             const submenu = document.getElementById('dropdown-submenu');
-            submenu.classList.toggle('hidden');
-          });
-
-          document.addEventListener('DOMContentLoaded', () => {
-          const toggleBtn = document.getElementById('salesDropdownToggle');
-          const dropdown = document.getElementById('sales-dropdown');
-
-          toggleBtn.addEventListener('click', () => {
-            dropdown.classList.toggle('hidden');
-          });
+            if (submenu) submenu.classList.toggle('hidden');
         });
+    }
 
-        // User Profile Dropdown Toggle
-        document.getElementById('userProfile').addEventListener('click', function(e) {
-          e.stopPropagation();
-          const dropdown = document.getElementById('userProfileDropdown');
-          dropdown.classList.toggle('hidden');
-        });
+});
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-          const dropdown = document.getElementById('userProfileDropdown');
-          const userProfile = document.getElementById('userProfile');
-
-          if (!userProfile.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.classList.add('hidden');
-          }
-        });
-
-        function toggleNotifications() {
-          const dropdown = document.getElementById('notificationDropdown');
-          dropdown.classList.toggle('hidden');
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-          const dropdown = document.getElementById('notificationDropdown');
-          const button = event.target.closest('button');
-
-          if (!button && !dropdown.contains(event.target)) {
-            dropdown.classList.add('hidden');
-          }
-        });
 
     </script>
 

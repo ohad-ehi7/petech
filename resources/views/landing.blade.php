@@ -23,129 +23,14 @@
     @endif
 </head>
 <body>
-
-    <section class="bg-gradient-to-b from-[#a7c5f3] to-[#1f509a] text-[#2f2922] py-12 md:py-16">
-        <div class="container mx-auto max-w-7xl px-4 md:px-8">
-            <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 space-y-6">
-                    <div class="flex items-center gap-3">
-                        <img
-                            src="images/profile-icon.png"
-                            alt="Changchang Logo"
-                            width={60}
-                            height={60}
-                            class="rounded-full w-18 h-18"
-                        />
-                        <h1 class="text-2xl md:text-3xl font-bold text-[#1f509a]">Changchang Store IMS/SMS</h1>
-                    </div>
-
-                    <div class="space-y-4 max-w-lg">
-                        <h2 class="text-2xl md:text-3xl font-semibold">
-                            Designed to streamline Changchang Store's internal operations by keeping
-                            <span class="text-[#1f509a] block mt-1">Accurate Records</span>
-                        </h2>
-
-                        <p class="text-sm md:text-base">
-                            Ensures smooth tracking of sales, products, transactions, and stock movement.
-                        </p>
-
-                        <button class="bg-[#1f509a] cursor-pointer hover:bg-gray-700 text-white font-medium py-3 px-8 rounded-md transition-colors">
-                            <a href="#login-form">
-                                Start Managing!
-                            </a>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="md:w-1/2 mt-8 md:mt-0">
-                    <Image
-                        src="{{asset('images/28ea334e-8883-4593-be26-cedfcec23a0b-removebg-preview.png')}}"
-                        alt="POS System"
-                        width={500}
-                        height={400}
-                        class="object-contain"
-                    />
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="bg-[#f6f6f6] py-12 md:py-16 relative">
-        <div class="absolute inset-0 opacity-10">
-{{--            <div class="h-full w-full">--}}
-{{--                <img src="{{asset('images/css-pattern-by-magicpattern.png')}}" alt="">--}}
-{{--            </div>--}}
-        </div>
-
-        <div class="container mx-auto px-4 md:px-8 relative z-10">
-            <div class="text-center mb-10">
-                <h2 class="text-2xl md:text-3xl font-bold text-[#1f509a]">Changchang Store IMS/SMS offers:</h2>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
-                    <div class="shrink-0">
-                        <Image src="{{asset('images/cloud-base.png')}}" alt="POS Icon" class="h-20 w-20" />
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-lg mb-2">Run your business from anywhere</h3>
-                        <p class="text-sm text-gray-600">Cloud-based POS lets you manage operations on any device</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
-                    <div class="shrink-0">
-                        <Image src="{{asset('images/inventory.png')}}" alt="POS Icon" class="h-20 w-20" />
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-lg mb-2">Track inventory without manual work</h3>
-                        <p class="text-sm text-gray-600">Eliminate human errors and optimize your operations</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
-                    <div class="shrink-0">
-                        <Image src="{{asset('images/Automate Sales.png')}}" alt="POS Icon" class="h-20 w-20" />
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-lg mb-2">Automate sales reporting</h3>
-                        <p class="text-sm text-gray-600">Access sales reports and other analytics in real-time</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
-                    <div class="shrink-0">
-                        <Image src="{{asset('images/sms.png')}}" alt="POS Icon" class="h-20 w-20" />
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-lg mb-2">Run SMS Promotions</h3>
-                        <p class="text-sm text-gray-600">
-                            Run targeted promotions to increase revenue and customer loyalty
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-{{--            <div class="absolute right-0 bottom-0 md:w-1/3 hidden md:block">--}}
-{{--                <Image--}}
-{{--                    src="https://placehold.co/300x400"--}}
-{{--                    alt="Changchang Mascot"--}}
-{{--                    width={300}--}}
-{{--                    height={400}--}}
-{{--                    class="object-contain"--}}
-{{--                />--}}
-{{--            </div>--}}
-        </div>
-    </section>
-    <section class="bg-gradient-to-b from-[#a7c5f3] to-[#1f509a] py-12 md:py-16">
+ <section class="bg-gradient-to-b from-[#a7f3d2] to-[#1f509a] py-12 md:py-16">
         <div class="container mx-auto px-4 md:px-8">
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 mb-8 md:mb-0">
                     <h2 class="text-2xl md:text-3xl font-bold text-[#1f509a] mb-6">
-                        Changchang
-                        <br />
-                        Store IMS/SMS
+                        PETECH POS
                     </h2>
-                    <Image src="{{asset('images/1e588978-4f86-49b0-b72e-d3a9cfd9ff5f-removebg-preview.png')}}" alt="POS Icon" class="h-150 w-300" />
+                    <Image src="{{asset('images/5.PNG')}}" alt="POS Icon" class="h-150 w-300" />
                 </div>
 
                 <div id="login-form" class="md:w-1/2">
@@ -200,7 +85,7 @@
                                 type="submit"
                                 class="w-full bg-[#1f509a] hover:bg-[#1f509a]/90 text-white font-medium py-3 rounded-md transition-colors"
                             >
-                                Login / Sign in
+                                Login
                             </button>
                         </form>
                     </div>
@@ -209,21 +94,49 @@
         </div>
     </section>
 
-    <footer class="bg-[#f6f6f6] py-4 text-sm text-gray-600">
-        <div class="container mx-auto px-4 md:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div>© Copyright 2025 | Changchang Store IMS/SMS CS2025001234</div>
-                <div class="flex gap-6 mt-2 md:mt-0">
-                    <a href="#" class="hover:underline">
-                    Term of Service
-                    </a>
-                    <a href="#" class="hover:underline">
-                    Privacy Policy
-                    </a>
+
+    <section class="bg-[#f6f6f6] py-12 md:py-16 relative">
+    <div class="absolute inset-0 opacity-10">
+    </div>
+
+    <div class="container mx-auto px-4 md:px-8 relative z-10">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl md:text-3xl font-bold text-[#1f509a]">PETECH</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+
+
+
+
+            <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
+                <div class="shrink-0">
+                    <Image src="{{asset('images/Automate Sales.png')}}" alt="Icône POS" class="h-20 w-20" />
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-2">Automatisez vos rapports de ventes</h3>
+                    <p class="text-sm text-gray-600">Accédez aux rapports de ventes et autres analyses en temps réel</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-md flex items-start gap-4">
+                <div class="shrink-0">
+                    <Image src="{{asset('images/sms.png')}}" alt="Icône POS" class="h-20 w-20" />
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-2">Lancez des promotions par SMS</h3>
+                    <p class="text-sm text-gray-600">
+                        Mettez en place des promotions ciblées pour augmenter vos revenus et fidéliser vos clients
+                    </p>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
+</section>
+
+
+
+
 
 </body>
 </html>

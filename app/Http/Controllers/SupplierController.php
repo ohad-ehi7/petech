@@ -137,7 +137,7 @@ class SupplierController extends Controller
                         $exists = Supplier::where('SupplierName', $value)
                             ->where('SupplierID', '!=', $supplier->SupplierID)
                             ->exists();
-                        
+
                         if ($exists) {
                             $fail('A supplier with this name already exists.');
                         }
