@@ -66,7 +66,8 @@ A comprehensive inventory and sales management system built with Laravel, design
 
 1. Clone the repository
 ```bash
-git clone https://github.com/loftyyyy/ChangChangIntegratedInventoryAndSalesSystem.git
+
+git clone https://github.com/ohad-ehi7/petech.git
 ```
 
 2. Install PHP dependencies
