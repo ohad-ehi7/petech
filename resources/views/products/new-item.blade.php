@@ -1,3 +1,23 @@
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- DataTables CSS & JS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css">
+
 <x-header :title="'Add New Product'">
     <div class="p-10">
         <div class="bg-white rounded-xl shadow-md p-6">
@@ -27,7 +47,7 @@
                             <!-- Unit -->
                             <div>
                                 <label class="block text-sm font-medium mb-2">Unit*</label>
-                                <select name="Unit" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('Unit') border-red-500 @enderror" required>
+                                <select name="Unit" id="unitSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('Unit') border-red-500 @enderror" required>
                                     <option value="">Select or type to add</option>
                                     <option value="Piece" {{ old('Unit') == 'Piece' ? 'selected' : '' }}>Piece</option>
                                     <option value="Pack" {{ old('Unit') == 'Pack' ? 'selected' : '' }}>Pack</option>
@@ -145,7 +165,7 @@
                             <label class="block text-sm font-medium mb-1">Weight</label>
                             <div class="flex space-x-2">
                                 <input type="number" name="Weight" step="0.01" value="{{ old('Weight') }}" class="w-32 border border-gray-300 rounded-lg px-3 py-2 @error('Weight') border-red-500 @enderror" />
-                                <select name="WeightUnit" class="border border-gray-300 rounded-lg px-3 py-2 @error('WeightUnit') border-red-500 @enderror">
+                                <select name="WeightUnit" id="weightUnitSelectt" class="border border-gray-300 rounded-lg px-3 py-2 @error('WeightUnit') border-red-500 @enderror">
                                     <option value="g" {{ old('WeightUnit') == 'g' ? 'selected' : '' }}>g</option>
                                     <option value="kg" {{ old('WeightUnit') == 'kg' ? 'selected' : '' }}>kg</option>
                                     <option value="mL" {{ old('WeightUnit') == 'mL' ? 'selected' : '' }}>mL</option>
@@ -222,66 +242,95 @@
         </div>
     </div>
 
-
-<script>
-function previewImage(input) {
-    const preview = document.getElementById('image-preview');
-    const placeholder = document.getElementById('upload-placeholder');
-    
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
+    <script>
+    function previewImage(input) {
+        const preview = document.getElementById('image-preview');
+        const placeholder = document.getElementById('upload-placeholder');
         
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.classList.remove('hidden');
-            placeholder.classList.add('hidden');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.classList.add('hidden');
+            placeholder.classList.remove('hidden');
         }
-        
-        reader.readAsDataURL(input.files[0]);
-    } else {
-        preview.classList.add('hidden');
-        placeholder.classList.remove('hidden');
     }
-}
 
-// Add form submission handling
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    const submitButton = form.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton.innerHTML;
-
-    form.addEventListener('submit', function(e) {
-        // Show loading state
-        submitButton.disabled = true;
-        submitButton.innerHTML = `
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Saving...
-        `;
-
-        // Check for validation errors
-        const requiredFields = form.querySelectorAll('[required]');
-        let hasErrors = false;
-
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                field.classList.add('border-red-500');
-                hasErrors = true;
-            } else {
-                field.classList.remove('border-red-500');
+    // Initialiser Selectize sur les champs de sélection
+    document.addEventListener('DOMContentLoaded', function() {
+        // Configuration pour permettre l'ajout de nouvelles unités
+        $('#unitSelect').selectize({
+            create: true,
+            sortField: 'text',
+            placeholder: 'Select or type to add',
+            createOnBlur: true,
+            createFilter: function(input) {
+                return input.length <= 50; // Limiter la longueur des nouvelles entrées
             }
         });
 
-        if (hasErrors) {
-            e.preventDefault();
-            submitButton.disabled = false;
-            submitButton.innerHTML = originalButtonText;
-            alert('Please fill in all required fields');
-            return;
-        }
+        // Configuration pour les catégories (sans création)
+        $('#categorySelect').selectize({
+            sortField: 'text',
+            placeholder: 'Select Category'
+        });
+
+        // Configuration pour les fournisseurs (sans création)
+        $('#supplierSelect').selectize({
+            sortField: 'text',
+            placeholder: 'Select Supplier'
+        });
+
+        // Configuration pour les unités de poids
+        $('#weightUnitSelect').selectize({
+            sortField: 'text',
+            placeholder: 'Select Unit'
+        });
+
+        // Gestion de la soumission du formulaire
+        const form = document.querySelector('form');
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.innerHTML;
+
+        form.addEventListener('submit', function(e) {
+            // Afficher l'état de chargement
+            submitButton.disabled = true;
+            submitButton.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Saving...
+            `;
+
+            // Vérifier les erreurs de validation
+            const requiredFields = form.querySelectorAll('[required]');
+            let hasErrors = false;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('border-red-500');
+                    hasErrors = true;
+                } else {
+                    field.classList.remove('border-red-500');
+                }
+            });
+
+            if (hasErrors) {
+                e.preventDefault();
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonText;
+                alert('Please fill in all required fields');
+                return;
+            }
+        });
     });
-});
-</script>
+    </script>
 </x-header>
