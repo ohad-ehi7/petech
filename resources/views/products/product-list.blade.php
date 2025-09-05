@@ -40,7 +40,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         @if ($product->Product_Image)
-                                            <img src="{{ asset('storage/' . $product->Product_Image) }}"
+                                            {{-- <img src="{{ asset('storage/' . $product->Product_Image) }}"
+                                                alt="{{ $product->ProductName }}"
+                                                class="h-10 w-10 rounded-full object-cover"> --}}
+                                                 <img src="{{ asset($product->Product_Image) }}"
                                                 alt="{{ $product->ProductName }}"
                                                 class="h-10 w-10 rounded-full object-cover">
                                         @else

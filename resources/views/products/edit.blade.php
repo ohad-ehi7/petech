@@ -71,7 +71,7 @@
                             <label class="block text-sm font-medium mb-2">Product Image</label>
                             <div class="mt-1 flex items-center space-x-4">
                                 @if($product->Product_Image)
-                                    <img src="{{ asset('storage/' . $product->Product_Image) }}" alt="Current product image" class="h-32 w-32 object-cover rounded-lg">
+                                    <img src="{{ asset($product->Product_Image) }}" alt="Current product image" class="h-32 w-32 object-cover rounded-lg">
                                 @else
                                     <div class="text-sm text-gray-500">No image uploaded</div>
                                 @endif

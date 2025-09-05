@@ -26,7 +26,7 @@
             </div>
 
             <!-- Product Grid -->
-            <div id="productGrid" class="grid grid-cols-3 gap-4">
+            <div id="productGrid" class="grid grid-cols-5 gap-4">
                 @foreach ($products as $product)
                     <div class="product-card bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 cursor-pointer"
                         data-product-id="{{ $product->ProductID }}"
@@ -35,8 +35,8 @@
                         onclick="showQuantityModal({{ $product->ProductID }}, '{{ $product->ProductName }}', {{ $product->SellingPrice }}, {{ $product->inventory->QuantityOnHand ?? 0 }})">
                         <div class="aspect-square mb-3 bg-gray-100 rounded-lg overflow-hidden">
                             @if ($product->Product_Image)
-                                <img src="{{ asset('storage/' . $product->Product_Image) }}"
-                                    alt="{{ $product->ProductName }}" class="w-full h-full object-contain">
+                                <img src="{{ asset($product->Product_Image) }}" alt="{{ $product->ProductName }}"
+                                    class="w-full h-full object-contain">
                             @else
                                 <div class="w-full h-full flex items-center justify-center">
                                     <i class="fa-solid fa-image text-gray-400 text-4xl"></i>
@@ -54,6 +54,12 @@
                     </div>
                 @endforeach
             </div>
+            <!-- Product Grid -->
+            <!-- Pagination -->
+            <div class="mt-6">
+                {{ $products->links('pagination::tailwind') }}
+            </div>
+
         </div>
 
         <!-- Right Section: Cart and Checkout -->
@@ -62,15 +68,16 @@
             <div class="p-6 border-b border-gray-200">
                 <h2 class="text-xl font-bold text-gray-900">Current Sale</h2>
                 <div class="mt-2 flex items-center space-x-2">
-<select id="customerName"
-                    class="flex-1 px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">-- Sélectionner un client --</option>
-                    @foreach (\App\Models\Customer::all() as $customer)
-                        <option value="{{ $customer->fullname }}">{{ $customer->fullname }}</option>
-                    @endforeach
-                </select>
-</div>
-</div>
+
+                    <select id="customerName"
+                        class="flex-1 px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="Cash" selected>Cash</option>
+                        @foreach (\App\Models\Customer::all() as $customer)
+                            <option value="{{ $customer->fullname }}">{{ $customer->fullname }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
 
             <!-- Cart Items -->
             <div class="flex-1 overflow-y-auto p-6">
@@ -224,23 +231,23 @@
 
 
     <!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- DataTables CSS & JS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <!-- DataTables CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"></script>
 
-<script>
+    <script>
         // Configuration toastr
         toastr.options = {
             "closeButton": true,
@@ -321,34 +328,38 @@
             const cartItems = document.getElementById('cart-items');
             cartItems.innerHTML = '';
 
+            // Regrouper les articles par ID et calculer la quantité totale pour chaque produit
             const groupedItems = cart.reduce((groups, item) => {
                 if (!groups[item.id]) {
                     groups[item.id] = {
                         ...item,
-                        totalQuantity: 0
+                        totalQuantity: 0,
+                        totalPrice: 0
                     };
                 }
                 groups[item.id].totalQuantity += item.quantity;
+                groups[item.id].totalPrice += (item.price * item.quantity);
                 return groups;
             }, {});
 
+            // Afficher chaque article groupé
             Object.values(groupedItems).forEach((item) => {
                 const itemElement = document.createElement('div');
                 itemElement.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
                 itemElement.innerHTML = `
-                <div class="flex-1">
-                    <h4 class="font-medium text-gray-900">${item.name}</h4>
-                    <div class="text-sm text-gray-500">
-                        ${item.totalQuantity} × HTG${item.price.toFixed(2)}
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-900">${item.name}</h4>
+                        <div class="text-sm text-gray-500">
+                            ${item.totalQuantity} × HTG${item.price.toFixed(2)}
+                        </div>
                     </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <span class="font-medium text-gray-900">HTG${(item.totalQuantity * item.price).toFixed(2)}</span>
-                    <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-600">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div>
-            `;
+                    <div class="flex items-center space-x-4">
+                        <span class="font-medium text-gray-900">HTG${item.totalPrice.toFixed(2)}</span>
+                        <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-600">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
                 cartItems.appendChild(itemElement);
             });
 
@@ -363,7 +374,7 @@
         function updateTotals() {
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const discount = calculateDiscount();
-            const total = subtotal - discount; // Retirer le calcul de TVA
+            const total = subtotal - discount;
 
             document.getElementById('subtotal').textContent = `HTG${subtotal.toFixed(2)}`;
             document.getElementById('total').textContent = `HTG${total.toFixed(2)}`;
@@ -435,14 +446,27 @@
         });
 
 
+        // $('#customerName').selectize({
+        //     create: false,
+        //     sortField: 'text',
+        //     placeholder: 'Sélectionner un client',
+        //     onChange: function(value) {
+        //         const parent = this.$control; // conteneur Selectize
+        //         if (value) {
+        //             parent.addClass('bg-blue-50 border-blue-500'); // Tailwind classes
+        //         } else {
+        //             parent.removeClass('bg-blue-50 border-blue-500');
+        //         }
+        //     }
+        // });
         $('#customerName').selectize({
             create: false,
             sortField: 'text',
             placeholder: 'Sélectionner un client',
             onChange: function(value) {
-                const parent = this.$control; // conteneur Selectize
+                const parent = this.$control;
                 if (value) {
-                    parent.addClass('bg-blue-50 border-blue-500'); // Tailwind classes
+                    parent.addClass('bg-blue-50 border-blue-500');
                 } else {
                     parent.removeClass('bg-blue-50 border-blue-500');
                 }
@@ -453,12 +477,37 @@
 
 
         // Paiement
+        // function processPayment() {
+        //     const customerName = document.getElementById('customerName').value.trim();
+        //     if (!customerName) {
+        //         toastr.error('Please select  a customer name');
+        //         return;
+        //     }
+
+        //     if (cart.length === 0) {
+        //         toastr.warning('Cart is empty');
+        //         return;
+        //     }
+
+        //     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        //     const discount = calculateDiscount();
+        //     const total = subtotal - discount;
+
+        //     document.getElementById('paymentTotal').textContent = `HTG${total.toFixed(2)}`;
+        //     document.getElementById('amountReceived').value = '';
+        //     document.getElementById('changeAmount').textContent = 'HTG0.00';
+
+        //     const modal = document.getElementById('cashPaymentModal');
+        //     modal.classList.remove('hidden');
+        //     modal.classList.add('flex');
+        //     document.body.style.overflow = 'hidden';
+        // }
+
         function processPayment() {
             const customerName = document.getElementById('customerName').value.trim();
-            if (!customerName) {
-                toastr.error('Please select  a customer name');
-                return;
-            }
+
+            // Si le client n'est pas sélectionné, on met "Cash" par défaut
+            const finalCustomer = customerName || 'Cash';
 
             if (cart.length === 0) {
                 toastr.warning('Cart is empty');
@@ -467,7 +516,7 @@
 
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const discount = calculateDiscount();
-            const total = subtotal - discount; // Retirer le calcul de TVA
+            const total = subtotal - discount;
 
             document.getElementById('paymentTotal').textContent = `HTG${total.toFixed(2)}`;
             document.getElementById('amountReceived').value = '';
@@ -477,7 +526,10 @@
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             document.body.style.overflow = 'hidden';
+
+            console.log("Paiement pour le client :", finalCustomer); // Vérification
         }
+
 
         function closeCashPaymentModal() {
             const modal = document.getElementById('cashPaymentModal');
@@ -597,17 +649,29 @@
             const date = new Date().toLocaleString();
             const receiptNumber = `REC-${saleId}`;
 
+            // Regrouper les articles pour l'affichage sur le reçu
+            const groupedItems = items.reduce((groups, item) => {
+                if (!groups[item.id]) {
+                    groups[item.id] = {
+                        ...item,
+                        totalQuantity: 0
+                    };
+                }
+                groups[item.id].totalQuantity += item.quantity;
+                return groups;
+            }, {});
+
             const receiptContent = `
             <div style="font-family: Arial, sans-serif; max-width: 300px; margin: 0 auto; padding: 20px;">
-                <h2 style="text-align: center; margin-bottom: 20px;">Sales Receipt</h2>
+                <h2 style="text-align: center; margin-bottom: 20px;">Reyalite Produits National/Bar</h2>
                 <div><strong>Receipt #:</strong> ${receiptNumber}</div>
                 <div><strong>Date:</strong> ${date}</div>
                 <div><strong>Customer:</strong> ${customerName}</div>
                 <hr>
                 <div>
-                    ${items.map(item => `
-                            <div>${item.name} x ${item.quantity} = HTG${(item.price * item.quantity).toFixed(2)}</div>
-                        `).join('')}
+                    ${Object.values(groupedItems).map(item => `
+                                        <div>${item.name} x ${item.totalQuantity} = HTG${(item.price * item.totalQuantity).toFixed(2)}</div>
+                                    `).join('')}
                 </div>
                 <hr>
                 <div><strong>Subtotal:</strong> HTG${subtotal.toFixed(2)}</div>
@@ -617,7 +681,7 @@
                 <div><strong>Change:</strong> HTG${(amountPaid - total).toFixed(2)}</div>
                 <hr>
                 <div style="text-align: center; font-size: 12px; color: #666;">
-                    Thank you for your purchase!
+                    Construisons Dans Un Monde Qui Bouge!
                 </div>
             </div>
         `;

@@ -6,6 +6,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class CustomerController extends Controller
 {
@@ -37,51 +38,57 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-   public function store(Request $request)
-{
-    try {
-        DB::beginTransaction();
 
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'fullname' => 'required|string|max:255',
-                'nif_cin'  => 'nullable|string|max:20|unique:customers,nif_cin',
-                'phone'    => 'required|string|max:20|unique:customers,phone',
-                'address'  => 'nullable|string|max:255'
-            ],
-            [
-                'fullname.required' => 'Le nom complet est obligatoire.',
-                'nif_cin.unique'    => 'Ce NIF/CIN est déjà utilisé.',
-                'phone.required'    => 'Le numéro de téléphone est obligatoire.',
-                'phone.unique'      => 'Ce numéro de téléphone existe déjà.',
-            ]
-        );
+    public function store(Request $request)
+    {
+        try {
+            DB::beginTransaction();
 
-        if ($validator->fails()) {
+            // Si l'utilisateur essaie de créer "Cash", on bloque
+            if (strtolower(trim($request->fullname)) === 'cash') {
+                return redirect()->back()
+                    ->with('error', 'Impossible de créer un client nommé "Cash".');
+            }
+
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'fullname' => 'required|string|max:255',
+                    'nif_cin'  => 'nullable|string|max:20|unique:customers,nif_cin',
+                    'phone'    => 'required|string|max:20|unique:customers,phone',
+                    'address'  => 'nullable|string|max:255'
+                ],
+                [
+                    'fullname.required' => 'Le nom complet est obligatoire.',
+                    'nif_cin.unique'    => 'Ce NIF/CIN est déjà utilisé.',
+                    'phone.required'    => 'Le numéro de téléphone est obligatoire.',
+                    'phone.unique'      => 'Ce numéro de téléphone existe déjà.',
+                ]
+            );
+
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            Customer::create([
+                'fullname' => $request->fullname,
+                'nif_cin'  => $request->nif_cin,
+                'phone'    => $request->phone,
+                'address'  => $request->address,
+            ]);
+
+            DB::commit();
+            return redirect()->route('customers.index')
+                ->with('success', 'Client créé avec succès.');
+        } catch (Exception $e) {
+            DB::rollBack();
             return redirect()->back()
-                ->withErrors($validator)
+                ->with('error', 'Erreur lors de la création du client: ' . $e->getMessage())
                 ->withInput();
         }
-
-        Customer::create([
-            'fullname' => $request->fullname,
-            'nif_cin'  => $request->nif_cin,
-            'phone'    => $request->phone,
-            'address'  => $request->address,
-        ]);
-
-        DB::commit();
-        return redirect()->route('customers.index')
-            ->with('success', 'Client créé avec succès.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return redirect()->back()
-            ->with('error', 'Erreur lors de la création du client: ' . $e->getMessage())
-            ->withInput();
     }
-}
-
     /**
      * Show the form for editing the specified customer.
      *
@@ -177,7 +184,7 @@ class CustomerController extends Controller
             DB::commit();
             return redirect()->route('customers.index')
                 ->with('success', 'Client supprimé avec succès.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()
                 ->with('error', 'Erreur lors de la suppression du client: ' . $e->getMessage());
