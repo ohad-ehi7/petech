@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'Asia/Manila',
+    'timezone' => 'America/Port-Au-Prince',
 
     /*
     |--------------------------------------------------------------------------

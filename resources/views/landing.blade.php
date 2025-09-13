@@ -38,20 +38,7 @@
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-xl font-bold">Login to your account</h3>
                             <div class="flex items-center gap-2">
-                                <Image
-                                    src="https://placehold.co/30x30"
-                                    alt="User Icon"
-                                    width={30}
-                                    height={30}
-                                    class="rounded-full"
-                                />
-                                <Image
-                                    src="https://placehold.co/30x30"
-                                    alt="Settings Icon"
-                                    width={30}
-                                    height={30}
-                                    class="rounded-full"
-                                />
+                                <h6 class="text-2xl md:text-3xl font-bold text-[#1f509a] mb-6">POS</h6>
                             </div>
                         </div>
 

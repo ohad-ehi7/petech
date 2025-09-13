@@ -176,25 +176,32 @@ class SupplierController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Supplier $supplier)
-    {
-        try {
-            DB::beginTransaction();
-
-            // Check if supplier has products
-            if ($supplier->products()->exists()) {
-                throw new \Exception('Cannot delete supplier with associated products.');
-            }
-
-            $supplier->delete();
-
-            DB::commit();
-            return redirect()->route('suppliers.index')
-                ->with('success', 'Supplier deleted successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Error deleting supplier: ' . $e->getMessage());
-        }
+   public function destroy(Supplier $supplier)
+{
+    // Empêcher la suppression du fournisseur Local
+    if ($supplier->SupplierName === 'Local') {
+        return redirect()->back()->with('error', 'Cannot delete the Local supplier.');
     }
+
+    try {
+        DB::beginTransaction();
+
+        // Vérifier si le fournisseur a des produits
+        if ($supplier->products()->exists()) {
+            throw new \Exception('Cannot delete supplier because it has associated products.');
+        }
+
+        // Si pas de produits, supprimer le fournisseur
+        $supplier->delete();
+
+        DB::commit();
+        return redirect()->route('suppliers.index')
+            ->with('success', 'Supplier deleted successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()
+            ->with('error', 'Error deleting supplier: ' . $e->getMessage());
+    }
+}
+
 }

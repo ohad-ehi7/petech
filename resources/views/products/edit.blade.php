@@ -175,7 +175,7 @@
                         <div>
                             <label class="block text-sm font-medium mb-1">Selling Price*</label>
                             <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">G </span>
                                 <input type="number" name="SellingPrice" step="0.01" value="{{ old('SellingPrice', $product->SellingPrice) }}" class="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2 @error('SellingPrice') border-red-500 @enderror" placeholder="0.00" required />
                             </div>
                             @error('SellingPrice')
@@ -185,7 +185,7 @@
                         <div>
                             <label class="block text-sm font-medium mb-1">Cost Price*</label>
                             <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">G </span>
                                 <input type="number" name="CostPrice" step="0.01" value="{{ old('CostPrice', $product->CostPrice) }}" class="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2 @error('CostPrice') border-red-500 @enderror" placeholder="0.00" required />
                             </div>
                             @error('CostPrice')

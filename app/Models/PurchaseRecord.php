@@ -52,4 +52,4 @@ class PurchaseRecord extends Model
         return $this->hasMany(Transaction::class, 'ReferenceID', 'PurchaseID')
             ->where('ReferenceType', 'purchase');
     }
-} 
+}

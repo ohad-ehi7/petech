@@ -1,5 +1,3 @@
-
-
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
@@ -117,7 +115,7 @@
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div>
+                        {{-- <div>
                             <label class="block text-sm font-medium mb-1">Supplier</label>
                             <select name="SupplierID" id="supplierSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('SupplierID') border-red-500 @enderror">
                                 <option value="">Select Supplier</option>
@@ -130,7 +128,22 @@
                             @error('SupplierID')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
-                        </div>
+                        </div> --}}
+                        <div>
+    <label class="block text-sm font-medium mb-1">Supplier</label>
+    <select name="SupplierID" id="supplierSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 @error('SupplierID') border-red-500 @enderror">
+        <option value="">Select Supplier</option>
+        @foreach ($suppliers as $supplier)
+            <option value="{{ $supplier->SupplierID }}"
+                {{ (old('SupplierID') == $supplier->SupplierID || (!$errors->any() && $supplier->SupplierName == 'Local')) ? 'selected' : '' }}>
+                {{ $supplier->SupplierName }}
+            </option>
+        @endforeach
+    </select>
+    @error('SupplierID')
+        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
+</div>
                     </div>
                     <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
                 </div>
@@ -190,7 +203,7 @@
                         <div>
                             <label class="block text-sm font-medium mb-1">Selling Price*</label>
                             <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">G</span>
                                 <input type="number" name="SellingPrice" step="0.01" value="{{ old('SellingPrice') }}" class="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2 @error('SellingPrice') border-red-500 @enderror" placeholder="0.00" required />
                             </div>
                             @error('SellingPrice')
@@ -200,7 +213,7 @@
                         <div>
                             <label class="block text-sm font-medium mb-1">Cost Price*</label>
                             <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">G</span>
                                 <input type="number" name="CostPrice" step="0.01" value="{{ old('CostPrice') }}" class="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2 @error('CostPrice') border-red-500 @enderror" placeholder="0.00" required />
                             </div>
                             @error('CostPrice')
@@ -246,16 +259,16 @@
     function previewImage(input) {
         const preview = document.getElementById('image-preview');
         const placeholder = document.getElementById('upload-placeholder');
-        
+
         if (input.files && input.files[0]) {
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
                 preview.src = e.target.result;
                 preview.classList.remove('hidden');
                 placeholder.classList.add('hidden');
             }
-            
+
             reader.readAsDataURL(input.files[0]);
         } else {
             preview.classList.add('hidden');

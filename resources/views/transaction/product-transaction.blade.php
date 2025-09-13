@@ -27,7 +27,7 @@
                         </span>
                     </div>
                 </div>
-                <span class="text-sm font-semibold">₱{{ number_format($item->SellingPrice, 2) }}</span>
+                <span class="text-sm font-semibold">HTG {{ number_format($item->SellingPrice, 2) }}</span>
             </li>
             @endforeach
         </ul>
@@ -57,11 +57,11 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-4 rounded-lg shadow border">
                 <h3 class="text-sm font-medium text-gray-500">Total Sales</h3>
-                <p class="text-2xl font-semibold mt-1">₱{{ number_format($transactions->where('TransactionType', 'SALE')->sum('TotalAmount'), 2) }}</p>
+                <p class="text-2xl font-semibold mt-1">HTG {{ number_format($transactions->where('TransactionType', 'SALE')->sum('TotalAmount'), 2) }}</p>
             </div>
             <div class="bg-white p-4 rounded-lg shadow border">
                 <h3 class="text-sm font-medium text-gray-500">Total Returns</h3>
-                <p class="text-2xl font-semibold mt-1">₱{{ number_format($transactions->where('TransactionType', 'RETURN')->sum('TotalAmount'), 2) }}</p>
+                <p class="text-2xl font-semibold mt-1">HTG {{ number_format($transactions->where('TransactionType', 'RETURN')->sum('TotalAmount'), 2) }}</p>
             </div>
             <div class="bg-white p-4 rounded-lg shadow border">
                 <h3 class="text-sm font-medium text-gray-500">Units Sold</h3>
@@ -129,8 +129,8 @@
                             {{ abs($transaction->QuantityChange) }}
                         </span>
                     </td>
-                    <td class="px-4 py-2">₱{{ number_format($transaction->UnitPrice, 2) }}</td>
-                    <td class="px-4 py-2">₱{{ number_format($transaction->TotalAmount, 2) }}</td>
+                    <td class="px-4 py-2">HTG {{ number_format($transaction->UnitPrice, 2) }}</td>
+                    <td class="px-4 py-2">HTG {{ number_format($transaction->TotalAmount, 2) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         @if($transaction->TransactionType === 'SALE')
                             @if($transaction->sale)
@@ -416,8 +416,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p><strong>Date:</strong> ${new Date(data.TransactionDate).toLocaleString()}</p>
                     <p><strong>Type:</strong> ${data.TransactionType}</p>
                     <p><strong>Quantity:</strong> ${data.QuantityChange}</p>
-                    <p><strong>Unit Price:</strong> ₱${data.UnitPrice.toFixed(2)}</p>
-                    <p><strong>Total Amount:</strong> ₱${data.TotalAmount.toFixed(2)}</p>
+                    <p><strong>Unit Price:</strong> HTG ${data.UnitPrice.toFixed(2)}</p>
+                    <p><strong>Total Amount:</strong> HTG ${data.TotalAmount.toFixed(2)}</p>
                     <p><strong>Reference:</strong> ${data.ReferenceID}</p>
                 `;
                 modal.classList.remove('hidden');

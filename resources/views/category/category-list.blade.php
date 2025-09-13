@@ -37,41 +37,31 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($categories as $category)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {{ $category->CategoryName }}
-                                </td>
+    @foreach($categories as $category)
+        <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                {{ $category->CategoryName }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <span class="text-green-600 font-semibold">
+                    {{ $category->products->count() }}
+                </span> products
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <a href="{{ route('categories.edit', $category) }}"
+                   class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                <form action="{{ route('categories.destroy', $category) }}" method="POST" class="delete-form inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn-delete text-red-600 hover:text-red-900">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
 
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <span class="text-green-600 font-semibold">
-                                        {{ $category->products->count() }}
-                                    </span> products
-                                </td>
-
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('categories.edit', $category) }}"
-                                       class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
-                                    <form action="{{ route('categories.destroy', $category) }}" method="POST" class="delete-form inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn-delete text-red-600 hover:text-red-900">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">
-                                    No categories found.
-                                    <a href="{{ route('categories.create') }}" class="text-blue-600 hover:text-blue-900">
-                                        Add one now
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -125,13 +115,15 @@
                     exportOptions: { columns: ':not(:last-child)' }
                 }
             ],
-            pageLength: 25,
+            pageLength: 100,
             order: [[0, 'asc']],
             language: {
-                search: "Search:",
-                lengthMenu: "_MENU_",
-                info: "Showing _START_ to _END_ of _TOTAL_ entries"
-            }
+    search: "Search:",
+    lengthMenu: "_MENU_",
+    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+    emptyTable: "No categories found. <a href='/categories/create' class='text-blue-600 hover:text-blue-900'>Add one now</a>"
+}
+
         });
 
         // SweetAlert suppression
@@ -152,5 +144,23 @@
                 }
             });
         });
+
+
+        // Affichage des messages de session
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: "{{ session('error') }}"
+        });
+    @endif
     });
 </script>

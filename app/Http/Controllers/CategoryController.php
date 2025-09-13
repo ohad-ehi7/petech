@@ -175,27 +175,7 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    // public function destroy(Category $category)
-    // {
-    //     try {
-    //         DB::beginTransaction();
-
-    //         // Check if category has products
-    //         if ($category->products()->exists()) {
-    //             throw new \Exception('Cannot delete category with associated products.');
-    //         }
-
-    //         $category->delete();
-
-    //         DB::commit();
-    //         return redirect()->route('categories.index')
-    //             ->with('success', 'Category deleted successfully.');
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return redirect()->back()
-    //             ->with('error', 'Error deleting category: ' . $e->getMessage());
-    //     }
-    // }
+    
 
     public function destroy(Category $category)
 {

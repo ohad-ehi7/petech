@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Product Controller
  *
@@ -29,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
+
 /**
  * Class ProductController
  *
@@ -58,9 +60,9 @@ class ProductController extends Controller
             $query->where(
                 function ($q) use ($searchTerm) {
                     $q->where('ProductName', 'like', "%{$searchTerm}%")
-                      ->orWhere('SKU', 'like', "%{$searchTerm}%")
-                      ->orWhere('Brand', 'like', "%{$searchTerm}%")
-                      ->orWhere('Description', 'like', "%{$searchTerm}%");
+                        ->orWhere('SKU', 'like', "%{$searchTerm}%")
+                        ->orWhere('Brand', 'like', "%{$searchTerm}%")
+                        ->orWhere('Description', 'like', "%{$searchTerm}%");
                 }
             );
         }
@@ -89,128 +91,9 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    // public function store(Request $request)
-    // {
-    //     Log::info('Product creation request received', $request->all());
 
-    //     $validator = Validator::make($request->all(), [
-    //         'ProductName' => [
-    //             'required',
-    //             'string',
-    //             'max:255',
-    //             function ($attribute, $value, $fail) use ($request) {
-    //                 // Check if product with same name exists in the same category
-    //                 $exists = Product::where('ProductName', $value)
-    //                     ->where('CategoryID', $request->CategoryID)
-    //                     ->exists();
 
-    //                 if ($exists) {
-    //                     $fail('A product with this name already exists in the selected category.');
-    //                 }
-    //             }
-    //         ],
-    //         'Unit' => 'required|string|max:50',
-    //         'CategoryID' => 'required|exists:categories,CategoryID',
-    //         'SupplierID' => 'nullable|exists:suppliers,SupplierID',
-    //         'SKU' => 'required|string|unique:products,SKU',
-    //         'Description' => 'nullable|string',
-    //         'Brand' => 'nullable|string|max:255',
-    //         'Weight' => 'nullable|numeric|min:0',
-    //         'WeightUnit' => 'nullable|string|max:10',
-    //         'SellingPrice' => 'required|numeric|min:0',
-    //         'CostPrice' => 'required|numeric|min:0',
-    //         'OpeningStock' => 'nullable|integer|min:0',
-    //         'ReorderLevel' => 'required|integer|min:0',
-    //         'IsReturnable' => 'boolean',
-    //         'Product_Image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120' // 5MB max
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         Log::error('Validation failed', ['errors' => $validator->errors()->toArray()]);
-    //         return redirect()->back()
-    //             ->withErrors($validator)
-    //             ->withInput();
-    //     }
-
-    //     try {
-    //         DB::beginTransaction();
-    //         Log::info('Starting product creation transaction');
-
-    //         $data = $request->all();
-    //         $data['IsReturnable'] = $request->has('IsReturnable');
-
-    //         // Handle image upload
-    //         if ($request->hasFile('Product_Image')) {
-    //             Log::info('Processing image upload');
-    //             $imagePath = $request->file('Product_Image')->store('products', 'public');
-    //             Log::info('Image stored at path: ' . $imagePath);
-    //             $data['Product_Image'] = $imagePath;
-    //         }
-
-    //         // Create product
-    //         Log::info('Creating product with data', $data);
-    //         $product = Product::create($data);
-    //         Log::info('Product created successfully', ['product_id' => $product->ProductID]);
-
-    //         // Create initial inventory record
-    //         Log::info('Creating inventory record');
-    //         $product->inventory()->create([
-    //             'QuantityOnHand' => $request->OpeningStock ?? 0,
-    //             'ReorderLevel' => $request->ReorderLevel ?? 0,
-    //             'LastUpdated' => now()
-    //         ]);
-
-    //         // Create purchase record for initial stock
-    //         Log::info('Creating initial stock purchase record');
-    //         $purchase = PurchaseRecord::create([
-    //             'SupplierID' => $request->SupplierID,
-    //             'ProductID' => $product->ProductID,
-    //             'Quantity' => $request->OpeningStock,
-    //             'UnitPrice' => $request->CostPrice,
-    //             'TotalAmount' => $request->OpeningStock * $request->CostPrice,
-    //             'ReferenceNumber' => 'INIT-' . str_pad($product->ProductID, 5, '0', STR_PAD_LEFT) . '-' . date('YmdHis'),
-    //             'Notes' => 'Initial stock purchase'
-    //         ]);
-
-    //         // Create transaction record
-    //         Log::info('Creating initial stock transaction record');
-    //         Transaction::create([
-    //             'ProductID' => $product->ProductID,
-    //             'TransactionType' => 'OPENING_STOCK',
-    //             'TransactionDate' => now(),
-    //             'QuantityChange' => $request->OpeningStock,
-    //             'UnitPrice' => $request->CostPrice,
-    //             'TotalAmount' => $request->OpeningStock * $request->CostPrice,
-    //             'ReferenceType' => 'purchase',
-    //             'ReferenceID' => $purchase->PurchaseID,
-    //             'Notes' => $request->SupplierID ? "Initial stock from supplier" : 'Initial stock recorded'
-    //         ]);
-
-    //         // Handle supplier relationship if provided
-    //         if ($request->has('SupplierID')) {
-    //             Log::info('Creating supplier relationship');
-    //             $product->productSuppliers()->create([
-    //                 'SupplierID' => $request->SupplierID,
-    //                 'PurchasePrice' => $request->CostPrice // Using CostPrice as PurchasePrice
-    //             ]);
-    //         }
-
-    //         DB::commit();
-    //         Log::info('Product creation completed successfully');
-    //         return redirect()->route('products.index')
-    //             ->with('success', 'Product created successfully.');
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         Log::error('Error creating product: ' . $e->getMessage(), [
-    //             'exception' => $e,
-    //             'trace' => $e->getTraceAsString()
-    //         ]);
-    //         return redirect()->back()
-    //             ->with('error', 'Error creating product: ' . $e->getMessage())
-    //             ->withInput();
-    //     }
-    // }
-public function store(Request $request)
+    public function store(Request $request)
     {
         Log::info('Product creation request received', $request->all());
 
@@ -244,6 +127,13 @@ public function store(Request $request)
             $data = $request->all();
             $data['IsReturnable'] = $request->has('IsReturnable');
 
+            // 📌 Gestion du fournisseur par défaut
+            if (empty($data['SupplierID'])) {
+                // Récupérer l'ID du fournisseur "Local"
+                $localSupplier = Supplier::where('SupplierName', 'Local')->first();
+                $data['SupplierID'] = $localSupplier ? $localSupplier->SupplierID : null;
+            }
+
             // 📌 Gestion de l'image
             if ($request->hasFile('Product_Image')) {
                 $file = $request->file('Product_Image');
@@ -263,7 +153,7 @@ public function store(Request $request)
 
             // Achat initial
             $purchase = PurchaseRecord::create([
-                'SupplierID'      => $request->SupplierID,
+                'SupplierID'      => $data['SupplierID'],
                 'ProductID'       => $product->ProductID,
                 'Quantity'        => $request->OpeningStock,
                 'UnitPrice'       => $request->CostPrice,
@@ -282,7 +172,7 @@ public function store(Request $request)
                 'TotalAmount'     => ($request->OpeningStock ?? 0) * $request->CostPrice,
                 'ReferenceType'   => 'purchase',
                 'ReferenceID'     => $purchase->PurchaseID,
-                'Notes'           => $request->SupplierID ? "Initial stock from supplier" : 'Initial stock recorded'
+                'Notes'           => $data['SupplierID'] ? "Initial stock from supplier" : 'Initial stock recorded'
             ]);
 
             DB::commit();
@@ -329,333 +219,149 @@ public function store(Request $request)
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    // public function update(Request $request, Product $product)
-    // {
-    //     Log::info('Update method called for product: ' . $product->ProductID);
-    //     Log::info('Request data:', $request->all());
 
-    //     $validator = Validator::make($request->all(), [
-    //         'ProductName' => [
-    //             'required',
-    //             'string',
-    //             'max:255',
-    //             function ($attribute, $value, $fail) use ($request, $product) {
-    //                 // Check if product with same name exists in the same category, excluding current product
-    //                 $exists = Product::where('ProductName', $value)
-    //                     ->where('CategoryID', $request->CategoryID)
-    //                     ->where('ProductID', '!=', $product->ProductID)
-    //                     ->exists();
 
-    //                 if ($exists) {
-    //                     $fail('A product with this name already exists in the selected category.');
-    //                 }
-    //             }
-    //         ],
-    //         'Unit' => 'required|string|max:50',
-    //         'CategoryID' => 'required|exists:categories,CategoryID',
-    //         'SupplierID' => 'nullable|exists:suppliers,SupplierID',
-    //         'Description' => 'nullable|string',
-    //         'Brand' => 'nullable|string|max:255',
-    //         'Weight' => 'nullable|numeric|min:0',
-    //         'WeightUnit' => 'nullable|string|max:10',
-    //         'SellingPrice' => 'required|numeric|min:0',
-    //         'CostPrice' => 'required|numeric|min:0',
-    //         'stock_adjustment' => 'nullable|integer',
-    //         'ReorderLevel' => 'required|integer|min:0',
-    //         'IsReturnable' => 'boolean',
-    //         'Product_Image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120'
-    //     ]);
+    public function update(Request $request, Product $product)
+{
+    Log::info('Update method called for product: ' . $product->ProductID);
+    Log::info('Request data:', $request->all());
 
-    //     if ($validator->fails()) {
-    //         Log::error('Validation failed:', $validator->errors()->toArray());
-    //         return redirect()->back()
-    //             ->withErrors($validator)
-    //             ->withInput();
-    //     }
+    $validator = Validator::make($request->all(), [
+        'ProductName' => [
+            'required',
+            'string',
+            'max:255',
+            function ($attribute, $value, $fail) use ($request, $product) {
+                $exists = Product::where('ProductName', $value)
+                    ->where('CategoryID', $request->CategoryID)
+                    ->where('ProductID', '!=', $product->ProductID)
+                    ->exists();
 
-    //     try {
-    //         DB::beginTransaction();
-
-    //         $data = $request->all();
-    //         $data['IsReturnable'] = $request->has('IsReturnable');
-
-    //         // Handle image upload
-    //         if ($request->hasFile('Product_Image')) {
-    //             // Delete old image if exists
-    //             if ($product->Product_Image) {
-    //                 Storage::disk('public')->delete($product->Product_Image);
-    //             }
-    //             $imagePath = $request->file('Product_Image')->store('products', 'public');
-    //             $data['Product_Image'] = $imagePath;
-    //         }
-
-    //         // Update product
-    //         $product->update($data);
-
-    //         // Update inventory if stock changes are needed
-    //         if ($request->has('stock_adjustment')) {
-    //             $oldQuantity = $product->inventory->QuantityOnHand;
-    //             $adjustment = $request->stock_adjustment; // This is the amount to add/subtract
-    //             $newTotalQuantity = $oldQuantity + $adjustment;
-
-    //             // Update inventory by adjusting the current stock
-    //             $product->inventory()->update([
-    //                 'QuantityOnHand' => $newTotalQuantity,
-    //                 'ReorderLevel' => $request->ReorderLevel,
-    //                 'LastUpdated' => now()->setTimezone(config('app.timezone')),
-    //             ]);
-
-    //             // Only create log if there's an actual stock change
-    //             if ($adjustment != 0) {
-    //                 InventoryLog::create([
-    //                     'ProductID' => $product->ProductID,
-    //                     'type' => $adjustment > 0 ? 'stock_in' : 'stock_out',
-    //                     'quantity' => abs($adjustment),
-    //                     'notes' => 'Stock adjustment during product update',
-    //                     'created_by' => Auth::id()
-    //                 ]);
-    //             }
-    //         }
-
-    //         // Update supplier relationship if provided
-    //         if ($request->has('SupplierID')) {
-    //             $product->productSuppliers()->delete(); // Remove old relationships
-    //             $product->productSuppliers()->create([
-    //                 'SupplierID' => $request->SupplierID,
-    //                 'PurchasePrice' => $request->CostPrice
-    //             ]);
-    //         }
-
-    //         // If stock has changed, create a purchase record and transaction
-    //         $currentStock = $product->inventory->QuantityOnHand;
-    //         $newStock = $request->stock_adjustment ? ($currentStock + $request->stock_adjustment) : $currentStock;
-    //         $stockDifference = $newStock - $currentStock;
-
-    //         Log::info('Stock calculation details:', [
-    //             'current_stock' => $currentStock,
-    //             'new_stock' => $newStock,
-    //             'stock_difference' => $stockDifference,
-    //             'stock_adjustment' => $request->stock_adjustment,
-    //             'request_opening_stock' => $request->OpeningStock
-    //         ]);
-
-    //         // Create purchase record for stock update if there's a difference
-    //         if ($stockDifference != 0) {
-    //             try {
-    //                 // Create purchase record for stock update
-    //                 Log::info('Creating stock purchase record with data:', [
-    //                     'SupplierID' => $request->SupplierID,
-    //                     'ProductID' => $product->ProductID,
-    //                     'Quantity' => abs($stockDifference),
-    //                     'UnitPrice' => $request->CostPrice,
-    //                     'TotalAmount' => abs($stockDifference) * $request->CostPrice
-    //                 ]);
-
-    //                 $purchase = new PurchaseRecord();
-    //                 $purchase->SupplierID = $request->SupplierID;
-    //                 $purchase->ProductID = $product->ProductID;
-    //                 $purchase->Quantity = abs($stockDifference);
-    //                 $purchase->UnitPrice = $request->CostPrice;
-    //                 $purchase->TotalAmount = abs($stockDifference) * $request->CostPrice;
-    //                 $purchase->ReferenceNumber = 'ADJ-' . str_pad($product->ProductID, 5, '0', STR_PAD_LEFT) . '-' . date('YmdHis');
-    //                 $purchase->Notes = 'Stock adjustment during product update';
-    //                 $purchase->save();
-
-    //                 Log::info('Purchase record created:', ['purchase_id' => $purchase->PurchaseID]);
-
-    //                 // Create transaction record
-    //                 Transaction::create([
-    //                     'ProductID' => $product->ProductID,
-    //                     'TransactionType' => 'STOCK_PURCHASE',
-    //                     'QuantityChange' => $stockDifference,
-    //                     'UnitPrice' => $request->CostPrice,
-    //                     'TotalAmount' => abs($stockDifference) * $request->CostPrice,
-    //                     'ReferenceType' => 'purchase',
-    //                     'ReferenceID' => $purchase->PurchaseID,
-    //                     'Notes' => 'Stock adjustment during product update'
-    //                 ]);
-
-    //                 // Update inventory quantity
-    //                 $product->inventory()->update([
-    //                     'QuantityOnHand' => $newStock
-    //                 ]);
-
-    //                 // Create inventory log
-    //                 InventoryLog::create([
-    //                     'ProductID' => $product->ProductID,
-    //                     'type' => $stockDifference > 0 ? 'stock_in' : 'stock_out',
-    //                     'quantity' => abs($stockDifference),
-    //                     'notes' => 'Stock adjustment during product update',
-    //                     'created_by' => Auth::id()
-    //                 ]);
-    //             } catch (\Exception $e) {
-    //                 Log::error('Error creating purchase record: ' . $e->getMessage());
-    //                 throw $e;
-    //             }
-    //         } else {
-    //             Log::info('No stock difference detected, skipping purchase record creation');
-    //         }
-
-    //         DB::commit();
-    //         Log::info('Product updated successfully');
-    //         return redirect()->route('products.index')
-    //             ->with('success', 'Product updated successfully.');
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         Log::error('Error updating product: ' . $e->getMessage());
-    //         return redirect()->back()
-    //             ->with('error', 'Error updating product: ' . $e->getMessage())
-    //             ->withInput();
-    //     }
-    // }
- public function update(Request $request, Product $product)
-    {
-        Log::info('Update method called for product: ' . $product->ProductID);
-        Log::info('Request data:', $request->all());
-
-        $validator = Validator::make($request->all(), [
-            'ProductName' => [
-                'required',
-                'string',
-                'max:255',
-                function ($attribute, $value, $fail) use ($request, $product) {
-                    $exists = Product::where('ProductName', $value)
-                        ->where('CategoryID', $request->CategoryID)
-                        ->where('ProductID', '!=', $product->ProductID)
-                        ->exists();
-
-                    if ($exists) {
-                        $fail('A product with this name already exists in the selected category.');
-                    }
+                if ($exists) {
+                    $fail('A product with this name already exists in the selected category.');
                 }
-            ],
-            'Unit'          => 'required|string|max:50',
-            'CategoryID'    => 'required|exists:categories,CategoryID',
-            'SupplierID'    => 'nullable|exists:suppliers,SupplierID',
-            'Description'   => 'nullable|string',
-            'Brand'         => 'nullable|string|max:255',
-            'Weight'        => 'nullable|numeric|min:0',
-            'WeightUnit'    => 'nullable|string|max:10',
-            'SellingPrice'  => 'required|numeric|min:0',
-            'CostPrice'     => 'required|numeric|min:0',
-            'stock_adjustment' => 'nullable|integer',
-            'ReorderLevel'  => 'required|integer|min:0',
-            'IsReturnable'  => 'boolean',
-            'Product_Image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120'
+            }
+        ],
+        'Unit'          => 'required|string|max:50',
+        'CategoryID'    => 'required|exists:categories,CategoryID',
+        'SupplierID'    => 'nullable|exists:suppliers,SupplierID',
+        'Description'   => 'nullable|string',
+        'Brand'         => 'nullable|string|max:255',
+        'Weight'        => 'nullable|numeric|min:0',
+        'WeightUnit'    => 'nullable|string|max:10',
+        'SellingPrice'  => 'required|numeric|min:0',
+        'CostPrice'     => 'required|numeric|min:0',
+        'stock_adjustment' => 'nullable|integer',
+        'ReorderLevel'  => 'required|integer|min:0',
+        'IsReturnable'  => 'boolean',
+        'Product_Image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120'
+    ]);
+
+    if ($validator->fails()) {
+        Log::error('Validation failed:', $validator->errors()->toArray());
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput();
+    }
+
+    try {
+        DB::beginTransaction();
+
+        $data = $request->all();
+        $data['IsReturnable'] = $request->has('IsReturnable');
+
+        // 📌 Gestion du fournisseur par défaut (comme dans store)
+        if (empty($data['SupplierID'])) {
+            // Récupérer l'ID du fournisseur "Local"
+            $localSupplier = Supplier::where('SupplierName', 'Local')->first();
+            $data['SupplierID'] = $localSupplier ? $localSupplier->SupplierID : null;
+        }
+
+        // 📌 Gestion de l'image avec public/assets/images/products
+        if ($request->hasFile('Product_Image')) {
+            // Supprimer l'ancienne image si existe
+            if ($product->Product_Image && file_exists(public_path($product->Product_Image))) {
+                unlink(public_path($product->Product_Image));
+            }
+
+            $file = $request->file('Product_Image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('assets/images/products'), $filename);
+
+            $data['Product_Image'] = 'assets/images/products/' . $filename;
+        }
+
+        // Update du produit
+        $product->update($data);
+
+        // Mise à jour du niveau de réapprovisionnement
+        $product->inventory()->update([
+            'ReorderLevel' => $request->ReorderLevel,
+            'LastUpdated' => now()->setTimezone(config('app.timezone')),
         ]);
 
-        if ($validator->fails()) {
-            Log::error('Validation failed:', $validator->errors()->toArray());
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
+        // Mise à jour stock si demandé
+        if ($request->has('stock_adjustment') && $request->stock_adjustment != 0) {
+            $oldQuantity = $product->inventory->QuantityOnHand;
+            $adjustment = $request->stock_adjustment;
+            $newTotalQuantity = $oldQuantity + $adjustment;
 
-        try {
-            DB::beginTransaction();
-
-            $data = $request->all();
-            $data['IsReturnable'] = $request->has('IsReturnable');
-
-            // 📌 Gestion de l'image avec public/assets/images/products
-            if ($request->hasFile('Product_Image')) {
-                // Supprimer l'ancienne image si existe
-                if ($product->Product_Image && file_exists(public_path($product->Product_Image))) {
-                    unlink(public_path($product->Product_Image));
-                }
-
-                $file = $request->file('Product_Image');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('assets/images/products'), $filename);
-
-                $data['Product_Image'] = 'assets/images/products/' . $filename;
-            }
-
-            // Update du produit
-            $product->update($data);
-
-            // Mise à jour stock si demandé
-            if ($request->has('stock_adjustment')) {
-                $oldQuantity = $product->inventory->QuantityOnHand;
-                $adjustment = $request->stock_adjustment;
-                $newTotalQuantity = $oldQuantity + $adjustment;
-
-                $product->inventory()->update([
-                    'QuantityOnHand' => $newTotalQuantity,
-                    'ReorderLevel'   => $request->ReorderLevel,
-                    'LastUpdated'    => now()->setTimezone(config('app.timezone')),
-                ]);
-
-                if ($adjustment != 0) {
-                    InventoryLog::create([
-                        'ProductID' => $product->ProductID,
-                        'type'      => $adjustment > 0 ? 'stock_in' : 'stock_out',
-                        'quantity'  => abs($adjustment),
-                        'notes'     => 'Stock adjustment during product update',
-                        'created_by'=> Auth::id()
-                    ]);
-                }
-            }
-
-            // Mise à jour fournisseur
-            if ($request->has('SupplierID')) {
-                $product->productSuppliers()->delete();
-                $product->productSuppliers()->create([
-                    'SupplierID'    => $request->SupplierID,
-                    'PurchasePrice' => $request->CostPrice
-                ]);
-            }
+            $product->inventory()->update([
+                'QuantityOnHand' => $newTotalQuantity,
+                'LastUpdated'    => now()->setTimezone(config('app.timezone')),
+            ]);
 
             // Création achat + transaction si stock changé
-            $currentStock = $product->inventory->QuantityOnHand;
-            $newStock = $request->stock_adjustment ? ($currentStock + $request->stock_adjustment) : $currentStock;
-            $stockDifference = $newStock - $currentStock;
+            $purchase = PurchaseRecord::create([
+                'SupplierID'      => $data['SupplierID'],
+                'ProductID'       => $product->ProductID,
+                'Quantity'        => abs($adjustment),
+                'UnitPrice'       => $request->CostPrice,
+                'TotalAmount'     => abs($adjustment) * $request->CostPrice,
+                'ReferenceNumber' => 'ADJ-' . str_pad($product->ProductID, 5, '0', STR_PAD_LEFT) . '-' . date('YmdHis'),
+                'Notes'           => 'Stock adjustment during product update'
+            ]);
 
-            if ($stockDifference != 0) {
-                $purchase = new PurchaseRecord();
-                $purchase->SupplierID      = $request->SupplierID;
-                $purchase->ProductID       = $product->ProductID;
-                $purchase->Quantity        = abs($stockDifference);
-                $purchase->UnitPrice       = $request->CostPrice;
-                $purchase->TotalAmount     = abs($stockDifference) * $request->CostPrice;
-                $purchase->ReferenceNumber = 'ADJ-' . str_pad($product->ProductID, 5, '0', STR_PAD_LEFT) . '-' . date('YmdHis');
-                $purchase->Notes           = 'Stock adjustment during product update';
-                $purchase->save();
+            Transaction::create([
+                'ProductID'       => $product->ProductID,
+                'TransactionType' => $adjustment > 0 ? 'STOCK_PURCHASE' : 'STOCK_ADJUSTMENT',
+                'TransactionDate' => now(),
+                'QuantityChange'  => $adjustment,
+                'UnitPrice'       => $request->CostPrice,
+                'TotalAmount'     => abs($adjustment) * $request->CostPrice,
+                'ReferenceType'   => 'purchase',
+                'ReferenceID'     => $purchase->PurchaseID,
+                'Notes'           => 'Stock adjustment during product update'
+            ]);
 
-                Transaction::create([
-                    'ProductID'       => $product->ProductID,
-                    'TransactionType' => 'STOCK_PURCHASE',
-                    'QuantityChange'  => $stockDifference,
-                    'UnitPrice'       => $request->CostPrice,
-                    'TotalAmount'     => abs($stockDifference) * $request->CostPrice,
-                    'ReferenceType'   => 'purchase',
-                    'ReferenceID'     => $purchase->PurchaseID,
-                    'Notes'           => 'Stock adjustment during product update'
-                ]);
-
-                $product->inventory()->update([
-                    'QuantityOnHand' => $newStock
-                ]);
-
-                InventoryLog::create([
-                    'ProductID' => $product->ProductID,
-                    'type'      => $stockDifference > 0 ? 'stock_in' : 'stock_out',
-                    'quantity'  => abs($stockDifference),
-                    'notes'     => 'Stock adjustment during product update',
-                    'created_by'=> Auth::id()
-                ]);
-            }
-
-            DB::commit();
-            return redirect()->route('products.index')->with('success', 'Product updated successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error updating product: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Error updating product: ' . $e->getMessage())
-                ->withInput();
+            InventoryLog::create([
+                'ProductID' => $product->ProductID,
+                'type'      => $adjustment > 0 ? 'stock_in' : 'stock_out',
+                'quantity'  => abs($adjustment),
+                'notes'     => 'Stock adjustment during product update',
+                'created_by' => Auth::id()
+            ]);
         }
+
+        // Mise à jour fournisseur
+        if ($request->has('SupplierID')) {
+            $product->productSuppliers()->delete();
+            $product->productSuppliers()->create([
+                'SupplierID'    => $data['SupplierID'],
+                'PurchasePrice' => $request->CostPrice
+            ]);
+        }
+
+        DB::commit();
+        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Error updating product: ' . $e->getMessage());
+        return redirect()->back()
+            ->with('error', 'Error updating product: ' . $e->getMessage())
+            ->withInput();
     }
+}
     /**
      * Remove the specified product from storage.
      *
@@ -663,41 +369,63 @@ public function store(Request $request)
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    // public function destroy(Product $product)
-    // {
-    //     try {
-    //         DB::beginTransaction();
 
-    //         // Delete product image if exists
-    //         if ($product->Product_Image) {
-    //             Storage::disk('public')->delete($product->Product_Image);
-    //         }
 
-    //         // Delete related records
-    //         $product->productSuppliers()->delete();
-    //         $product->inventory()->delete();
-    //         $product->transactions()->delete();
-    //         $product->salesItems()->delete();
+// public function destroy(Product $product)
+// {
+//     try {
+//         // Vérifier si le produit a déjà été vendu
+//         if ($product->salesItems()->exists()) {
+//             return redirect()->back()
+//                 ->with('error', 'Impossible de supprimer ce produit car des ventes ont été réalisées.');
+//         }
 
-    //         // Delete the product
-    //         $product->delete();
+//         DB::beginTransaction();
 
-    //         DB::commit();
-    //         return redirect()->route('products.index')
-    //             ->with('success', 'Product deleted successfully.');
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         Log::error('Error deleting product: ' . $e->getMessage());
-    //         return redirect()->back()
-    //             ->with('error', 'Error deleting product: ' . $e->getMessage());
-    //     }
-    // }
+//         // Supprimer l’image si elle existe
+//         if ($product->Product_Image) {
+//             $imagePath = public_path($product->Product_Image);
+//             if (file_exists($imagePath)) {
+//                 unlink($imagePath);
+//             }
+//         }
+
+//         // Supprimer les relations
+//         $product->productSuppliers()->delete();
+//         $product->inventory()->delete();
+//         $product->transactions()->delete();
+//         $product->salesItems()->delete();
+
+//         // Supprimer le produit
+//         $product->delete();
+
+//         DB::commit();
+//         return redirect()->route('products.index')
+//             ->with('success', 'Produit supprimé avec succès.');
+//     } catch (\Exception $e) {
+//         DB::rollBack();
+//         Log::error('Erreur suppression produit: ' . $e->getMessage());
+//         return redirect()->back()
+//             ->with('error', 'Erreur suppression produit: ' . $e->getMessage());
+//     }
+// }
 public function destroy(Product $product)
 {
     try {
+        // Vérifier si le produit a déjà été vendu
+        if ($product->salesItems()->exists()) {
+            return redirect()->back()
+                ->with('error', 'Impossible de supprimer ce produit car des ventes ont été réalisées.');
+        }
+
         DB::beginTransaction();
 
-        // Supprimer l’image si elle existe dans public/assets/images/products
+        // Supprimer les enregistrements liés dans purchase_records
+        if ($product->purchaseRecords()->exists()) {
+            $product->purchaseRecords()->delete();
+        }
+
+        // Supprimer l’image si elle existe
         if ($product->Product_Image) {
             $imagePath = public_path($product->Product_Image);
             if (file_exists($imagePath)) {
@@ -705,25 +433,39 @@ public function destroy(Product $product)
             }
         }
 
-        // Supprimer les relations
-        $product->productSuppliers()->delete();
-        $product->inventory()->delete();
-        $product->transactions()->delete();
-        $product->salesItems()->delete();
+        // Supprimer les autres relations
+        if ($product->productSuppliers()->exists()) {
+            $product->productSuppliers()->delete();
+        }
+
+        if ($product->inventory()->exists()) {
+            $product->inventory()->delete();
+        }
+
+        if ($product->transactions()->exists()) {
+            $product->transactions()->delete();
+        }
+
+        if ($product->salesItems()->exists()) {
+            $product->salesItems()->delete();
+        }
 
         // Supprimer le produit
         $product->delete();
 
         DB::commit();
+
         return redirect()->route('products.index')
-            ->with('success', 'Product deleted successfully.');
+            ->with('success', 'Produit supprimé avec succès.');
     } catch (\Exception $e) {
         DB::rollBack();
-        Log::error('Error deleting product: ' . $e->getMessage());
+        Log::error('Erreur suppression produit: ' . $e->getMessage());
+
         return redirect()->back()
-            ->with('error', 'Error deleting product: ' . $e->getMessage());
+            ->with('error', 'Erreur suppression produit: ' . $e->getMessage());
     }
 }
+
 
     /**
      * Get product inventory status.

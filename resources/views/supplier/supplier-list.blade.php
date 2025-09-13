@@ -46,7 +46,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $supplier->ContactNumber }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $supplier->Email }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $supplier->Address }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                {{-- <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="{{ route('suppliers.edit', $supplier) }}"
                                         class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
                                     <form action="{{ route('suppliers.destroy', $supplier) }}" method="POST"
@@ -56,7 +56,19 @@
                                         <button type="button"
                                             class="btn-delete-supplier text-red-600 hover:text-red-900">Delete</button>
                                     </form>
-                                </td>
+                                </td> --}}
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+    <a href="{{ route('suppliers.edit', $supplier) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+
+    @if($supplier->SupplierName !== 'Local')
+        <form action="{{ route('suppliers.destroy', $supplier) }}" method="POST" class="inline delete-supplier-form">
+            @csrf
+            @method('DELETE')
+            <button type="button" class="btn-delete-supplier text-red-600 hover:text-red-900">Delete</button>
+        </form>
+    @endif
+</td>
+
                             </tr>
                         @empty
                             <tr>
@@ -144,5 +156,22 @@
                 }
             });
         });
+
+        // Affichage des messages de session
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: "{{ session('error') }}"
+        });
+    @endif
     });
 </script>

@@ -41,7 +41,7 @@ class Product extends Model
             // Get the last product
             $lastProduct = self::orderBy('ProductID', 'desc')->first();
             $nextNumber = $lastProduct ? $lastProduct->ProductID + 1 : 1;
-            
+
             // Generate SKU in format PROD-{00x}
             $product->SKU = 'PROD-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
         });
@@ -83,4 +83,12 @@ class Product extends Model
     {
         return $this->hasOne(Inventory::class, 'ProductID', 'ProductID');
     }
+    /**
+ * Get all purchase records for this product.
+ */
+public function purchaseRecords()
+{
+    return $this->hasMany(PurchaseRecord::class, 'ProductID', 'ProductID');
+}
+
 }

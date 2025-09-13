@@ -46,9 +46,9 @@
                                     <div class="text-sm text-gray-500">{{ $activity->SKU }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        {{ $activity->type === 'stock_in' ? 'bg-green-100 text-green-800' : 
-                                           ($activity->type === 'stock_out' ? 'bg-red-100 text-red-800' : 
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                        {{ $activity->type === 'stock_in' ? 'bg-green-100 text-green-800' :
+                                           ($activity->type === 'stock_out' ? 'bg-red-100 text-red-800' :
                                            'bg-yellow-100 text-yellow-800') }}">
                                         {{ ucfirst($activity->type) }}
                                     </span>
@@ -135,9 +135,9 @@
                                     {{ $log->CategoryName }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        {{ $log->type === 'stock_in' ? 'bg-green-100 text-green-800' : 
-                                           ($log->type === 'stock_out' ? 'bg-red-100 text-red-800' : 
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                        {{ $log->type === 'stock_in' ? 'bg-green-100 text-green-800' :
+                                           ($log->type === 'stock_out' ? 'bg-red-100 text-red-800' :
                                            'bg-yellow-100 text-yellow-800') }}">
                                         {{ ucfirst($log->type) }}
                                     </span>
@@ -255,7 +255,7 @@
                     }
                 ],
                 order: [[4, 'desc']], // Sort by date by default
-                pageLength: 25,
+                pageLength: 100,
                 language: {
                     search: "Search logs:",
                     lengthMenu: "Show _MENU_ logs per page",
@@ -264,4 +264,4 @@
             });
         });
     </script>
-</x-header> 
+</x-header>

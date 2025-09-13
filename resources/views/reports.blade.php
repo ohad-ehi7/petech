@@ -131,7 +131,7 @@
             $('#topSellingItemsTable').DataTable({
                 dom: '<"flex flex-wrap items-center justify-between"<"flex items-center"B><"flex items-center"lf>>rtip',
                 buttons: ['copy','csv','excel','pdf','print'],
-                order: [[1, 'desc']],
+                order: [[3, 'desc']],
                 pageLength: 25,
                 language: {
                     search: "Rechercher :",

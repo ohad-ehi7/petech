@@ -43,12 +43,14 @@
                                             {{-- <img src="{{ asset('storage/' . $product->Product_Image) }}"
                                                 alt="{{ $product->ProductName }}"
                                                 class="h-10 w-10 rounded-full object-cover"> --}}
-                                                 <img src="{{ asset($product->Product_Image) }}"
+                                            <img src="{{ asset($product->Product_Image) }}"
                                                 alt="{{ $product->ProductName }}"
                                                 class="h-10 w-10 rounded-full object-cover">
                                         @else
-                                            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                                <span class="text-gray-500 text-sm">{{ substr($product->ProductName, 0, 2) }}</span>
+                                            <div
+                                                class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                                <span
+                                                    class="text-gray-500 text-sm">{{ substr($product->ProductName, 0, 2) }}</span>
                                             </div>
                                         @endif
                                         <div class="ml-4">
@@ -67,16 +69,21 @@
                                     <div class="text-sm text-gray-900">{{ $product->SKU ?? 'N/A' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">HTG {{ number_format($product->SellingPrice, 2) }}</div>
+                                    <div class="text-sm text-gray-900">HTG
+                                        {{ number_format($product->SellingPrice, 2) }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ $product->inventory->QuantityOnHand ?? 0 }}</div>
+                                    <div class="text-sm text-gray-900">{{ $product->inventory->QuantityOnHand ?? 0 }}
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-3">
-                                        <a href="{{ route('products.show', $product->ProductID) }}" class="text-blue-600 hover:text-blue-900">View</a>
-                                        <a href="{{ route('products.edit', $product->ProductID) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                        <form action="{{ route('products.destroy', $product->ProductID) }}" method="POST" class="delete-form inline">
+                                        <a href="{{ route('products.show', $product->ProductID) }}"
+                                            class="text-blue-600 hover:text-blue-900">View</a>
+                                        <a href="{{ route('products.edit', $product->ProductID) }}"
+                                            class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                        <form action="{{ route('products.destroy', $product->ProductID) }}"
+                                            method="POST" class="delete-form inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn-delete text-red-600 hover:text-red-900">
@@ -105,71 +112,96 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-$(document).ready(function() {
-    // Initialiser DataTable
-    $('#productsTable').DataTable({
-        dom: '<"flex flex-wrap items-center justify-between"<"flex items-center"B><"flex items-center"f>>rtip',
-        buttons: [
-            {
-                extend: 'copy',
-                text: '<i class="fas fa-copy"></i> Copy',
-                className: 'dt-button bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded',
-                exportOptions: { columns: ':not(:last-child)' } // exclure la dernière colonne
+    $(document).ready(function() {
+        // Initialiser DataTable
+        $('#productsTable').DataTable({
+            dom: '<"flex flex-wrap items-center justify-between"<"flex items-center"B><"flex items-center"f>>rtip',
+            buttons: [{
+                    extend: 'copy',
+                    text: '<i class="fas fa-copy"></i> Copy',
+                    className: 'dt-button bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    } // exclure la dernière colonne
+                },
+                {
+                    extend: 'csv',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    className: 'dt-button bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i> Excel',
+                    className: 'dt-button bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="fas fa-file-pdf"></i> PDF',
+                    className: 'dt-button bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print"></i> Print',
+                    className: 'dt-button bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                }
+            ],
+            pageLength: 250,
+            language: {
+                search: "Search:",
+                lengthMenu: "_MENU_", // juste le select sans texte
+                info: "Showing _START_ to _END_ of _TOTAL_ entries"
             },
-            {
-                extend: 'csv',
-                text: '<i class="fas fa-file-csv"></i> CSV',
-                className: 'dt-button bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded',
-                exportOptions: { columns: ':not(:last-child)' }
-            },
-            {
-                extend: 'excel',
-                text: '<i class="fas fa-file-excel"></i> Excel',
-                className: 'dt-button bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded',
-                exportOptions: { columns: ':not(:last-child)' }
-            },
-            {
-                extend: 'pdf',
-                text: '<i class="fas fa-file-pdf"></i> PDF',
-                className: 'dt-button bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded',
-                exportOptions: { columns: ':not(:last-child)' }
-            },
-            {
-                extend: 'print',
-                text: '<i class="fas fa-print"></i> Print',
-                className: 'dt-button bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded',
-                exportOptions: { columns: ':not(:last-child)' }
-            }
-        ],
-        pageLength: 25,
-        language: {
-            search: "Search:",
-            lengthMenu: "_MENU_", // juste le select sans texte
-            info: "Showing _START_ to _END_ of _TOTAL_ entries"
-        },
-        order: [[0, 'desc']] // tri par nom du produit
-    });
-
-    // SweetAlert pour suppression
-    $(".btn-delete").click(function() {
-        let form = $(this).closest("form");
-        Swal.fire({
-            title: "Êtes-vous sûr ?",
-            text: "Ce produit sera définitivement supprimé.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Oui, supprimer",
-            cancelButtonText: "Annuler"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
+            order: [
+                [0, 'desc']
+            ] // tri par nom du produit
         });
+
+        // SweetAlert pour suppression
+        $(".btn-delete").click(function() {
+            let form = $(this).closest("form");
+            Swal.fire({
+                title: "Êtes-vous sûr ?",
+                text: "Ce produit sera définitivement supprimé.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Oui, supprimer",
+                cancelButtonText: "Annuler"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+        // Affichage des messages de session
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Succès',
+                text: "{{ session('success') }}"
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: "{{ session('error') }}"
+            });
+        @endif
     });
-});
-
-
-
 </script>

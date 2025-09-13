@@ -27,4 +27,17 @@ class POSController extends Controller
 
         return view('sales.point-of-sale', compact('categories', 'products'));
     }
+
+    // autre verrion
+    // public function index()
+    // {
+    //     $categories = Category::all();
+    //     $products = Product::with(['category', 'inventory'])
+    //         ->whereHas('inventory', function($query) {
+    //             $query->where('QuantityOnHand', '>', 0);
+    //         })
+    //         ->get();
+
+    //     return view('sales.point-of-sale', compact('categories', 'products'));
+    // }
 }

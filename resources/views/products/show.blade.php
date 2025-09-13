@@ -18,8 +18,7 @@
                 <div class="md:col-span-1">
                     <div class="bg-gray-50 rounded-lg p-4">
                         @if($product->Product_Image)
-                            <img src="{{ asset('storage/' . $product->Product_Image) }}" alt="{{ $product->ProductName }}" class="w-full h-64 object-cover rounded-lg mb-4">
-                            <img src="{{ asset($product->Product_Image) }}" alt="{{ $product->ProductName }}" class="w-full h-64 object-cover rounded-lg mb-4">
+                            <img src="{{ asset($product->Product_Image) }}" alt="{{ $product->ProductName }}" class="w-30 h-32 object-cover rounded-lg mb-4">
                         @else
                             <div class="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center mb-4">
                                 <span class="text-gray-500">No image available</span>
@@ -81,11 +80,11 @@
                         <div class="space-y-4">
                             <div>
                                 <h3 class="text-sm font-medium text-gray-500">Selling Price</h3>
-                                <p class="mt-1 text-lg font-semibold text-green-600">₱{{ number_format($product->SellingPrice, 2) }}</p>
+                                <p class="mt-1 text-lg font-semibold text-green-600">HTG{{ number_format($product->SellingPrice, 2) }}</p>
                             </div>
                             <div>
                                 <h3 class="text-sm font-medium text-gray-500">Cost Price</h3>
-                                <p class="mt-1">₱{{ number_format($product->CostPrice, 2) }}</p>
+                                <p class="mt-1">HTG{{ number_format($product->CostPrice, 2) }}</p>
                             </div>
                             <div>
                                 <h3 class="text-sm font-medium text-gray-500">Current Stock</h3>

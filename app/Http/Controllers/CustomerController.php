@@ -179,12 +179,24 @@ class CustomerController extends Controller
         try {
             DB::beginTransaction();
 
+            // Vérifier si le client a déjà des ventes
+            $hasSales = DB::table('sales')
+                ->where('CustomerID', $customer->CustomerID)
+                ->exists();
+
+            if ($hasSales) {
+                DB::rollBack();
+                return redirect()->back()
+                    ->with('error', "Impossible de supprimer ce client car il possède déjà  ventes.");
+            }
+
+            // Suppression si aucune vente
             $customer->delete();
 
             DB::commit();
             return redirect()->route('customers.index')
                 ->with('success', 'Client supprimé avec succès.');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()
                 ->with('error', 'Erreur lors de la suppression du client: ' . $e->getMessage());
